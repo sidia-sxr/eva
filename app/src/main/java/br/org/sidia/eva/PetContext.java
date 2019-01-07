@@ -27,7 +27,7 @@ import com.samsungxr.SXRNode;
 import com.samsungxr.SXRPerspectiveCamera;
 import com.samsungxr.SXRScene;
 import br.org.sidia.eva.character.CharacterController;
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.manager.connection.PetConnectionManager;
 import br.org.sidia.eva.service.share.PlayerSceneObject;
 import br.org.sidia.eva.service.share.SharedMixedReality;
@@ -88,7 +88,7 @@ public class PetContext {
         mPlayer = new PlayerSceneObject(mSxrContext);
         mMainScene.getMainCameraRig().addChildObject(mPlayer);
 
-        registerSharedObject(mPlayer, ArPetObjectType.PLAYER);
+        registerSharedObject(mPlayer, EvaObjectType.PLAYER);
 
         // FIXME: Workaround to
         // You may only use GestureDetector constructor from a {@link android.os.Looper} thread.
@@ -194,12 +194,12 @@ public class PetContext {
         return mMixedReality.getMode();
     }
 
-    public void registerSharedObject(SXRNode object, @ArPetObjectType String type,
+    public void registerSharedObject(SXRNode object, @EvaObjectType String type,
                                      boolean repeat) {
         mMixedReality.registerSharedObject(object, type, repeat);
     }
 
-    public void registerSharedObject(SXRNode object, @ArPetObjectType String type) {
+    public void registerSharedObject(SXRNode object, @EvaObjectType String type) {
         mMixedReality.registerSharedObject(object, type, true);
     }
 

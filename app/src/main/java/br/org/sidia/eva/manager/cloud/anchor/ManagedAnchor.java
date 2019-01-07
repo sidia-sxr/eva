@@ -17,15 +17,15 @@
 
 package br.org.sidia.eva.manager.cloud.anchor;
 
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 
 public class ManagedAnchor<Anchor> {
 
-    @ArPetObjectType
+    @EvaObjectType
     private String mObjectType;
     private Anchor mAnchor;
 
-    public ManagedAnchor(@ArPetObjectType String objectType, Anchor anchor) {
+    public ManagedAnchor(@EvaObjectType String objectType, Anchor anchor) {
         this.mObjectType = objectType;
         this.mAnchor = anchor;
     }

@@ -16,22 +16,22 @@
 
 package br.org.sidia.eva.manager.cloud.anchor;
 
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 
 import java.io.Serializable;
 
 public class CloudAnchor implements Serializable {
 
     private String mCloudAnchorId;
-    @ArPetObjectType
+    @EvaObjectType
     private String mObjectType;
 
-    public CloudAnchor(String cloudAnchorId, @ArPetObjectType String objectType) {
+    public CloudAnchor(String cloudAnchorId, @EvaObjectType String objectType) {
         this.mCloudAnchorId = cloudAnchorId;
         this.mObjectType = objectType;
     }
 
-    public CloudAnchor(@ArPetObjectType String type) {
+    public CloudAnchor(@EvaObjectType String type) {
         mObjectType = type;
     }
 
@@ -39,7 +39,7 @@ public class CloudAnchor implements Serializable {
         return mCloudAnchorId;
     }
 
-    @ArPetObjectType
+    @EvaObjectType
     public String getObjectType() {
         return mObjectType;
     }

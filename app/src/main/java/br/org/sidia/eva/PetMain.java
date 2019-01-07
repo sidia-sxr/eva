@@ -54,12 +54,11 @@ import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_AL
 
 
 public class PetMain extends DisableNativeSplashScreen {
-    private static final String TAG = "SXR_ARPET";
+
+    private static final String TAG = "PetMain";
 
     private PetContext mPetContext;
-
     private PlaneHandler mPlaneHandler;
-
     private PointCloudHandler mPointCloudHandler;
 
     private IPetMode mCurrentMode;
@@ -67,7 +66,6 @@ public class PetMain extends DisableNativeSplashScreen {
     private HandlerBackToHud mHandlerBackToHud;
 
     private CharacterController mPet = null;
-
     private SXRCursorController mCursorController = null;
 
     private CurrentSplashScreen mCurrentSplashScreen;

@@ -20,7 +20,7 @@ import com.samsungxr.SXRNode;
 import br.org.sidia.eva.PetContext;
 import br.org.sidia.eva.animations.DustyAnimation;
 import br.org.sidia.eva.character.CharacterController;
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.constant.PetConstants;
 import br.org.sidia.eva.util.LoadModelHelper;
 import com.samsungxr.mixedreality.SXRPlane;
@@ -47,24 +47,24 @@ public class VirtualObjectController {
         mDustyAnimation = new DustyAnimation(petContext.getSXRContext(), 2);
     }
 
-    private SXRNode load3DModel(@ArPetObjectType String type) {
+    private SXRNode load3DModel(@EvaObjectType String type) {
         SXRNode objectModel = null;
 
         switch (type) {
-            case ArPetObjectType.BED:
+            case EvaObjectType.BED:
                 objectModel = LoadModelHelper.loadModelSceneObject(mPetContext.getSXRContext(), LoadModelHelper.BED_MODEL_PATH);
                 break;
-            case ArPetObjectType.BOWL:
+            case EvaObjectType.BOWL:
                 objectModel = LoadModelHelper.loadModelSceneObject(mPetContext.getSXRContext(), LoadModelHelper.BOWL_MODEL_PATH);
                 break;
-            case ArPetObjectType.HYDRANT:
+            case EvaObjectType.HYDRANT:
                 objectModel = LoadModelHelper.loadModelSceneObject(mPetContext.getSXRContext(), LoadModelHelper.HYDRANT_MODEL_PATH);
                 break;
         }
         return objectModel;
     }
 
-    public void showObject(@ArPetObjectType String objectType) {
+    public void showObject(@EvaObjectType String objectType) {
         final SXRPlane mainPlane = (SXRPlane)mPetController.getPlane().getParent().getComponent(SXRPlane.getComponentType());
         if (mainPlane == null) {
             Log.d(TAG, "no plane detected");
@@ -215,13 +215,13 @@ public class VirtualObjectController {
         float y = mVirtualObject.getTransform().getPositionY();
         float z = mVirtualObject.getTransform().getPositionZ();
         switch (mObjectType) {
-            case ArPetObjectType.BED:
+            case EvaObjectType.BED:
                 mPetController.goToBed(x, y, z);
                 break;
-            case ArPetObjectType.BOWL:
+            case EvaObjectType.BOWL:
                 mPetController.goToBowl(x, y, z);
                 break;
-            case ArPetObjectType.HYDRANT:
+            case EvaObjectType.HYDRANT:
                 mPetController.goToHydrant(x, y, z);
                 break;
         }

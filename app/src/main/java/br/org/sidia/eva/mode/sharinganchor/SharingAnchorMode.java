@@ -29,7 +29,7 @@ import com.google.ar.core.exceptions.NotTrackingException;
 import com.samsungxr.SXRCameraRig;
 import br.org.sidia.eva.PetContext;
 import br.org.sidia.eva.R;
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.constant.PetConstants;
 import br.org.sidia.eva.manager.cloud.anchor.CloudAnchor;
 import br.org.sidia.eva.manager.cloud.anchor.CloudAnchorManager;
@@ -180,7 +180,7 @@ public class SharingAnchorMode extends BasePetMode {
             // hosted by Cloud Anchor service
             float[] anchorMatrix = mPetContext.getPetController().getView().getTransform().getModelMatrix();
             SXRAnchor petAnchor = mSharedMixedReality.createAnchor(anchorMatrix);
-            managedAnchor = new ManagedAnchor<>(ArPetObjectType.PET, petAnchor);
+            managedAnchor = new ManagedAnchor<>(EvaObjectType.PET, petAnchor);
         } catch (Throwable throwable) {
             isHosting.set(false);
             onHostingError(new CloudAnchorException(throwable));
@@ -218,7 +218,7 @@ public class SharingAnchorMode extends BasePetMode {
 
     private void resolvePetAnchor(PetAnchorReceivedMessage message) {
 
-        ManagedAnchor<CloudAnchor> managedAnchor = new ManagedAnchor<>(ArPetObjectType.PET, message.getPetAnchor());
+        ManagedAnchor<CloudAnchor> managedAnchor = new ManagedAnchor<>(EvaObjectType.PET, message.getPetAnchor());
 
         new CloudAnchorManager(mPetContext).resolveAnchors(managedAnchor, new CloudAnchorManager.OnCloudAnchorCallback<SXRAnchor>() {
             @Override
@@ -306,7 +306,7 @@ public class SharingAnchorMode extends BasePetMode {
 
     private void sharePetAnchorWithGuests(SXRAnchor hostedAnchor) {
         Log.d(TAG, "Sharing pet anchor with guests");
-        CloudAnchor cloudAnchor = new CloudAnchor(hostedAnchor.getCloudAnchorId(), ArPetObjectType.PET);
+        CloudAnchor cloudAnchor = new CloudAnchor(hostedAnchor.getCloudAnchorId(), EvaObjectType.PET);
 
         int requestId = mMessageService.sharePetAnchor(cloudAnchor);
         mPetAnchorSharingStatusHandler = new PetAnchorSharingStatusHandler(

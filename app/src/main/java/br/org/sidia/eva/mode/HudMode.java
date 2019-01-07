@@ -22,7 +22,7 @@ import android.util.Log;
 import com.samsungxr.SXRCameraRig;
 import br.org.sidia.eva.PetContext;
 import br.org.sidia.eva.character.CharacterController;
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.constant.PetConstants;
 import br.org.sidia.eva.mainview.IAboutView;
 import br.org.sidia.eva.mainview.ICleanView;
@@ -108,7 +108,7 @@ public class HudMode extends BasePetMode {
                 mPetController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            mVirtualObjectController.showObject(ArPetObjectType.BED);
+            mVirtualObjectController.showObject(EvaObjectType.BED);
         }
 
         @Override
@@ -118,7 +118,7 @@ public class HudMode extends BasePetMode {
                 mPetController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            mVirtualObjectController.showObject(ArPetObjectType.HYDRANT);
+            mVirtualObjectController.showObject(EvaObjectType.HYDRANT);
         }
 
         @Override
@@ -128,7 +128,7 @@ public class HudMode extends BasePetMode {
                 mPetController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            mVirtualObjectController.showObject(ArPetObjectType.BOWL);
+            mVirtualObjectController.showObject(EvaObjectType.BOWL);
         }
 
         @Override

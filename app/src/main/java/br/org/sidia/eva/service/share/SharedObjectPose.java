@@ -19,19 +19,19 @@ package br.org.sidia.eva.service.share;
 
 import android.support.annotation.NonNull;
 
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 
 import java.io.Serializable;
 import java.util.Arrays;
 
 public class SharedObjectPose implements Serializable {
 
-    @ArPetObjectType
+    @EvaObjectType
     private String objectType;
     private float[] modelMatrix;
 
     public SharedObjectPose(
-            @NonNull @ArPetObjectType String objectType,
+            @NonNull @EvaObjectType String objectType,
             @NonNull float[] modelMatrix) {
 
         this.objectType = objectType;
@@ -42,7 +42,7 @@ public class SharedObjectPose implements Serializable {
         return modelMatrix;
     }
 
-    @ArPetObjectType
+    @EvaObjectType
     public String getObjectType() {
         return objectType;
     }

@@ -23,10 +23,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @StringDef({
-        ArPetObjectType.PET, ArPetObjectType.BED, ArPetObjectType.BOWL,
-        ArPetObjectType.HYDRANT, ArPetObjectType.CAMERA, ArPetObjectType.PLANE, ArPetObjectType.PLAYER})
+        EvaObjectType.PET, EvaObjectType.BED, EvaObjectType.BOWL,
+        EvaObjectType.HYDRANT, EvaObjectType.CAMERA, EvaObjectType.PLANE, EvaObjectType.PLAYER})
 @Retention(RetentionPolicy.SOURCE)
-public @interface ArPetObjectType {
+public @interface EvaObjectType {
     String PET = "PET";
     String BED = "BED";
     String BOWL = "BOWL";

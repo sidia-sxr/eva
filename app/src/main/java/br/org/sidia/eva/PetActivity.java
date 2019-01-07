@@ -29,7 +29,8 @@ import br.org.sidia.eva.util.EventBusUtils;
 import com.samsungxr.utility.Log;
 
 public class PetActivity extends SXRActivity {
-    private static final String TAG = "SXR_ARPET";
+
+    private static final String TAG = "PetActivity";
 
     private PetMain mMain;
     private PetContext mPetContext;

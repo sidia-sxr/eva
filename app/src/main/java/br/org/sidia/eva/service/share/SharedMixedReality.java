@@ -8,7 +8,7 @@ import com.samsungxr.SXREventReceiver;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRPicker;
 import br.org.sidia.eva.PetContext;
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.constant.PetConstants;
 import br.org.sidia.eva.service.IMessageService;
 import br.org.sidia.eva.service.MessageService;
@@ -141,7 +141,7 @@ public class SharedMixedReality implements IMixedReality {
         mPetContext.getPlaneHandler().resetPlanes();
     }
 
-    public synchronized void registerSharedObject(SXRNode object, @ArPetObjectType String type,
+    public synchronized void registerSharedObject(SXRNode object, @EvaObjectType String type,
                                                   boolean repeat) {
         for (SharedSceneObject shared : mSharedSceneObjects) {
             if (shared.object == object) {
@@ -311,7 +311,7 @@ public class SharedMixedReality implements IMixedReality {
 
     private static class SharedSceneObject {
 
-        @ArPetObjectType
+        @EvaObjectType
         String type;
 
         // Shared object

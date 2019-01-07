@@ -65,7 +65,6 @@ public class ScreenshotMode extends BasePetMode {
 
     private SparseArray<SocialAppInfo> mSocialApps = new SparseArray<>();
 
-    private static final String APP_PHOTOS_DIR_NAME = "sxr-arpet";
     private static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
 
     private static final int REQUEST_STORAGE_PERMISSION = 1000;
@@ -141,7 +140,7 @@ public class ScreenshotMode extends BasePetMode {
     private void initPhotosDir() {
         if (mPhotosDir == null) {
             File picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            mPhotosDir = new File(picturesDir, APP_PHOTOS_DIR_NAME);
+            mPhotosDir = new File(picturesDir, BuildConfig.APPLICATION_ID);
             if (!mPhotosDir.exists()) {
                 if (mPhotosDir.mkdirs()) {
                     Log.d(TAG, "Directory created: " + mPhotosDir);
@@ -181,7 +180,7 @@ public class ScreenshotMode extends BasePetMode {
 
         initPhotosDir();
 
-        final String fileName = "sxr-arpet-photo-" + System.currentTimeMillis() + ".jpeg";
+        final String fileName = "eva-photo-" + System.currentTimeMillis() + ".jpeg";
         File file = new File(mPhotosDir, fileName);
 
         try (FileOutputStream output = new FileOutputStream(file)) {

@@ -37,7 +37,7 @@ import com.samsungxr.animation.SXRRepeatMode;
 import com.samsungxr.animation.SXRSkeleton;
 import br.org.sidia.eva.PetContext;
 import br.org.sidia.eva.R;
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.constant.PetConstants;
 import br.org.sidia.eva.gesture.OnScaleListener;
 import br.org.sidia.eva.gesture.ScalableObject;
@@ -197,7 +197,7 @@ public class CharacterView extends SXRNode implements
         }
 
         boundary.addChildObject(mTapObject);
-        mPetContext.registerSharedObject(boundary, ArPetObjectType.PLANE);
+        mPetContext.registerSharedObject(boundary, EvaObjectType.PLANE);
 
         mPlaneCenterPose = boundary.getTransform().getModelMatrix();
         mBoundaryPlane = boundary;

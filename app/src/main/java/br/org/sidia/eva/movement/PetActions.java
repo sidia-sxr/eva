@@ -24,7 +24,7 @@ import com.samsungxr.SXRTransform;
 import com.samsungxr.animation.SXRAnimator;
 import br.org.sidia.eva.PetContext;
 import br.org.sidia.eva.character.CharacterView;
-import br.org.sidia.eva.constant.ArPetObjectType;
+import br.org.sidia.eva.constant.EvaObjectType;
 import com.samsungxr.utility.Log;
 
 import org.joml.Matrix4f;
@@ -234,7 +234,7 @@ public class PetActions {
             if (mAnimation == null) {
                 setAnimation(mCharacter.getAnimation(0));
             }
-            mPetContext.registerSharedObject(mCharacter, ArPetObjectType.PET, false);
+            mPetContext.registerSharedObject(mCharacter, EvaObjectType.PET, false);
         }
 
         @Override
@@ -913,7 +913,7 @@ public class PetActions {
             Log.w(TAG, "entry => AT_EDIT");
             // Return the pet to the first position in the animation (IDLE)
             mCharacter.resetAnimation();
-            mPetContext.registerSharedObject(mCharacter, ArPetObjectType.PET);
+            mPetContext.registerSharedObject(mCharacter, EvaObjectType.PET);
         }
 
         @Override
