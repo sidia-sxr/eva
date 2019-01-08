@@ -25,7 +25,6 @@ import android.support.annotation.StringRes;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.ar.core.exceptions.NotTrackingException;
 import com.samsungxr.SXRCameraRig;
 import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
@@ -253,7 +252,7 @@ public class SharingAnchorMode extends BaseEvaMode {
             if (e.getCause() instanceof NetworkException) {
                 Toast.makeText(mEvaContext.getActivity(),
                         R.string.no_internet_connection, Toast.LENGTH_LONG).show();
-            } else if (NotTrackingException.class.isInstance(e.getCause())) {
+            } else if (e.getCause().getClass().getSimpleName().equals("NotTrackingException")) {
                 Toast.makeText(mEvaContext.getActivity(),
                         R.string.not_tracking, Toast.LENGTH_LONG).show();
             }
