@@ -28,14 +28,14 @@ import com.samsungxr.SXRPerspectiveCamera;
 import com.samsungxr.SXRScene;
 import br.org.sidia.eva.character.CharacterController;
 import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.manager.connection.PetConnectionManager;
+import br.org.sidia.eva.manager.connection.EvaConnectionManager;
 import br.org.sidia.eva.service.share.PlayerSceneObject;
 import br.org.sidia.eva.service.share.SharedMixedReality;
 import com.samsungxr.mixedreality.IPlaneEvents;
 import com.samsungxr.mixedreality.SXRAnchor;
 import com.samsungxr.physics.SXRWorld;
 
-public class PetContext {
+public class EvaContext {
     private final SXRActivity mActivity;
     private final HandlerThread mHandlerThread;
     private final Handler mHandler;
@@ -47,10 +47,10 @@ public class PetContext {
     private PlayerSceneObject mPlayer;
     private PlaneHandler mPlaneHandler;
     private SXRScene mMainScene = null;
-    private CharacterController mPetController = null;
+    private CharacterController mEvaController = null;
     private BallThrowHandler mBallThrowHandler = null;
 
-    public PetContext(SXRActivity activity) {
+    public EvaContext(SXRActivity activity) {
         mActivity = activity;
         mHandlerThread = new HandlerThread("br.org.sidia.eva-main");
         mHandlerThread.start();
@@ -82,7 +82,7 @@ public class PetContext {
         world.setGravity(0f, -200f, 0f);
         mMainScene.getRoot().attachComponent(world);
 
-        PetConnectionManager.getInstance().init(this);
+        EvaConnectionManager.getInstance().init(this);
         mMixedReality = new SharedMixedReality(this);
 
         mPlayer = new PlayerSceneObject(mSxrContext);
@@ -100,12 +100,12 @@ public class PetContext {
         return mBallThrowHandler;
     }
 
-    public void setPetController(CharacterController controller) {
-        mPetController = controller;
+    public void setEvaController(CharacterController controller) {
+        mEvaController = controller;
     }
 
-    public CharacterController getPetController() {
-        return mPetController;
+    public CharacterController getEvaController() {
+        return mEvaController;
     }
 
     private static void configCameraClipping(SXRScene scene) {
@@ -158,11 +158,11 @@ public class PetContext {
         return mResumeTime;
     }
 
-    public boolean runOnPetThread(Runnable r) {
+    public boolean runOnEvaThread(Runnable r) {
         return mHandler.post(r);
     }
 
-    public boolean runDelayedOnPetThread(Runnable r, long delayMillis) {
+    public boolean runDelayedOnEvaThread(Runnable r, long delayMillis) {
         return mHandler.postDelayed(r, delayMillis);
     }
 

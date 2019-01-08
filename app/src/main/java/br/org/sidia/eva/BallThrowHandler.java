@@ -27,7 +27,7 @@ import com.samsungxr.SXREventListeners;
 import com.samsungxr.SXRMeshCollider;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRRenderData;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.service.IMessageService;
 import br.org.sidia.eva.service.MessageService;
 import br.org.sidia.eva.service.data.BallCommand;
@@ -57,7 +57,7 @@ public class BallThrowHandler {
     private static final float MIN_Y_OFFSET = 3 * 100;
 
     private PlayerSceneObject mPlayer;
-    private final PetContext mPetContext;
+    private final EvaContext mEvaContext;
     private SXRNode mBall;
     private SXRRigidBody mRigidBody;
     private SXRNode mBoneGaze;
@@ -77,9 +77,9 @@ public class BallThrowHandler {
 
     private int mCurrentOrientation;
 
-    BallThrowHandler(PetContext petContext) {
-        mPetContext = petContext;
-        mPlayer = petContext.getPlayer();
+    BallThrowHandler(EvaContext evaContext) {
+        mEvaContext = evaContext;
+        mPlayer = evaContext.getPlayer();
 
         createBall();
         initController();
@@ -115,7 +115,7 @@ public class BallThrowHandler {
 
         mPlayer.addChildObject(mBall);
 
-        float scale = mPetContext.getPetController().getView().getScale() / 150f;
+        float scale = mEvaContext.getEvaController().getView().getScale() / 150f;
         mDistanceZ = -200f * scale;
 
         mBall.getTransform().setPosition(defaultPositionX, defaultPositionY, mDistanceZ);
@@ -125,7 +125,7 @@ public class BallThrowHandler {
 
         mPlayer.addChildObject(mBoneGaze);
 
-        mPetContext.getSXRContext().getApplication().getEventReceiver().addListener(mEventListener);
+        mEvaContext.getSXRContext().getApplication().getEventReceiver().addListener(mEventListener);
     }
 
     public void disable() {
@@ -141,7 +141,7 @@ public class BallThrowHandler {
 
         mPlayer.removeChildObject(mBoneGaze);
 
-        mPetContext.getSXRContext().getApplication().getEventReceiver().removeListener(mEventListener);
+        mEvaContext.getSXRContext().getApplication().getEventReceiver().removeListener(mEventListener);
     }
 
     public void reset() {
@@ -156,7 +156,7 @@ public class BallThrowHandler {
 
         disableBallsPhysics();
 
-        float scale = mPetContext.getPetController().getView().getScale() / 150f;
+        float scale = mEvaContext.getEvaController().getView().getScale() / 150f;
         mDistanceZ = -200f * scale;
 
         mBall.setEnable(false);
@@ -173,7 +173,7 @@ public class BallThrowHandler {
     }
 
     private void createBoneGaze(final SXRNode boneModel) {
-        final SXRContext sxrContext = mPetContext.getSXRContext();
+        final SXRContext sxrContext = mEvaContext.getSXRContext();
 
         boneModel.forAllComponents(new SXRNode.ComponentVisitor() {
             @Override
@@ -195,7 +195,7 @@ public class BallThrowHandler {
         mBall.getTransform().setPosition(defaultPositionX, defaultPositionY, defaultPositionZ);
         mBall.getTransform().setScale(defaultScale, defaultScale, defaultScale);
 
-        mRigidBody = new SXRRigidBody(mPetContext.getSXRContext(), 5.0f);
+        mRigidBody = new SXRRigidBody(mEvaContext.getSXRContext(), 5.0f);
         mRigidBody.setRestitution(0.5f);
         mRigidBody.setFriction(0.5f);
         mRigidBody.setCcdMotionThreshold(0.001f);
@@ -214,7 +214,7 @@ public class BallThrowHandler {
             @Override
             public boolean visit(SXRComponent sxrComponent) {
                 if (mBall.getCollider() == null) {
-                    SXRCollider collider = new SXRMeshCollider(mPetContext.getSXRContext(),
+                    SXRCollider collider = new SXRMeshCollider(mEvaContext.getSXRContext(),
                             ((SXRRenderData) sxrComponent).getMesh().getBoundingBox());
                     mBall.attachCollider(collider);
                 }
@@ -241,7 +241,7 @@ public class BallThrowHandler {
                     return false;
                 }
 
-                if (mPetContext.getMode() != PetConstants.SHARE_MODE_GUEST
+                if (mEvaContext.getMode() != EvaConstants.SHARE_MODE_GUEST
                         && firstPlane != null) {
                     final float vlen = (float) Math.sqrt((vx * vx) + (vy * vy));
                     final float vz = vlen / mDirTan;
@@ -259,7 +259,7 @@ public class BallThrowHandler {
             }
         };
 
-        final GestureDetector gestureDetector = new GestureDetector(mPetContext.getActivity(), gestureListener);
+        final GestureDetector gestureDetector = new GestureDetector(mEvaContext.getActivity(), gestureListener);
         mEventListener = new SXREventListeners.ApplicationEvents() {
             @Override
             public void dispatchTouchEvent(MotionEvent event) {
@@ -284,7 +284,7 @@ public class BallThrowHandler {
         mBoneGaze.setEnable(false);
         mBall.setEnable(true);
 
-        //Matrix4f rootMatrix = mPetContext.getMainScene().getRoot().getTransform().getModelMatrix4f();
+        //Matrix4f rootMatrix = mEvaContext.getMainScene().getRoot().getTransform().getModelMatrix4f();
         //rootMatrix.invert();
 
         // Calculating the new model matrix (T') for the ball: T' = iP x T
@@ -292,7 +292,7 @@ public class BallThrowHandler {
 
         mPlayer.removeChildObject(mBall);
 
-        mPetContext.getMainScene().addNode(mBall);
+        mEvaContext.getMainScene().addNode(mBall);
 
         // ... And set its model matrix to keep the same world matrix
         mBall.getTransform().setModelMatrix(ballMatrix);
@@ -338,7 +338,7 @@ public class BallThrowHandler {
     }
 
     private void load3DModel() {
-        mBall = LoadModelHelper.loadSceneObject(mPetContext.getSXRContext(),
+        mBall = LoadModelHelper.loadSceneObject(mEvaContext.getSXRContext(),
                 LoadModelHelper.BALL_MODEL_PATH);
     }
 }

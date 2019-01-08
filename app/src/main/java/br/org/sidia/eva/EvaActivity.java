@@ -28,12 +28,12 @@ import br.org.sidia.eva.manager.permission.PermissionManager;
 import br.org.sidia.eva.util.EventBusUtils;
 import com.samsungxr.utility.Log;
 
-public class PetActivity extends SXRActivity {
+public class EvaActivity extends SXRActivity {
 
-    private static final String TAG = "PetActivity";
+    private static final String TAG = "EvaActivity";
 
-    private PetMain mMain;
-    private PetContext mPetContext;
+    private EvaMain mMain;
+    private EvaContext mEvaContext;
     private PermissionManager mPermissionManager;
 
     @Override
@@ -46,9 +46,9 @@ public class PetActivity extends SXRActivity {
         mPermissionManager.setPermissionResultListener(new PermissionListener());
     }
 
-    private void startPetMain() {
-        mPetContext = new PetContext(this);
-        mMain = new PetMain(mPetContext);
+    private void startEvaMain() {
+        mEvaContext = new EvaContext(this);
+        mMain = new EvaMain(mEvaContext);
         setMain(mMain, "sxr.xml");
     }
 
@@ -58,10 +58,10 @@ public class PetActivity extends SXRActivity {
         Log.d(TAG, "onResume");
         if (!mPermissionManager.hasPermissions()) {
             mPermissionManager.requestPermissions();
-        } else if (mPetContext == null) {
-            startPetMain();
+        } else if (mEvaContext == null) {
+            startEvaMain();
         } else {
-            mPetContext.resume();
+            mEvaContext.resume();
             mMain.resume();
         }
     }
@@ -75,8 +75,8 @@ public class PetActivity extends SXRActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (mPetContext != null) {
-            mPetContext.pause();
+        if (mEvaContext != null) {
+            mEvaContext.pause();
         }
         if (mMain != null) {
             mMain.pause();
@@ -86,7 +86,7 @@ public class PetActivity extends SXRActivity {
     private class PermissionListener implements OnPermissionResultListener {
         @Override
         public void onPermissionGranted() {
-            startPetMain();
+            startEvaMain();
         }
 
         @Override

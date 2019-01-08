@@ -22,7 +22,8 @@ import android.support.annotation.IntDef;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRTransform;
 import com.samsungxr.animation.SXRAnimator;
-import br.org.sidia.eva.PetContext;
+
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.character.CharacterView;
 import br.org.sidia.eva.constant.EvaObjectType;
 import com.samsungxr.utility.Log;
@@ -37,7 +38,7 @@ import java.util.Arrays;
 /**
  * Represents a state of the Character.
  */
-public class PetActions {
+public class EvaActions {
     private static final String TAG = "CharacterStates";
 
     @IntDef({IDLE.ID, TO_BALL.ID, TO_PLAYER.ID, TO_TAP.ID, GRAB.ID, TO_BED.ID, TO_BOWL.ID,
@@ -47,20 +48,20 @@ public class PetActions {
     public @interface Action{
     }
 
-    private static abstract class PetAction implements IPetAction {
+    private static abstract class EvaAction implements IEvaAction {
         protected final CharacterView mCharacter;
         protected final SXRNode mTarget;
-        protected final OnPetActionListener mListener;
+        protected final OnEvaActionListener mListener;
 
-        protected Matrix4f mPetMtx = null;
+        protected Matrix4f mEvaMtx = null;
         protected Matrix4f mTargetMtx = null;
 
         protected final Quaternionf mRotation = new Quaternionf();
-        protected final Vector4f mPetDirection = new Vector4f();
+        protected final Vector4f mEvaDirection = new Vector4f();
         protected final Vector3f mTargetDirection = new Vector3f();
         protected final Vector3f mMoveTo = new Vector3f();
 
-        protected float mPetRadius = 1.0f;
+        protected float mEvaRadius = 1.0f;
         protected float mTurnSpeed = 5f;
         protected float mWalkingSpeed = 25f;
         protected float mRunningSpeed = 100f;
@@ -68,8 +69,8 @@ public class PetActions {
         protected float mAnimDuration = 0;
         protected SXRAnimator mAnimation;
 
-        protected PetAction(CharacterView character, SXRNode target,
-                            OnPetActionListener listener) {
+        protected EvaAction(CharacterView character, SXRNode target,
+                            OnEvaActionListener listener) {
             mCharacter = character;
             mTarget = target;
             mListener = listener;
@@ -101,9 +102,9 @@ public class PetActions {
 
         @Override
         public void entry() {
-            mPetRadius = mCharacter.getBoundingVolume().radius;
-            mRunningSpeed = mPetRadius * 2;
-            mWalkingSpeed = mPetRadius * 0.7f;
+            mEvaRadius = mCharacter.getBoundingVolume().radius;
+            mRunningSpeed = mEvaRadius * 2;
+            mWalkingSpeed = mEvaRadius * 0.7f;
 
             mElapsedTime = 0;
             onEntry();
@@ -119,32 +120,32 @@ public class PetActions {
 
         @Override
         public void run(float frameTime) {
-            SXRTransform petTrans = mCharacter.getTransform();
+            SXRTransform evaTrans = mCharacter.getTransform();
             // Vector of Character toward to Camera
-            mPetMtx = petTrans.getModelMatrix4f();
+            mEvaMtx = evaTrans.getModelMatrix4f();
             mTargetMtx = mTarget.getTransform().getModelMatrix4f();
 
-            /* Pet world space vector */
-            mPetDirection.set(0, 0, 1, 0);
-            mPetDirection.mul(mPetMtx);
-            mPetDirection.normalize();
+            /* Eva world space vector */
+            mEvaDirection.set(0, 0, 1, 0);
+            mEvaDirection.mul(mEvaMtx);
+            mEvaDirection.normalize();
 
             mTargetDirection.set(mTargetMtx.m30(), mTargetMtx.m31(), mTargetMtx.m32());
-            mTargetDirection.sub(mPetMtx.m30(), mPetMtx.m31(), mPetMtx.m32());
+            mTargetDirection.sub(mEvaMtx.m30(), mEvaMtx.m31(), mEvaMtx.m32());
 
             /* Target direction to look at */
             mMoveTo.set(mTargetDirection);
             mMoveTo.normalize();
             // Speed vector to create a smooth rotation
             mMoveTo.mul(mTurnSpeed * frameTime);
-            mMoveTo.add(mPetDirection.x, 0, mPetDirection.z);
+            mMoveTo.add(mEvaDirection.x, 0, mEvaDirection.z);
             mMoveTo.normalize();
 
             // Calc the rotation toward the camera and put it in pRot
-            mRotation.rotationTo(mPetDirection.x, 0, mPetDirection.z,
+            mRotation.rotationTo(mEvaDirection.x, 0, mEvaDirection.z,
                     mMoveTo.x, 0, mMoveTo.z);
 
-            petTrans.rotate(mRotation.w, mRotation.x, mRotation.y, mRotation.z);
+            evaTrans.rotate(mRotation.w, mRotation.x, mRotation.y, mRotation.z);
 
             onRun(frameTime);
         }
@@ -156,9 +157,9 @@ public class PetActions {
         protected abstract void onRun(float fimeTime);
     }
 
-    private static abstract class LoopAction extends PetAction {
+    private static abstract class LoopAction extends EvaAction {
         public LoopAction(CharacterView character, SXRNode targetObject,
-                          OnPetActionListener listener) {
+                          OnEvaActionListener listener) {
             super(character, targetObject, listener);
         }
 
@@ -174,7 +175,7 @@ public class PetActions {
         private final float mWalkError;
 
         public WalkAction(CharacterView character, SXRNode targetObject,
-                      OnPetActionListener listener, float error) {
+                          OnEvaActionListener listener, float error) {
             super(character, targetObject, listener);
             mWalkError = error;
         }
@@ -192,10 +193,10 @@ public class PetActions {
 
             mTargetDirection.y = 0;
             // Min distance to the tap position
-            boolean moveTowardToTapPosition = mTargetDirection.length() > mPetRadius * mWalkError;
+            boolean moveTowardToTapPosition = mTargetDirection.length() > mEvaRadius * mWalkError;
 
             if (moveTowardToTapPosition) {
-                mRotation.rotationTo(mPetDirection.x, 0, mPetDirection.z,
+                mRotation.rotationTo(mEvaDirection.x, 0, mEvaDirection.z,
                         mTargetDirection.x, 0, mTargetDirection.z);
 
                 if (mRotation.angle() < Math.PI * 0.25f) {
@@ -216,11 +217,11 @@ public class PetActions {
 
     public static class IDLE extends LoopAction {
         public static final int ID = 0;
-        private final PetContext mPetContext;
+        private final EvaContext mEvaContext;
 
-        public IDLE(PetContext petContext, CharacterView character) {
-            super(character, petContext.getPlayer(), null);
-            mPetContext = petContext;
+        public IDLE(EvaContext evaContext, CharacterView character) {
+            super(character, evaContext.getPlayer(), null);
+            mEvaContext = evaContext;
         }
 
         @Override
@@ -234,21 +235,21 @@ public class PetActions {
             if (mAnimation == null) {
                 setAnimation(mCharacter.getAnimation(0));
             }
-            mPetContext.registerSharedObject(mCharacter, EvaObjectType.PET, false);
+            mEvaContext.registerSharedObject(mCharacter, EvaObjectType.EVA, false);
         }
 
         @Override
         public void onExit() {
             Log.w(TAG, "exit => IDLE");
-            mPetContext.unregisterSharedObject(mCharacter);
+            mEvaContext.unregisterSharedObject(mCharacter);
         }
     }
 
-    public static class TO_PLAYER extends PetAction {
+    public static class TO_PLAYER extends EvaAction {
         public static final int ID = 1;
 
         public TO_PLAYER(CharacterView character, SXRNode player,
-                         OnPetActionListener listener) {
+                         OnEvaActionListener listener) {
             super(character, player, listener);
         }
 
@@ -272,7 +273,7 @@ public class PetActions {
         public void onRun(float frameTime) {
             mTargetDirection.y = 0;
             // Min distance to the camera/player
-            boolean moveTowardToCam = mTargetDirection.length() > mPetRadius * 2.0f;
+            boolean moveTowardToCam = mTargetDirection.length() > mEvaRadius * 2.0f;
 
             if (moveTowardToCam) {
                 if (mAnimation != null) {
@@ -294,7 +295,7 @@ public class PetActions {
         }
     }
 
-    public static class TO_BALL extends PetAction {
+    public static class TO_BALL extends EvaAction {
         public static final int ID = 2;
 
         private float mRunningSpeed2;
@@ -311,7 +312,7 @@ public class PetActions {
         private boolean mApproaching;
 
         public TO_BALL(CharacterView character, SXRNode target,
-                       OnPetActionListener listener) {
+                       OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -344,9 +345,9 @@ public class PetActions {
 
             // Min distance to ball
             boolean success  = mTarget.getTransform().getPositionY() > mCharacter.getTransform().getPositionY()
-                    - mPetRadius;
+                    - mEvaRadius;
 
-            boolean moveTowardToBall = mTargetDirection.length() > mPetRadius * 0.7f
+            boolean moveTowardToBall = mTargetDirection.length() > mEvaRadius * 0.7f
                     && success;
 
             if (moveTowardToBall) {
@@ -355,15 +356,15 @@ public class PetActions {
                 }
 
                 /* TODO: test this with share
-                mRotation.rotationTo(mPetDirection.x, 0, mPetDirection.z,
+                mRotation.rotationTo(mEvaDirection.x, 0, mEvaDirection.z,
                         mTargetDirection.x, 0, mTargetDirection.z);
                         */
 
                 if (mRotation.angle() < Math.PI * 0.25f) {
 					/* TODO: test this with share
-                    float a = mPetMtx.m30() - mTargetMtx.m30();
-                    float b = mPetMtx.m32() - mTargetMtx.m32();
-                    float toPet = (float)Math.sqrt(a * a + b * b);
+                    float a = mEvaMtx.m30() - mTargetMtx.m30();
+                    float b = mEvaMtx.m32() - mTargetMtx.m32();
+                    float toEva = (float)Math.sqrt(a * a + b * b);
 
                     a = mOldBallPos.x - mTargetMtx.m30();
                     b = mOldBallPos.z - mTargetMtx.m32();
@@ -388,7 +389,7 @@ public class PetActions {
                         } else {
                             mRunningSpeed2 = speed;
                         }
-                    } else  if (toPet < (mCharacterHalfSize * 0.75f) && speed < mRunningSpeed2) {
+                    } else  if (toEva < (mCharacterHalfSize * 0.75f) && speed < mRunningSpeed2) {
                         mApproaching = true;
                     } else if (mSpeedingUp) {
                         // Will increase speed
@@ -426,7 +427,7 @@ public class PetActions {
         public static final int ID = 3;
 
         public TO_TAP(CharacterView character, SXRNode tapObject,
-                         OnPetActionListener listener) {
+                         OnEvaActionListener listener) {
             super(character, tapObject, listener, 0.1f);
         }
 
@@ -447,11 +448,11 @@ public class PetActions {
         }
     }
 
-    public static class GRAB extends PetAction {
+    public static class GRAB extends EvaAction {
         public static final int ID = 4;
 
         public GRAB(CharacterView character, SXRNode target,
-                       OnPetActionListener listener) {
+                       OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -496,7 +497,7 @@ public class PetActions {
         public static final int ID = 5;
 
         public TO_BED(CharacterView character, SXRNode bedObject,
-                      OnPetActionListener listener) {
+                      OnEvaActionListener listener) {
             super(character, bedObject, listener, 0.4f);
         }
 
@@ -522,7 +523,7 @@ public class PetActions {
         public static final int ID = 6;
 
         public TO_BOWL(CharacterView character, SXRNode bowlObject,
-                      OnPetActionListener listener) {
+                      OnEvaActionListener listener) {
             super(character, bowlObject, listener, 0.7f);
         }
 
@@ -547,7 +548,7 @@ public class PetActions {
         public static final int ID = 7;
 
         public TO_HYDRANT(CharacterView character, SXRNode hydrantObject,
-                      OnPetActionListener listener) {
+                      OnEvaActionListener listener) {
             super(character, hydrantObject, listener, 0.1f);
         }
 
@@ -572,7 +573,7 @@ public class PetActions {
         public static final int ID = 8;
 
         public DRINK_ENTER(CharacterView character, SXRNode target,
-                    OnPetActionListener listener) {
+                    OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -608,7 +609,7 @@ public class PetActions {
         public static final int ID = 9;
 
         public DRINK_EXIT(CharacterView character, SXRNode target,
-                           OnPetActionListener listener) {
+                           OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -644,7 +645,7 @@ public class PetActions {
         public static final int ID = 10;
 
         public DRINK_LOOP(CharacterView character, SXRNode target,
-                          OnPetActionListener listener) {
+                          OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -680,7 +681,7 @@ public class PetActions {
         public static final int ID = 11;
 
         public HYDRANT_ENTER(CharacterView character, SXRNode target,
-                           OnPetActionListener listener) {
+                           OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -716,7 +717,7 @@ public class PetActions {
         public static final int ID = 12;
 
         public HYDRANT_EXIT(CharacterView character, SXRNode target,
-                          OnPetActionListener listener) {
+                          OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -752,7 +753,7 @@ public class PetActions {
         public static final int ID = 13;
 
         public HYDRANT_LOOP(CharacterView character, SXRNode target,
-                          OnPetActionListener listener) {
+                          OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -788,7 +789,7 @@ public class PetActions {
         public static final int ID = 14;
 
         public SLEEP_ENTER(CharacterView character, SXRNode target,
-                             OnPetActionListener listener) {
+                             OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -824,7 +825,7 @@ public class PetActions {
         public static final int ID = 15;
 
         public SLEEP_EXIT(CharacterView character, SXRNode target,
-                          OnPetActionListener listener) {
+                          OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -860,7 +861,7 @@ public class PetActions {
         public static final int ID = 16;
 
         public SLEEP_LOOP(CharacterView character, SXRNode target,
-                          OnPetActionListener listener) {
+                          OnEvaActionListener listener) {
             super(character, target, listener);
         }
 
@@ -892,14 +893,14 @@ public class PetActions {
         }
     }
 
-    public static class AT_EDIT implements IPetAction {
+    public static class AT_EDIT implements IEvaAction {
         public static final int ID = 20;
 
-        private final PetContext mPetContext;
+        private final EvaContext mEvaContext;
         private final CharacterView mCharacter;
 
-        public AT_EDIT(PetContext petContext, CharacterView character) {
-            mPetContext = petContext;
+        public AT_EDIT(EvaContext evaContext, CharacterView character) {
+            mEvaContext = evaContext;
             mCharacter = character;
         }
 
@@ -911,15 +912,15 @@ public class PetActions {
         @Override
         public void entry() {
             Log.w(TAG, "entry => AT_EDIT");
-            // Return the pet to the first position in the animation (IDLE)
+            // Return the eva to the first position in the animation (IDLE)
             mCharacter.resetAnimation();
-            mPetContext.registerSharedObject(mCharacter, EvaObjectType.PET);
+            mEvaContext.registerSharedObject(mCharacter, EvaObjectType.EVA);
         }
 
         @Override
         public void exit() {
             Log.w(TAG, "exit => AT_EDIT");
-            mPetContext.unregisterSharedObject(mCharacter);
+            mEvaContext.unregisterSharedObject(mCharacter);
         }
 
         @Override

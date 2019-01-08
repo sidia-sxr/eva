@@ -46,7 +46,7 @@ public final class PlaneHandler implements IPlaneEvents, SXRDrawFrameListener {
 
     private SXRContext mContext;
     private SXRScene mScene;
-    private PetMain mPetMain;
+    private EvaMain mEvaMain;
 
     private SXRNode selectedPlaneObject = null;
     private PlaneBoard physicsPlane = null;
@@ -137,10 +137,10 @@ public final class PlaneHandler implements IPlaneEvents, SXRDrawFrameListener {
 
     private LinkedList<SXRPlane> mPlanes = new LinkedList<>();
 
-    PlaneHandler(PetMain petMain, PetContext petContext) {
-        mContext = petContext.getSXRContext();
-        mScene = petContext.getMainScene();
-        mPetMain = petMain;
+    PlaneHandler(EvaMain evaMain, EvaContext evaContext) {
+        mContext = evaContext.getSXRContext();
+        mScene = evaContext.getMainScene();
+        mEvaMain = evaMain;
 
         physicsPlane = new PlaneBoard(mContext);
     }

@@ -22,7 +22,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import br.org.sidia.eva.BuildConfig;
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.manager.cloud.anchor.exception.CloudAnchorException;
 import br.org.sidia.eva.manager.cloud.anchor.exception.NetworkException;
 import br.org.sidia.eva.util.ContextUtils;
@@ -33,19 +33,19 @@ public class CloudAnchorManager {
 
     private static final String TAG = CloudAnchorManager.class.getSimpleName();
 
-    private final PetContext mPetContext;
+    private final EvaContext mEvaContext;
     private OnCloudAnchorCallback mCallback;
 
-    public CloudAnchorManager(PetContext petContext) {
-        mPetContext = petContext;
+    public CloudAnchorManager(EvaContext evaContext) {
+        mEvaContext = evaContext;
     }
 
     private boolean isCloudAnchorApiKeySet() {
-        boolean isKeySet = ContextUtils.isMetaDataSet(mPetContext.getSXRContext().getContext(),
+        boolean isKeySet = ContextUtils.isMetaDataSet(mEvaContext.getSXRContext().getContext(),
                 BuildConfig.GOOGLE_CLOUD_ANCHOR_KEY_NAME);
         if (!isKeySet) {
-            Context context = mPetContext.getActivity().getApplicationContext();
-            mPetContext.runOnPetThread(() ->
+            Context context = mEvaContext.getActivity().getApplicationContext();
+            mEvaContext.runOnEvaThread(() ->
                     Toast.makeText(context, "Cloud anchor API is not set",
                             Toast.LENGTH_LONG).show());
         }
@@ -63,7 +63,7 @@ public class CloudAnchorManager {
         }
 
         try {
-            mPetContext.getMixedReality().hostAnchor(
+            mEvaContext.getMixedReality().hostAnchor(
                     managedAnchor.getAnchor(),
                     (resultAnchor) -> onResultAnchor(managedAnchor, resultAnchor)
             );
@@ -83,7 +83,7 @@ public class CloudAnchorManager {
         }
 
         try {
-            mPetContext.getMixedReality().resolveCloudAnchor(
+            mEvaContext.getMixedReality().resolveCloudAnchor(
                     managedAnchor.getAnchor().getCloudAnchorId(),
                     (resultAnchor) -> onResultAnchor(managedAnchor, resultAnchor)
             );
@@ -110,7 +110,7 @@ public class CloudAnchorManager {
             return false;
         }
 
-        if (!NetworkUtils.hasInternetConnection(mPetContext)) {
+        if (!NetworkUtils.hasInternetConnection(mEvaContext)) {
             String errorString = "Cannot resolve anchors. No internet connection";
             Log.e(TAG, errorString);
             mCallback.onError(new CloudAnchorException(errorString, new NetworkException("No internet connection")));

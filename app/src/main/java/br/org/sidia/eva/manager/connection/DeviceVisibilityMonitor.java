@@ -24,7 +24,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.IntDef;
 
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -34,13 +34,13 @@ class DeviceVisibilityMonitor {
     static final int VISIBILITY_ON = 10;
     static final int VISIBILITY_OFF = 11;
 
-    private PetContext mPetContext;
+    private EvaContext mEvaContext;
     private OnVisibilityChangeListener mVisibilityListener;
     private BluetoothAdapter mBluetoothAdapter;
     private LocalReceiver mReceiver;
 
-    public DeviceVisibilityMonitor(PetContext context, OnVisibilityChangeListener listener) {
-        this.mPetContext = context;
+    public DeviceVisibilityMonitor(EvaContext context, OnVisibilityChangeListener listener) {
+        this.mEvaContext = context;
         this.mVisibilityListener = listener;
         this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
@@ -52,11 +52,11 @@ class DeviceVisibilityMonitor {
                     IntentFilter filter = new IntentFilter();
                     filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
                     mReceiver = new LocalReceiver();
-                    mPetContext.getActivity().registerReceiver(mReceiver, filter);
+                    mEvaContext.getActivity().registerReceiver(mReceiver, filter);
                 }
             } else {
                 if (mReceiver != null) {
-                    mPetContext.getActivity().unregisterReceiver(mReceiver);
+                    mEvaContext.getActivity().unregisterReceiver(mReceiver);
                     mReceiver = null;
                 }
             }

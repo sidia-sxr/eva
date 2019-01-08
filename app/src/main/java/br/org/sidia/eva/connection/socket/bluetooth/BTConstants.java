@@ -20,6 +20,6 @@ package br.org.sidia.eva.connection.socket.bluetooth;
 import java.util.UUID;
 
 public interface BTConstants {
-    String SOCKET_SERVER_NAME = "ar-pet-server";
+    String SOCKET_SERVER_NAME = "eva-server";
     UUID SOCKET_SERVER_UUID = UUID.fromString("9336bd0a-46f1-4f6c-9e05-448013506e85");
 }

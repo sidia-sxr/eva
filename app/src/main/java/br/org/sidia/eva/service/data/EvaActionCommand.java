@@ -15,11 +15,29 @@
  *
  */
 
-package br.org.sidia.eva.manager.connection;
+package br.org.sidia.eva.service.data;
 
-import br.org.sidia.eva.manager.connection.event.PetConnectionEvent;
+import br.org.sidia.eva.movement.EvaActionType;
 
-@FunctionalInterface
-public interface PetConnectionEventHandler {
-    void handleEvent(PetConnectionEvent event);
+public class EvaActionCommand implements Command {
+
+    @EvaActionType
+    private int type;
+
+    public EvaActionCommand(@EvaActionType int type) {
+        this.type = type;
+    }
+
+    @EvaActionType
+    @Override
+    public Integer getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+        return "EvaActionCommand{" +
+                "type=" + type +
+                '}';
+    }
 }

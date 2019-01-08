@@ -24,14 +24,14 @@ import android.view.ViewGroup;
 import com.samsungxr.SXRRenderData;
 import com.samsungxr.SXRScene;
 import com.samsungxr.animation.SXROpacityAnimation;
-import br.org.sidia.eva.constant.PetConstants;
-import br.org.sidia.eva.mode.BasePetView;
+import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.mode.BaseEvaView;
 import com.samsungxr.nodes.SXRViewNode;
 
-public class ViewInitialMessage extends BasePetView {
+public class ViewInitialMessage extends BaseEvaView {
     private SXRViewNode mViewInitialMessage;
 
-    public ViewInitialMessage(PetContext context) {
+    public ViewInitialMessage(EvaContext context) {
         super(context);
 
         onInit();
@@ -44,7 +44,7 @@ public class ViewInitialMessage extends BasePetView {
         mAnimation.setOnFinish(sxrAnimation -> {
             mainScene.getMainCameraRig().addChildObject(mViewInitialMessage);
         });
-        mAnimation.start(mPetContext.getSXRContext().getAnimationEngine());
+        mAnimation.start(mEvaContext.getSXRContext().getAnimationEngine());
         setEnable(true);
     }
 
@@ -55,18 +55,18 @@ public class ViewInitialMessage extends BasePetView {
         mAnimation.setOnFinish(sxrAnimation -> {
             mainScene.getMainCameraRig().removeChildObject(mViewInitialMessage);
         });
-        mAnimation.start(mPetContext.getSXRContext().getAnimationEngine());
+        mAnimation.start(mEvaContext.getSXRContext().getAnimationEngine());
         setEnable(false);
     }
 
 
     private void onInit() {
         final DisplayMetrics metrics = new DisplayMetrics();
-        mPetContext.getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-        ViewGroup view = (ViewGroup) View.inflate(mPetContext.getActivity(), R.layout.view_initial_message  ,null);
+        mEvaContext.getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        ViewGroup view = (ViewGroup) View.inflate(mEvaContext.getActivity(), R.layout.view_initial_message  ,null);
         view.setLayoutParams(new ViewGroup.LayoutParams(metrics.widthPixels, metrics.heightPixels));
-        mViewInitialMessage = new SXRViewNode(mPetContext.getSXRContext(), view);
-        mViewInitialMessage.setTextureBufferSize(PetConstants.TEXTURE_BUFFER_SIZE);
+        mViewInitialMessage = new SXRViewNode(mEvaContext.getSXRContext(), view);
+        mViewInitialMessage.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
         mViewInitialMessage.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
         mViewInitialMessage.getTransform().setPosition(0f, 0f, -0.74f);
     }

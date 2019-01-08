@@ -56,18 +56,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8.2dp"
-                android:layout_toEndOf="@id/ic_pet"
+                android:layout_toEndOf="@id/ic_eva"
                 android:fontFamily="@font/roboto_bold"
                 android:gravity="center"
                 android:text="@string/sxr"
                 android:textColor="#ffffff" />
 
             <ImageView
-                android:id="@+id/ic_pet"
+                android:id="@+id/ic_eva"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_pet"
+                android:src="@drawable/ic_eva"
                 tools:ignore="ContentDescription" />
 
         </RelativeLayout>

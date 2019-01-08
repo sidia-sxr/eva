@@ -15,29 +15,29 @@
  *
  */
 
-package br.org.sidia.eva.service.data;
+package br.org.sidia.eva.manager.connection.event;
 
-import br.org.sidia.eva.movement.PetActionType;
+import br.org.sidia.eva.manager.connection.EventType;
 
-public class PetActionCommand implements Command {
+import java.io.Serializable;
 
-    @PetActionType
+public class EvaConnectionEvent {
+
+    @EventType
     private int type;
+    private Serializable data;
 
-    public PetActionCommand(@PetActionType int type) {
+    public EvaConnectionEvent(@EventType int type, Serializable data) {
         this.type = type;
+        this.data = data;
     }
 
-    @PetActionType
-    @Override
-    public Integer getType() {
+    @EventType
+    public int getType() {
         return type;
     }
 
-    @Override
-    public String toString() {
-        return "PetActionCommand{" +
-                "type=" + type +
-                '}';
+    public Serializable getData() {
+        return data;
     }
 }

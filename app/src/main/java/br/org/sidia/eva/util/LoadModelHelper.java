@@ -26,30 +26,30 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class LoadModelHelper {
-    public static String PET_GRAB_PIVOT = "m_DnLip_JNT";
+    public static String EVA_GRAB_PIVOT = "m_DnLip_JNT";
 
-    public static String PET_MODEL_PATH = "objects/pet_model.dae";
+    public static String EVA_MODEL_PATH = "objects/eva_model.dae";
     public static String BALL_MODEL_PATH = "objects/bone_model.fbx";
     public static String BED_MODEL_PATH = "objects/bed.fbx";
     public static String BOWL_MODEL_PATH = "objects/bowl.fbx";
     public static String HYDRANT_MODEL_PATH = "objects/hydrant.fbx";
 
-    public static String PET_BONES_MAP_PATH = "objects/anim/pet_skeleton_map.txt";
-    public static String[] PET_ANIMATIONS_PATH = {
-            "objects/anim/pet_anim_idle.bvh",          // 0
-            "objects/anim/pet_anim_walk.bvh",          // 1
-            "objects/anim/pet_anim_run.bvh",           // 2
-            "objects/anim/pet_bone_anim_walk.bvh",     // 3
-            "objects/anim/pet_bone_anim_grab.bvh",     // 4
-            "objects/anim/pet_anim_drink_enter.bvh",   // 5
-            "objects/anim/pet_anim_drink_exit.bvh",    // 6
-            "objects/anim/pet_anim_drink_loop.bvh",    // 7
-            "objects/anim/pet_anim_hydrant_enter.bvh", // 8
-            "objects/anim/pet_anim_hydrant_exit.bvh",  // 9
-            "objects/anim/pet_anim_hydrant_loop.bvh",  // 10
-            "objects/anim/pet_anim_sleep_enter.bvh",   // 11
-            "objects/anim/pet_anim_sleep_exit.bvh",    // 12
-            "objects/anim/pet_anim_sleep_loop.bvh"     // 13
+    public static String EVA_BONES_MAP_PATH = "objects/anim/eva_skeleton_map.txt";
+    public static String[] EVA_ANIMATIONS_PATH = {
+            "objects/anim/eva_anim_idle.bvh",          // 0
+            "objects/anim/eva_anim_walk.bvh",          // 1
+            "objects/anim/eva_anim_run.bvh",           // 2
+            "objects/anim/eva_bone_anim_walk.bvh",     // 3
+            "objects/anim/eva_bone_anim_grab.bvh",     // 4
+            "objects/anim/eva_anim_drink_enter.bvh",   // 5
+            "objects/anim/eva_anim_drink_exit.bvh",    // 6
+            "objects/anim/eva_anim_drink_loop.bvh",    // 7
+            "objects/anim/eva_anim_hydrant_enter.bvh", // 8
+            "objects/anim/eva_anim_hydrant_exit.bvh",  // 9
+            "objects/anim/eva_anim_hydrant_loop.bvh",  // 10
+            "objects/anim/eva_anim_sleep_enter.bvh",   // 11
+            "objects/anim/eva_anim_sleep_exit.bvh",    // 12
+            "objects/anim/eva_anim_sleep_loop.bvh"     // 13
     };
 
     public static SXRNode loadModelSceneObject(SXRContext sxrContext, String modelPath) {

@@ -20,47 +20,48 @@ import android.content.res.Configuration;
 import android.util.Log;
 
 import com.samsungxr.SXRCameraRig;
-import br.org.sidia.eva.PetContext;
+
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.character.CharacterController;
 import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.mainview.IAboutView;
 import br.org.sidia.eva.mainview.ICleanView;
 import br.org.sidia.eva.mainview.MainViewController;
-import br.org.sidia.eva.manager.connection.PetConnectionManager;
-import br.org.sidia.eva.manager.connection.event.PetConnectionEvent;
-import br.org.sidia.eva.movement.IPetAction;
-import br.org.sidia.eva.movement.PetActions;
+import br.org.sidia.eva.manager.connection.EvaConnectionManager;
+import br.org.sidia.eva.manager.connection.event.EvaConnectionEvent;
+import br.org.sidia.eva.movement.IEvaAction;
+import br.org.sidia.eva.movement.EvaActions;
 import br.org.sidia.eva.service.share.SharedMixedReality;
 import br.org.sidia.eva.util.EventBusUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
 
-public class HudMode extends BasePetMode {
+public class HudMode extends BaseEvaMode {
     private OnModeChange mModeChangeListener;
     private HudView mHudView;
     private MainViewController mMainViewController = null;
 
-    private PetConnectionManager mConnectionManager;
+    private EvaConnectionManager mConnectionManager;
     private SharedMixedReality mSharedMixedReality;
-    private CharacterController mPetController;
+    private CharacterController mEvaController;
     private VirtualObjectController mVirtualObjectController;
 
-    public HudMode(PetContext petContext, CharacterController petController, OnModeChange listener) {
-        super(petContext, new HudView(petContext));
+    public HudMode(EvaContext evaContext, CharacterController evaController, OnModeChange listener) {
+        super(evaContext, new HudView(evaContext));
         mModeChangeListener = listener;
-        mPetController = petController;
+        mEvaController = evaController;
 
         mHudView = (HudView) mModeScene;
         mHudView.setListener(new OnHudItemClickedHandler());
         mHudView.setDisconnectListener(new OnDisconnectClickedHandler());
 
-        mConnectionManager = (PetConnectionManager) PetConnectionManager.getInstance();
-        mSharedMixedReality = petContext.getMixedReality();
+        mConnectionManager = (EvaConnectionManager) EvaConnectionManager.getInstance();
+        mSharedMixedReality = evaContext.getMixedReality();
 
-        mVirtualObjectController = new VirtualObjectController(petContext, petController);
+        mVirtualObjectController = new VirtualObjectController(evaContext, evaController);
     }
 
     @Override
@@ -76,12 +77,12 @@ public class HudMode extends BasePetMode {
 
     @Override
     protected void onHandleOrientation(SXRCameraRig cameraRig) {
-        if (mPetController.isPlaying()) {
+        if (mEvaController.isPlaying()) {
             float rotationRoll = cameraRig.getTransform().getRotationRoll();
             if (rotationRoll <= -89.0f || rotationRoll >= 89.0f) {
-                mPetContext.getBallThrowHandlerHandler().rotateBone(Configuration.ORIENTATION_PORTRAIT);
+                mEvaContext.getBallThrowHandlerHandler().rotateBone(Configuration.ORIENTATION_PORTRAIT);
             } else {
-                mPetContext.getBallThrowHandlerHandler().rotateBone(Configuration.ORIENTATION_LANDSCAPE);
+                mEvaContext.getBallThrowHandlerHandler().rotateBone(Configuration.ORIENTATION_LANDSCAPE);
             }
         }
     }
@@ -91,21 +92,21 @@ public class HudMode extends BasePetMode {
         @Override
         public void onBoneClicked() {
             mVirtualObjectController.hideObject();
-            if (mPetController.isPlaying()) {
-                mPetController.stopBone();
+            if (mEvaController.isPlaying()) {
+                mEvaController.stopBone();
                 Log.d(TAG, "Stop Bone");
             } else {
-                mPetController.playBone();
+                mEvaController.playBone();
                 Log.d(TAG, "Play Bone");
             }
-            mPetController.setCurrentAction(PetActions.IDLE.ID);
+            mEvaController.setCurrentAction(EvaActions.IDLE.ID);
         }
 
         @Override
         public void onBedClicked() {
             Log.d(TAG, "Action: go to bed");
-            if (mPetController.isPlaying()) {
-                mPetController.stopBone();
+            if (mEvaController.isPlaying()) {
+                mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
             mVirtualObjectController.showObject(EvaObjectType.BED);
@@ -114,8 +115,8 @@ public class HudMode extends BasePetMode {
         @Override
         public void onHydrantClicked() {
             Log.d(TAG, "Action: go to hydrant");
-            if (mPetController.isPlaying()) {
-                mPetController.stopBone();
+            if (mEvaController.isPlaying()) {
+                mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
             mVirtualObjectController.showObject(EvaObjectType.HYDRANT);
@@ -124,8 +125,8 @@ public class HudMode extends BasePetMode {
         @Override
         public void onBowlClicked() {
             Log.d(TAG, "Action: go to bowl");
-            if (mPetController.isPlaying()) {
-                mPetController.stopBone();
+            if (mEvaController.isPlaying()) {
+                mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
             mVirtualObjectController.showObject(EvaObjectType.BOWL);
@@ -152,7 +153,7 @@ public class HudMode extends BasePetMode {
         @Override
         public void onConnectedClicked() {
             Log.d(TAG, "Connected label clicked");
-            mPetContext.getActivity().runOnUiThread(() -> {
+            mEvaContext.getActivity().runOnUiThread(() -> {
                 mHudView.showDisconnectView(mConnectionManager.getConnectionMode());
                 mHudView.hideConnectedLabel();
             });
@@ -167,22 +168,22 @@ public class HudMode extends BasePetMode {
 
     private void showCleanView() {
         if (mMainViewController == null) {
-            mMainViewController = new MainViewController(mPetContext);
-            mMainViewController.onShow(mPetContext.getMainScene());
+            mMainViewController = new MainViewController(mEvaContext);
+            mMainViewController.onShow(mEvaContext.getMainScene());
             ICleanView iCleanView = mMainViewController.makeView(ICleanView.class);
 
             iCleanView.setOnCancelClickListener(view -> {
                 if (mMainViewController != null) {
-                    mMainViewController.onHide(mPetContext.getMainScene());
+                    mMainViewController.onHide(mEvaContext.getMainScene());
                     mMainViewController = null;
                 }
             });
             iCleanView.setOnConfirmClickListener(view -> {
                 Log.d(TAG, "Cleaning scene");
-                mPetController.exit();
-                mPetContext.getPlaneHandler().resetPlanes();
+                mEvaController.exit();
+                mEvaContext.getPlaneHandler().resetPlanes();
                 if (mMainViewController != null) {
-                    mMainViewController.onHide(mPetContext.getMainScene());
+                    mMainViewController.onHide(mEvaContext.getMainScene());
                     mMainViewController = null;
                 }
             });
@@ -197,13 +198,13 @@ public class HudMode extends BasePetMode {
 
     private void showAboutView() {
         if (mMainViewController == null) {
-            mMainViewController = new MainViewController(mPetContext);
-            mMainViewController.onShow(mPetContext.getMainScene());
+            mMainViewController = new MainViewController(mEvaContext);
+            mMainViewController.onShow(mEvaContext.getMainScene());
             IAboutView iAboutView = mMainViewController.makeView(IAboutView.class);
 
             iAboutView.setBackClickListener(view -> {
                 if (mMainViewController != null) {
-                    mMainViewController.onHide(mPetContext.getMainScene());
+                    mMainViewController.onHide(mEvaContext.getMainScene());
                     mMainViewController = null;
                 }
             });
@@ -215,7 +216,7 @@ public class HudMode extends BasePetMode {
     private class OnDisconnectClickedHandler implements OnDisconnectClicked {
         @Override
         public void onCancel() {
-            mPetContext.getActivity().runOnUiThread(() -> {
+            mEvaContext.getActivity().runOnUiThread(() -> {
                 mHudView.hideDisconnectView();
                 mHudView.showConnectedLabel();
             });
@@ -223,25 +224,25 @@ public class HudMode extends BasePetMode {
 
         @Override
         public void onDisconnect() {
-            petExit();
+            evaExit();
             mSharedMixedReality.stopSharing();
             mConnectionManager.disconnect();
-            mPetContext.getActivity().runOnUiThread(() -> {
+            mEvaContext.getActivity().runOnUiThread(() -> {
                 mHudView.hideDisconnectView();
                 mHudView.hideConnectedLabel();
                 mHudView.setStateInActionButtons();
                 mHudView.setStateInMenuButtons();
             });
-            mPetController.stopBone();
+            mEvaController.stopBone();
         }
     }
 
     @SuppressLint("SwitchIntDef")
     @Subscribe
-    public void handleConnectionEvent(PetConnectionEvent message) {
+    public void handleConnectionEvent(EvaConnectionEvent message) {
         if (message.getType() == EVENT_ALL_CONNECTIONS_LOST) {
-            petExit();
-            mPetContext.getActivity().runOnUiThread(() -> {
+            evaExit();
+            mEvaContext.getActivity().runOnUiThread(() -> {
                 mHudView.hideDisconnectView();
                 mHudView.hideConnectedLabel();
                 mHudView.setStateInActionButtons();
@@ -251,17 +252,17 @@ public class HudMode extends BasePetMode {
     }
 
     @Subscribe
-    public void onPetActionChanged(IPetAction action) {
-        if (action.id() == PetActions.IDLE.ID) {
+    public void onEvaActionChanged(IEvaAction action) {
+        if (action.id() == EvaActions.IDLE.ID) {
             mVirtualObjectController.hideObject();
         }
     }
 
-    private void petExit() {
-        if (mPetContext.getMode() == PetConstants.SHARE_MODE_GUEST) {
+    private void evaExit() {
+        if (mEvaContext.getMode() == EvaConstants.SHARE_MODE_GUEST) {
             //TODO: after finish the sharing anchor experience as guest, the scene will be reseted
-            // and the user should be notified to detect planes and positioning the pet again
-            mPetController.exit();
+            // and the user should be notified to detect planes and positioning the Eva again
+            mEvaController.exit();
         }
     }
 

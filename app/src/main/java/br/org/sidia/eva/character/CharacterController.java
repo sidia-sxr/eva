@@ -24,17 +24,17 @@ import com.samsungxr.SXRDrawFrameListener;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRTransform;
 import br.org.sidia.eva.BallThrowHandler;
-import br.org.sidia.eva.PetContext;
-import br.org.sidia.eva.constant.PetConstants;
-import br.org.sidia.eva.mode.BasePetMode;
+import br.org.sidia.eva.EvaContext;
+import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.mode.BaseEvaMode;
 import br.org.sidia.eva.mode.ILoadEvents;
-import br.org.sidia.eva.movement.IPetAction;
-import br.org.sidia.eva.movement.PetActionType;
-import br.org.sidia.eva.movement.PetActions;
+import br.org.sidia.eva.movement.IEvaAction;
+import br.org.sidia.eva.movement.EvaActionType;
+import br.org.sidia.eva.movement.EvaActions;
 import br.org.sidia.eva.service.IMessageService;
 import br.org.sidia.eva.service.MessageService;
-import br.org.sidia.eva.service.data.PetActionCommand;
-import br.org.sidia.eva.service.event.PetActionCommandReceivedMessage;
+import br.org.sidia.eva.service.data.EvaActionCommand;
+import br.org.sidia.eva.service.event.EvaActionCommandReceivedMessage;
 import br.org.sidia.eva.service.share.SharedMixedReality;
 import br.org.sidia.eva.util.EventBusUtils;
 import com.samsungxr.utility.Log;
@@ -42,10 +42,10 @@ import com.samsungxr.utility.Log;
 import org.greenrobot.eventbus.Subscribe;
 import org.joml.Vector2f;
 
-public class CharacterController extends BasePetMode {
+public class CharacterController extends BaseEvaMode {
 
-    private IPetAction mCurrentAction = null; // default action IDLE
-    private final SparseArray<IPetAction> mPetActions;
+    private IEvaAction mCurrentAction = null; // default action IDLE
+    private final SparseArray<IEvaAction> mEvaActions;
     private SXRDrawFrameListener mDrawFrameHandler;
     private BallThrowHandler mBallThrowHandler;
 
@@ -57,26 +57,26 @@ public class CharacterController extends BasePetMode {
     private SXRNode mBowlTarget;
     private SXRNode mHydrantNode;
 
-    public CharacterController(PetContext petContext) {
-        super(petContext, new CharacterView(petContext));
+    public CharacterController(EvaContext evaContext) {
+        super(evaContext, new CharacterView(evaContext));
 
-        mPetActions = new SparseArray<>();
+        mEvaActions = new SparseArray<>();
         mDrawFrameHandler = null;
-        mMixedReality = mPetContext.getMixedReality();
-        mBallThrowHandler = petContext.getBallThrowHandlerHandler();
+        mMixedReality = mEvaContext.getMixedReality();
+        mBallThrowHandler = evaContext.getBallThrowHandlerHandler();
 
         mMessageService = MessageService.getInstance();
 
-        mBedTarget = new SXRNode(petContext.getSXRContext());
-        mBowlTarget = new SXRNode(petContext.getSXRContext());
-        mHydrantNode = new SXRNode(petContext.getSXRContext());
+        mBedTarget = new SXRNode(evaContext.getSXRContext());
+        mBowlTarget = new SXRNode(evaContext.getSXRContext());
+        mHydrantNode = new SXRNode(evaContext.getSXRContext());
 
-        initPet((CharacterView) mModeScene);
+        initEva((CharacterView) mModeScene);
     }
 
     @Subscribe
-    public void handleReceivedMessage(PetActionCommandReceivedMessage message) {
-        onSetCurrentAction(message.getPetActionCommand().getType());
+    public void handleReceivedMessage(EvaActionCommandReceivedMessage message) {
+        onSetCurrentAction(message.getEvaActionCommand().getType());
     }
 
     @Override
@@ -107,88 +107,88 @@ public class CharacterController extends BasePetMode {
     protected void onHandleOrientation(SXRCameraRig cameraRig) {
     }
 
-    private void initPet(CharacterView pet) {
-        addAction(new PetActions.IDLE(mPetContext, pet));
+    private void initEva(CharacterView eva) {
+        addAction(new EvaActions.IDLE(mEvaContext, eva));
 
-        addAction(new PetActions.TO_BALL(pet, mBallThrowHandler.getBall(), (action, success) -> {
+        addAction(new EvaActions.TO_BALL(eva, mBallThrowHandler.getBall(), (action, success) -> {
             if (success) {
-                setCurrentAction(PetActions.GRAB.ID);
+                setCurrentAction(EvaActions.GRAB.ID);
             } else {
-                setCurrentAction(PetActions.IDLE.ID);
+                setCurrentAction(EvaActions.IDLE.ID);
             }
         }));
 
-        addAction(new PetActions.TO_PLAYER(pet, mPetContext.getPlayer(), (action, success) -> {
-            setCurrentAction(PetActions.IDLE.ID);
+        addAction(new EvaActions.TO_PLAYER(eva, mEvaContext.getPlayer(), (action, success) -> {
+            setCurrentAction(EvaActions.IDLE.ID);
         }));
 
-        addAction(new PetActions.GRAB(pet, mBallThrowHandler.getBall(), (action, success) -> {
-            setCurrentAction(PetActions.TO_PLAYER.ID);
+        addAction(new EvaActions.GRAB(eva, mBallThrowHandler.getBall(), (action, success) -> {
+            setCurrentAction(EvaActions.TO_PLAYER.ID);
 
         }));
 
-        addAction(new PetActions.TO_TAP(pet, pet.getTapObject(), (action, success) -> {
-            setCurrentAction(PetActions.IDLE.ID);
+        addAction(new EvaActions.TO_TAP(eva, eva.getTapObject(), (action, success) -> {
+            setCurrentAction(EvaActions.IDLE.ID);
         }));
 
-        addAction(new PetActions.TO_BED(pet, mBedTarget, (action, success) -> setCurrentAction(PetActions.SLEEP_ENTER.ID)));
+        addAction(new EvaActions.TO_BED(eva, mBedTarget, (action, success) -> setCurrentAction(EvaActions.SLEEP_ENTER.ID)));
 
-        addAction(new PetActions.TO_BOWL(pet, mBowlTarget, (action, success) -> setCurrentAction(PetActions.DRINK_ENTER.ID)));
+        addAction(new EvaActions.TO_BOWL(eva, mBowlTarget, (action, success) -> setCurrentAction(EvaActions.DRINK_ENTER.ID)));
 
-        addAction(new PetActions.TO_HYDRANT(pet, mHydrantNode, (action, success) -> setCurrentAction(PetActions.HYDRANT_ENTER.ID)));
+        addAction(new EvaActions.TO_HYDRANT(eva, mHydrantNode, (action, success) -> setCurrentAction(EvaActions.HYDRANT_ENTER.ID)));
 
-        addAction(new PetActions.DRINK_ENTER(pet, mBowlTarget, (action, success) -> setCurrentAction(PetActions.DRINK_LOOP.ID)));
+        addAction(new EvaActions.DRINK_ENTER(eva, mBowlTarget, (action, success) -> setCurrentAction(EvaActions.DRINK_LOOP.ID)));
 
-        addAction(new PetActions.DRINK_EXIT(pet, mBowlTarget, (action, success) -> {
+        addAction(new EvaActions.DRINK_EXIT(eva, mBowlTarget, (action, success) -> {
             ((CharacterView) mModeScene).setTapPosition(0, 0, 0);
-            setCurrentAction(PetActions.TO_TAP.ID);
+            setCurrentAction(EvaActions.TO_TAP.ID);
         }));
 
-        addAction(new PetActions.DRINK_LOOP(pet, mBowlTarget, (action, success) -> setCurrentAction(PetActions.DRINK_EXIT.ID)));
+        addAction(new EvaActions.DRINK_LOOP(eva, mBowlTarget, (action, success) -> setCurrentAction(EvaActions.DRINK_EXIT.ID)));
 
-        addAction(new PetActions.HYDRANT_ENTER(pet, mHydrantNode, (action, success) -> setCurrentAction(PetActions.HYDRANT_LOOP.ID)));
+        addAction(new EvaActions.HYDRANT_ENTER(eva, mHydrantNode, (action, success) -> setCurrentAction(EvaActions.HYDRANT_LOOP.ID)));
 
-        addAction(new PetActions.HYDRANT_EXIT(pet, mHydrantNode, (action, success) -> {
+        addAction(new EvaActions.HYDRANT_EXIT(eva, mHydrantNode, (action, success) -> {
             ((CharacterView) mModeScene).setTapPosition(0, 0, 0);
-            setCurrentAction(PetActions.TO_TAP.ID);
+            setCurrentAction(EvaActions.TO_TAP.ID);
         }));
 
-        addAction(new PetActions.HYDRANT_LOOP(pet, mHydrantNode, (action, success) -> setCurrentAction(PetActions.HYDRANT_EXIT.ID)));
+        addAction(new EvaActions.HYDRANT_LOOP(eva, mHydrantNode, (action, success) -> setCurrentAction(EvaActions.HYDRANT_EXIT.ID)));
 
-        addAction(new PetActions.SLEEP_ENTER(pet, mBedTarget, (action, success) -> setCurrentAction(PetActions.SLEEP_LOOP.ID)));
+        addAction(new EvaActions.SLEEP_ENTER(eva, mBedTarget, (action, success) -> setCurrentAction(EvaActions.SLEEP_LOOP.ID)));
 
-        addAction(new PetActions.SLEEP_EXIT(pet, mBedTarget, (action, success) -> {
+        addAction(new EvaActions.SLEEP_EXIT(eva, mBedTarget, (action, success) -> {
             ((CharacterView) mModeScene).setTapPosition(0, 0, 0);
-            setCurrentAction(PetActions.TO_TAP.ID);
+            setCurrentAction(EvaActions.TO_TAP.ID);
         }));
 
-        addAction(new PetActions.SLEEP_LOOP(pet, mBedTarget, (action, success) -> {
-            setCurrentAction(PetActions.SLEEP_EXIT.ID);
+        addAction(new EvaActions.SLEEP_LOOP(eva, mBedTarget, (action, success) -> {
+            setCurrentAction(EvaActions.SLEEP_EXIT.ID);
         }));
 
-        addAction(new PetActions.AT_EDIT(mPetContext, pet));
+        addAction(new EvaActions.AT_EDIT(mEvaContext, eva));
 
-        setCurrentAction(PetActions.IDLE.ID);
+        setCurrentAction(EvaActions.IDLE.ID);
     }
 
     public void goToTap(float x, float y, float z) {
         if (mCurrentAction == null
-                || mCurrentAction.id() == PetActions.IDLE.ID
-                || mCurrentAction.id() == PetActions.TO_TAP.ID) {
+                || mCurrentAction.id() == EvaActions.IDLE.ID
+                || mCurrentAction.id() == EvaActions.TO_TAP.ID) {
             Log.d(TAG, "goToTap(%f, %f, %f)", x, y, z);
             ((CharacterView) mModeScene).setTapPosition(x, y, z);
-            setCurrentAction(PetActions.TO_TAP.ID);
+            setCurrentAction(EvaActions.TO_TAP.ID);
         }
     }
 
     public void goToBed(float x, float y, float z) {
         mBedTarget.getTransform().setPosition(x, y, z);
-        setCurrentAction(PetActions.TO_BED.ID);
+        setCurrentAction(EvaActions.TO_BED.ID);
     }
 
     public void goToBowl(float x, float y, float z) {
         mBowlTarget.getTransform().setPosition(x, y, z);
-        setCurrentAction(PetActions.TO_BOWL.ID);
+        setCurrentAction(EvaActions.TO_BOWL.ID);
     }
 
     public void goToHydrant(float x, float y, float z) {
@@ -203,7 +203,7 @@ public class CharacterController extends BasePetMode {
 
         mHydrantNode.getTransform().setPosition(x + perpendicular.x, y, z + perpendicular.y);
 
-        setCurrentAction(PetActions.TO_HYDRANT.ID);
+        setCurrentAction(EvaActions.TO_HYDRANT.ID);
     }
 
     public void playBone() {
@@ -221,79 +221,79 @@ public class CharacterController extends BasePetMode {
     }
 
     public void setPlane(SXRNode plane) {
-        CharacterView petView = (CharacterView) view();
+        CharacterView view = (CharacterView) view();
 
-        petView.setBoundaryPlane(plane);
+        view.setBoundaryPlane(plane);
     }
 
     public SXRNode getPlane() {
-        CharacterView petView = (CharacterView) view();
+        CharacterView view = (CharacterView) view();
 
-        return petView.getBoundaryPlane();
+        return view.getBoundaryPlane();
     }
 
     public CharacterView getView() {
         return (CharacterView) view();
     }
 
-    public void setCurrentAction(@PetActionType int action) {
+    public void setCurrentAction(@EvaActionType int action) {
         onSetCurrentAction(action);
         onSendCurrentAction(action);
     }
 
-    private void onSetCurrentAction(@PetActionType int action) {
-        mCurrentAction = mPetActions.get(action);
+    private void onSetCurrentAction(@EvaActionType int action) {
+        mCurrentAction = mEvaActions.get(action);
 
-        if (mIsPlaying || mPetContext.getMode() == PetConstants.SHARE_MODE_GUEST) {
-            if (mCurrentAction.id() == PetActions.IDLE.ID) {
+        if (mIsPlaying || mEvaContext.getMode() == EvaConstants.SHARE_MODE_GUEST) {
+            if (mCurrentAction.id() == EvaActions.IDLE.ID) {
                 mBallThrowHandler.reset();
-            } if (mCurrentAction.id() == PetActions.GRAB.ID) {
+            } if (mCurrentAction.id() == EvaActions.GRAB.ID) {
                 mBallThrowHandler.disableBallsPhysics();
             }
         }
 
-        if (mCurrentAction != null && action == PetActions.IDLE.ID) {
+        if (mCurrentAction != null && action == EvaActions.IDLE.ID) {
             EventBusUtils.post(mCurrentAction);
         }
     }
 
-    private void onSendCurrentAction(@PetActionType int action) {
-        if (mPetContext.getMode() == PetConstants.SHARE_MODE_HOST) {
-            mMessageService.sendPetActionCommand(new PetActionCommand(action));
+    private void onSendCurrentAction(@EvaActionType int action) {
+        if (mEvaContext.getMode() == EvaConstants.SHARE_MODE_HOST) {
+            mMessageService.sendEvaActionCommand(new EvaActionCommand(action));
         }
     }
 
-    public void addAction(IPetAction action) {
-        mPetActions.put(action.id(), action);
+    public void addAction(IEvaAction action) {
+        mEvaActions.put(action.id(), action);
     }
 
-    public void removeAction(@PetActionType int action) {
-        mPetActions.remove(action);
+    public void removeAction(@EvaActionType int action) {
+        mEvaActions.remove(action);
     }
 
     public void enableActions() {
         if (mDrawFrameHandler == null) {
             Log.w(TAG, "On actions enabled");
             mDrawFrameHandler = new DrawFrameHandler();
-            mPetContext.getSXRContext().registerDrawFrameListener(mDrawFrameHandler);
+            mEvaContext.getSXRContext().registerDrawFrameListener(mDrawFrameHandler);
         }
     }
 
     public void disableActions() {
         if (mDrawFrameHandler != null) {
             Log.w(TAG, "On actions disabled");
-            mPetContext.getSXRContext().unregisterDrawFrameListener(mDrawFrameHandler);
+            mEvaContext.getSXRContext().unregisterDrawFrameListener(mDrawFrameHandler);
             mDrawFrameHandler = null;
         }
     }
 
     public void setInitialScale() {
-        CharacterView petView = (CharacterView) view();
-        petView.setInitialScale();
+        CharacterView view = (CharacterView) view();
+        view.setInitialScale();
     }
 
     private class DrawFrameHandler implements SXRDrawFrameListener {
-        IPetAction activeAction = null;
+        IEvaAction activeAction = null;
 
         @Override
         public void onDrawFrame(float frameTime) {

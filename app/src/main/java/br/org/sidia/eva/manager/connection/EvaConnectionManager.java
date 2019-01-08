@@ -23,7 +23,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.connection.Connection;
 import br.org.sidia.eva.connection.ManagerState;
 import br.org.sidia.eva.connection.Message;
@@ -32,10 +32,10 @@ import br.org.sidia.eva.connection.exception.ConnectionException;
 import br.org.sidia.eva.connection.socket.bluetooth.BTConnectionManager;
 import br.org.sidia.eva.connection.socket.bluetooth.BTDevice;
 import br.org.sidia.eva.connection.socket.bluetooth.BTServerDeviceFinder;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.context.ActivityResultEvent;
 import br.org.sidia.eva.manager.connection.event.MessageReceivedEvent;
-import br.org.sidia.eva.manager.connection.event.PetConnectionEvent;
+import br.org.sidia.eva.manager.connection.event.EvaConnectionEvent;
 import br.org.sidia.eva.util.EventBusUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -43,12 +43,12 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public final class PetConnectionManager extends BTConnectionManager implements IPetConnectionManager {
+public final class EvaConnectionManager extends BTConnectionManager implements IEvaConnectionManager {
 
     private static final int REQUEST_ENABLE_BT = 1000;
     private static final int REQUEST_ENABLE_HOST_VISIBILITY = 1001;
 
-    private PetContext mContext;
+    private EvaContext mContext;
     private BluetoothAdapter mBluetoothAdapter;
     private BTServerDeviceFinder mServerFinder;
     private OnEnableBluetoothCallback mEnableBTCallback;
@@ -56,13 +56,13 @@ public final class PetConnectionManager extends BTConnectionManager implements I
     private DeviceVisibilityMonitor mDeviceVisibilityMonitor;
     private boolean mDisconnectSilently;
 
-    private static volatile PetConnectionManager sInstance;
+    private static volatile EvaConnectionManager sInstance;
 
-    public static IPetConnectionManager getInstance() {
+    public static IEvaConnectionManager getInstance() {
         if (sInstance == null) {
-            synchronized (IPetConnectionManager.class) {
+            synchronized (IEvaConnectionManager.class) {
                 if (sInstance == null) {
-                    sInstance = new PetConnectionManager();
+                    sInstance = new EvaConnectionManager();
                 }
             }
         }
@@ -70,7 +70,7 @@ public final class PetConnectionManager extends BTConnectionManager implements I
     }
 
     @Override
-    public void init(@NonNull PetContext context) {
+    public void init(@NonNull EvaContext context) {
         if (mContext == null) {
             mContext = context;
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -88,9 +88,9 @@ public final class PetConnectionManager extends BTConnectionManager implements I
                 Log.d(TAG, "OK, BT enabled. Request device visible");
                 enableHostVisibility(() -> {
                     Log.d(TAG, "OK, now this device is visible for "
-                            + PetConstants.HOST_VISIBILITY_DURATION + " seconds. Waiting for connections");
+                            + EvaConstants.HOST_VISIBILITY_DURATION + " seconds. Waiting for connections");
                     mDeviceVisibilityMonitor.setEnabled(true);
-                    notifyManagerEvent(PetConnectionManager.EVENT_ON_LISTENING_TO_GUESTS);
+                    notifyManagerEvent(EvaConnectionManager.EVENT_ON_LISTENING_TO_GUESTS);
                     super.startConnectionListener(this::onMessageReceived);
                 });
             });
@@ -261,7 +261,7 @@ public final class PetConnectionManager extends BTConnectionManager implements I
     }
 
     @Override
-    public PetContext getContext() {
+    public EvaContext getContext() {
         return mContext;
     }
 
@@ -289,10 +289,10 @@ public final class PetConnectionManager extends BTConnectionManager implements I
     }
 
     private void notifyManagerEvent(@EventType int type, Serializable data) {
-        if (type == IPetConnectionManager.EVENT_MESSAGE_RECEIVED) {
+        if (type == IEvaConnectionManager.EVENT_MESSAGE_RECEIVED) {
             EventBusUtils.post(new MessageReceivedEvent(data));
         } else {
-            EventBusUtils.post(new PetConnectionEvent(type, data));
+            EventBusUtils.post(new EvaConnectionEvent(type, data));
         }
     }
 
@@ -313,7 +313,7 @@ public final class PetConnectionManager extends BTConnectionManager implements I
         if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
             EventBusUtils.register(this);
             Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, PetConstants.HOST_VISIBILITY_DURATION);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, EvaConstants.HOST_VISIBILITY_DURATION);
             mContext.getActivity().startActivityForResult(discoverableIntent, REQUEST_ENABLE_HOST_VISIBILITY);
         } else {
             EventBusUtils.unregister(this);

@@ -16,29 +16,29 @@ public class PointCloudHandler implements IMixedRealityEvents {
     IMixedReality mMixedReality;
     SXRPointCloud mOldPointCloud;
     SXRNode mPointCloudNode;
-    PetContext mPetContext;
+    EvaContext mEvaContext;
 
-    public PointCloudHandler(PetContext petContext) {
-        mPetContext = petContext;
+    public PointCloudHandler(EvaContext evaContext) {
+        mEvaContext = evaContext;
 
-        SXRMaterial mat = new SXRMaterial(petContext.getSXRContext(),
+        SXRMaterial mat = new SXRMaterial(evaContext.getSXRContext(),
                 new SXRShaderId(SXRPointCloudShader.class));
         mat.setVec3("u_color", 0.94f,0.61f,1f);
 
-        SXRRenderData renderData = new SXRRenderData(petContext.getSXRContext());
+        SXRRenderData renderData = new SXRRenderData(evaContext.getSXRContext());
         renderData.setDrawMode(GLES30.GL_POINTS);
         renderData.setMaterial(mat);
 
-        mPointCloudNode = new SXRNode(petContext.getSXRContext());
+        mPointCloudNode = new SXRNode(evaContext.getSXRContext());
         mPointCloudNode.attachComponent(renderData);
     }
 
     public void addOnScene() {
-        mPetContext.getMainScene().addNode(mPointCloudNode);
+        mEvaContext.getMainScene().addNode(mPointCloudNode);
     }
 
     public void removeFromScene() {
-        mPetContext.getMainScene().removeNode(mPointCloudNode);
+        mEvaContext.getMainScene().removeNode(mPointCloudNode);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class PointCloudHandler implements IMixedRealityEvents {
     public void onMixedRealityUpdate(IMixedReality iMixedReality) {
         SXRPointCloud newPointCloud = mMixedReality.acquirePointCloud();
         if (mOldPointCloud != newPointCloud) {
-            SXRMesh mesh = new SXRMesh(mPetContext.getSXRContext());
+            SXRMesh mesh = new SXRMesh(mEvaContext.getSXRContext());
             mesh.setVertices(newPointCloud.getPoints());
             mPointCloudNode.getRenderData().setMesh(mesh);
 

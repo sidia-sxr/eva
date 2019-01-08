@@ -15,11 +15,19 @@
  *
  */
 
-package br.org.sidia.eva.movement;
+package br.org.sidia.eva.service.event;
 
-public interface IPetAction {
-    int id();
-    void entry();
-    void exit();
-    void run(float frameTime);
+import br.org.sidia.eva.service.data.EvaActionCommand;
+
+public class EvaActionCommandReceivedMessage extends ReceivedMessage {
+
+    private EvaActionCommand evaActionCommand;
+
+    public EvaActionCommandReceivedMessage(EvaActionCommand evaActionCommand) {
+        this.evaActionCommand = evaActionCommand;
+    }
+
+    public EvaActionCommand getEvaActionCommand() {
+        return evaActionCommand;
+    }
 }

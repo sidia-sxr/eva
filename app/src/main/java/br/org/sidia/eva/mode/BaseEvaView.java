@@ -17,15 +17,16 @@ package br.org.sidia.eva.mode;
 
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRScene;
-import br.org.sidia.eva.PetContext;
 
-public abstract class BasePetView extends SXRNode implements IPetView {
-    protected final PetContext mPetContext;
+import br.org.sidia.eva.EvaContext;
+
+public abstract class BaseEvaView extends SXRNode implements IEvaView {
+    protected final EvaContext mEvaContext;
     protected ILoadEvents mLoadListener;
 
-    public BasePetView(PetContext petContext) {
-        super(petContext.getSXRContext());
-        mPetContext = petContext;
+    public BaseEvaView(EvaContext evaContext) {
+        super(evaContext.getSXRContext());
+        mEvaContext = evaContext;
     }
 
     @Override

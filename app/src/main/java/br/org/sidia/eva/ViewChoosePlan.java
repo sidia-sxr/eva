@@ -23,13 +23,13 @@ import com.samsungxr.SXRPerspectiveCamera;
 import com.samsungxr.SXRScene;
 import com.samsungxr.SXRTexture;
 import com.samsungxr.animation.SXROpacityAnimation;
-import br.org.sidia.eva.mode.BasePetView;
+import br.org.sidia.eva.mode.BaseEvaView;
 
-public class ViewChoosePlan extends BasePetView {
+public class ViewChoosePlan extends BaseEvaView {
     private SXRNode mViewChoosePlan;
 
-    public ViewChoosePlan(PetContext petContext) {
-        super(petContext);
+    public ViewChoosePlan(EvaContext evaContext) {
+        super(evaContext);
 
         onInit();
     }
@@ -39,9 +39,9 @@ public class ViewChoosePlan extends BasePetView {
         SXROpacityAnimation mAnimation;
         mAnimation = new SXROpacityAnimation(mViewChoosePlan, .8f, 1);
         mAnimation.setOnFinish(sxrAnimation -> {
-            mPetContext.getMainScene().getMainCameraRig().addChildObject(mViewChoosePlan);
+            mEvaContext.getMainScene().getMainCameraRig().addChildObject(mViewChoosePlan);
         });
-        mAnimation.start(mPetContext.getSXRContext().getAnimationEngine());
+        mAnimation.start(mEvaContext.getSXRContext().getAnimationEngine());
         setEnable(true);
     }
 
@@ -52,13 +52,13 @@ public class ViewChoosePlan extends BasePetView {
         mAnimation.setOnFinish(sxrAnimation -> {
             mainScene.getMainCameraRig().removeChildObject(mViewChoosePlan);
         });
-        mAnimation.start(mPetContext.getSXRContext().getAnimationEngine());
+        mAnimation.start(mEvaContext.getSXRContext().getAnimationEngine());
         setEnable(false);
     }
 
 
     private void onInit() {
-        final SXRPerspectiveCamera cam = mPetContext.getMainScene().getMainCameraRig().getCenterCamera();
+        final SXRPerspectiveCamera cam = mEvaContext.getMainScene().getMainCameraRig().getCenterCamera();
         final float aspect = cam.getAspectRatio();
         final double fov = Math.toRadians(cam.getFovY());
         final float z = 1.0f;
@@ -66,8 +66,8 @@ public class ViewChoosePlan extends BasePetView {
         final float w = aspect * h;
 
 
-        SXRTexture tex = mPetContext.getSXRContext().getAssetLoader().loadTexture(new SXRAndroidResource(mPetContext.getSXRContext(), R.drawable.view_tap_plane));
-        mViewChoosePlan = new SXRNode(mPetContext.getSXRContext(), 0.8f * w, 1 * h);
+        SXRTexture tex = mEvaContext.getSXRContext().getAssetLoader().loadTexture(new SXRAndroidResource(mEvaContext.getSXRContext(), R.drawable.view_tap_plane));
+        mViewChoosePlan = new SXRNode(mEvaContext.getSXRContext(), 0.8f * w, 1 * h);
         mViewChoosePlan.getRenderData().getMaterial().setMainTexture(tex);
         mViewChoosePlan.getTransform().setPosition(0.0f, -0.12f, -z);
     }

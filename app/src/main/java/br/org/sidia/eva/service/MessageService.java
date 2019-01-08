@@ -21,16 +21,16 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import br.org.sidia.eva.manager.cloud.anchor.CloudAnchor;
-import br.org.sidia.eva.manager.connection.IPetConnectionManager;
-import br.org.sidia.eva.manager.connection.PetConnectionManager;
+import br.org.sidia.eva.manager.connection.IEvaConnectionManager;
+import br.org.sidia.eva.manager.connection.EvaConnectionManager;
 import br.org.sidia.eva.manager.connection.event.MessageReceivedEvent;
 import br.org.sidia.eva.service.data.BallCommand;
-import br.org.sidia.eva.service.data.PetActionCommand;
+import br.org.sidia.eva.service.data.EvaActionCommand;
 import br.org.sidia.eva.service.data.RequestStatus;
 import br.org.sidia.eva.service.data.ViewCommand;
 import br.org.sidia.eva.service.event.BallCommandReceivedMessage;
-import br.org.sidia.eva.service.event.PetActionCommandReceivedMessage;
-import br.org.sidia.eva.service.event.PetAnchorReceivedMessage;
+import br.org.sidia.eva.service.event.EvaActionCommandReceivedMessage;
+import br.org.sidia.eva.service.event.EvaAnchorReceivedMessage;
 import br.org.sidia.eva.service.event.ReceivedMessage;
 import br.org.sidia.eva.service.event.RequestStatusReceivedMessage;
 import br.org.sidia.eva.service.event.UpdatePosesReceivedMessage;
@@ -49,15 +49,15 @@ public final class MessageService implements IMessageService {
 
     private static final String TAG = MessageService.class.getSimpleName();
 
-    private IPetConnectionManager mConnectionManager;
+    private IEvaConnectionManager mConnectionManager;
 
     private static Map<String, Class> mReceivedMessageTypes = new HashMap<>();
 
     static {
-        mReceivedMessageTypes.put(MESSAGE_TYPE_PET_ANCHOR, PetAnchorReceivedMessage.class);
+        mReceivedMessageTypes.put(MESSAGE_TYPE_EVA_ANCHOR, EvaAnchorReceivedMessage.class);
         mReceivedMessageTypes.put(MESSAGE_TYPE_VIEW_COMMAND, ViewCommandReceivedMessage.class);
         mReceivedMessageTypes.put(MESSAGE_TYPE_BALL_COMMAND, BallCommandReceivedMessage.class);
-        mReceivedMessageTypes.put(MESSAGE_TYPE_PET_ACTION_COMMAND, PetActionCommandReceivedMessage.class);
+        mReceivedMessageTypes.put(MESSAGE_TYPE_EVA_ACTION_COMMAND, EvaActionCommandReceivedMessage.class);
         mReceivedMessageTypes.put(MESSAGE_TYPE_UPDATE_POSES, UpdatePosesReceivedMessage.class);
         mReceivedMessageTypes.put(MESSAGE_TYPE_REQUEST_STATUS, RequestStatusReceivedMessage.class);
     }
@@ -68,7 +68,7 @@ public final class MessageService implements IMessageService {
 
     private MessageService() {
         EventBusUtils.register(this);
-        this.mConnectionManager = PetConnectionManager.getInstance();
+        this.mConnectionManager = EvaConnectionManager.getInstance();
     }
 
     public static IMessageService getInstance() {
@@ -76,8 +76,8 @@ public final class MessageService implements IMessageService {
     }
 
     @Override
-    public int sharePetAnchor(@NonNull CloudAnchor petAnchor) {
-        RequestMessage<CloudAnchor> request = new RequestMessage<>(MESSAGE_TYPE_PET_ANCHOR, petAnchor);
+    public int shareEvaAnchor(@NonNull CloudAnchor anchor) {
+        RequestMessage<CloudAnchor> request = new RequestMessage<>(MESSAGE_TYPE_EVA_ANCHOR, anchor);
         request.setStatus(new RequestStatus(request.getId()));
         return sendRequest(request);
     }
@@ -93,8 +93,8 @@ public final class MessageService implements IMessageService {
     }
 
     @Override
-    public void sendPetActionCommand(@NonNull PetActionCommand command) {
-        sendRequest(new RequestMessage<>(MESSAGE_TYPE_PET_ACTION_COMMAND, command));
+    public void sendEvaActionCommand(@NonNull EvaActionCommand command) {
+        sendRequest(new RequestMessage<>(MESSAGE_TYPE_EVA_ACTION_COMMAND, command));
     }
 
     @Override

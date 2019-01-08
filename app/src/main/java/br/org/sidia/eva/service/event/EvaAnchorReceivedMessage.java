@@ -15,29 +15,19 @@
  *
  */
 
-package br.org.sidia.eva.manager.connection.event;
+package br.org.sidia.eva.service.event;
 
-import br.org.sidia.eva.manager.connection.EventType;
+import br.org.sidia.eva.manager.cloud.anchor.CloudAnchor;
 
-import java.io.Serializable;
+public class EvaAnchorReceivedMessage extends ReceivedMessage {
 
-public class PetConnectionEvent {
+    private CloudAnchor evaAnchor;
 
-    @EventType
-    private int type;
-    private Serializable data;
-
-    public PetConnectionEvent(@EventType int type, Serializable data) {
-        this.type = type;
-        this.data = data;
+    public EvaAnchorReceivedMessage(CloudAnchor evaAnchor) {
+        this.evaAnchor = evaAnchor;
     }
 
-    @EventType
-    public int getType() {
-        return type;
-    }
-
-    public Serializable getData() {
-        return data;
+    public CloudAnchor getEvaAnchor() {
+        return evaAnchor;
     }
 }

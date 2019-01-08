@@ -17,13 +17,13 @@
 
 package br.org.sidia.eva.manager.connection.event;
 
-import br.org.sidia.eva.manager.connection.IPetConnectionManager;
+import br.org.sidia.eva.manager.connection.IEvaConnectionManager;
 
 import java.io.Serializable;
 
-public class MessageReceivedEvent extends PetConnectionEvent {
+public class MessageReceivedEvent extends EvaConnectionEvent {
 
     public MessageReceivedEvent(Serializable data) {
-        super(IPetConnectionManager.EVENT_MESSAGE_RECEIVED, data);
+        super(IEvaConnectionManager.EVENT_MESSAGE_RECEIVED, data);
     }
 }

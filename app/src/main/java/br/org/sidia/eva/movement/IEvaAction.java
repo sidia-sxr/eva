@@ -15,14 +15,11 @@
  *
  */
 
-package br.org.sidia.eva.mode;
+package br.org.sidia.eva.movement;
 
-import com.samsungxr.SXRScene;
-
-public interface IPetView {
-    void show(SXRScene mainScene);
-    void hide(SXRScene mainScene);
-
-    void load(ILoadEvents listener);
-    void unload();
+public interface IEvaAction {
+    int id();
+    void entry();
+    void exit();
+    void run(float frameTime);
 }

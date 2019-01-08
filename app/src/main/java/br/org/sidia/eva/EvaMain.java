@@ -20,19 +20,19 @@ import com.samsungxr.SXRContext;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRPicker;
 import br.org.sidia.eva.character.CharacterController;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.custom.TouchEventsAdapter;
 import br.org.sidia.eva.mainview.IExitView;
 import br.org.sidia.eva.mainview.MainViewController;
-import br.org.sidia.eva.manager.connection.event.PetConnectionEvent;
+import br.org.sidia.eva.manager.connection.event.EvaConnectionEvent;
 import br.org.sidia.eva.mode.HudMode;
 import br.org.sidia.eva.mode.ILoadEvents;
-import br.org.sidia.eva.mode.IPetMode;
+import br.org.sidia.eva.mode.IEvaMode;
 import br.org.sidia.eva.mode.OnBackToHudModeListener;
 import br.org.sidia.eva.mode.OnModeChange;
 import br.org.sidia.eva.mode.photo.ScreenshotMode;
 import br.org.sidia.eva.mode.sharinganchor.SharingAnchorMode;
-import br.org.sidia.eva.movement.PetActions;
+import br.org.sidia.eva.movement.EvaActions;
 import br.org.sidia.eva.service.share.SharedMixedReality;
 import br.org.sidia.eva.util.EventBusUtils;
 import br.org.sidia.eva.view.shared.IConnectionFinishedView;
@@ -50,22 +50,22 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.Arrays;
 import java.util.EnumSet;
 
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
 
 
-public class PetMain extends DisableNativeSplashScreen {
+public class EvaMain extends DisableNativeSplashScreen {
 
-    private static final String TAG = "PetMain";
+    private static final String TAG = "EvaMain";
 
-    private PetContext mPetContext;
+    private EvaContext mEvaContext;
     private PlaneHandler mPlaneHandler;
     private PointCloudHandler mPointCloudHandler;
 
-    private IPetMode mCurrentMode;
+    private IEvaMode mCurrentMode;
     private HandlerModeChange mHandlerModeChange;
     private HandlerBackToHud mHandlerBackToHud;
 
-    private CharacterController mPet = null;
+    private CharacterController mEva = null;
     private SXRCursorController mCursorController = null;
 
     private CurrentSplashScreen mCurrentSplashScreen;
@@ -76,8 +76,8 @@ public class PetMain extends DisableNativeSplashScreen {
     private ViewInitialMessage mViewInitialMessage;
     private ViewChoosePlan mChoosePlan = null;
 
-    PetMain(PetContext petContext) {
-        mPetContext = petContext;
+    EvaMain(EvaContext evaContext) {
+        mEvaContext = evaContext;
         EventBusUtils.register(this);
     }
 
@@ -88,50 +88,50 @@ public class PetMain extends DisableNativeSplashScreen {
         mCurrentSplashScreen = new CurrentSplashScreen(sxrContext);
         mCurrentSplashScreen.onShow();
 
-        mPetContext.init(sxrContext);
+        mEvaContext.init(sxrContext);
 
         mHandlerModeChange = new HandlerModeChange();
         mHandlerBackToHud = new HandlerBackToHud();
 
-        mPlaneHandler = new PlaneHandler(this, mPetContext);
-        mPointCloudHandler = new PointCloudHandler(mPetContext);
+        mPlaneHandler = new PlaneHandler(this, mEvaContext);
+        mPointCloudHandler = new PointCloudHandler(mEvaContext);
 
-        mSharedMixedReality = mPetContext.getMixedReality();
+        mSharedMixedReality = mEvaContext.getMixedReality();
 
-        mPetContext.registerPlaneListener(mPlaneHandler);
+        mEvaContext.registerPlaneListener(mPlaneHandler);
         mSharedMixedReality.getEventReceiver().addListener(mMixedRealityHandler);
         mSharedMixedReality.getEventReceiver().addListener(mPointCloudHandler);
-        mPetContext.getMixedReality().resume();
+        mEvaContext.getMixedReality().resume();
 
 
-        mPet = new CharacterController(mPetContext);
-        mPet.load(new ILoadEvents() {
+        mEva = new CharacterController(mEvaContext);
+        mEva.load(new ILoadEvents() {
             @Override
             public void onSuccess() {
-                // Will wet pet's scene as the main scene
-                mCurrentSplashScreen.onHide(mPetContext.getMainScene());
+                // Will wet eva's scene as the main scene
+                mCurrentSplashScreen.onHide(mEvaContext.getMainScene());
                 //Show initial message
-                mViewInitialMessage = new ViewInitialMessage(mPetContext);
-                mViewInitialMessage.onShow(mPetContext.getMainScene());
+                mViewInitialMessage = new ViewInitialMessage(mEvaContext);
+                mViewInitialMessage.onShow(mEvaContext.getMainScene());
 
-                // Set plane handler in pet context
-                mPetContext.setPlaneHandler(mPlaneHandler);
+                // Set plane handler in eva context
+                mEvaContext.setPlaneHandler(mPlaneHandler);
 
-                // Set pet controller in pet context
-                mPetContext.setPetController(mPet);
+                // Set eva controller in eva context
+                mEvaContext.setEvaController(mEva);
 
             }
 
             @Override
             public void onFailure() {
-                mPetContext.getActivity().finish();
+                mEvaContext.getActivity().finish();
             }
         });
     }
 
     void onARInit(IMixedReality mr) {
         mCursorController = null;
-        SXRInputManager inputManager = mPetContext.getSXRContext().getInputManager();
+        SXRInputManager inputManager = mEvaContext.getSXRContext().getInputManager();
         final int cursorDepth = 5;
         final EnumSet<SXRPicker.EventOptions> eventOptions = EnumSet.of(
                 SXRPicker.EventOptions.SEND_PICK_EVENTS,
@@ -167,13 +167,13 @@ public class PetMain extends DisableNativeSplashScreen {
 
     private void showViewExit() {
         if (mMainViewController == null) {
-            mMainViewController = new MainViewController(mPetContext);
-            mMainViewController.onShow(mPetContext.getMainScene());
+            mMainViewController = new MainViewController(mEvaContext);
+            mMainViewController.onShow(mEvaContext.getMainScene());
             IExitView iExitView = mMainViewController.makeView(IExitView.class);
 
             iExitView.setOnCancelClickListener(view -> {
                 if (mMainViewController != null) {
-                    mMainViewController.onHide(mPetContext.getMainScene());
+                    mMainViewController.onHide(mEvaContext.getMainScene());
                     mMainViewController = null;
                 }
             });
@@ -187,21 +187,21 @@ public class PetMain extends DisableNativeSplashScreen {
         }
     }
 
-    private void showViewConnectionFinished(@PetConstants.ShareMode int mode) {
+    private void showViewConnectionFinished(@EvaConstants.ShareMode int mode) {
 
-        mMainViewController = new MainViewController(mPetContext);
-        mMainViewController.onShow(mPetContext.getMainScene());
+        mMainViewController = new MainViewController(mEvaContext);
+        mMainViewController.onShow(mEvaContext.getMainScene());
 
         IConnectionFinishedView iFinishedView =
                 mMainViewController.makeView(IConnectionFinishedView.class);
 
         iFinishedView.setOkClickListener(view -> {
-            mMainViewController.onHide(mPetContext.getMainScene());
+            mMainViewController.onHide(mEvaContext.getMainScene());
             mMainViewController = null;
         });
 
         String text = getSXRContext().getActivity().getString(
-                mode == PetConstants.SHARE_MODE_GUEST
+                mode == EvaConstants.SHARE_MODE_GUEST
                         ? R.string.view_host_disconnected
                         : R.string.view_guests_disconnected);
         iFinishedView.setStatusText(text);
@@ -223,15 +223,15 @@ public class PetMain extends DisableNativeSplashScreen {
     }
 
     @Subscribe
-    public void handleConnectionEvent(PetConnectionEvent message) {
+    public void handleConnectionEvent(EvaConnectionEvent message) {
         if (message.getType() == EVENT_ALL_CONNECTIONS_LOST) {
             if (mCurrentMode instanceof HudMode) {
                 int mode = mSharedMixedReality.getMode();
                 getSXRContext().runOnGlThread(() -> showViewConnectionFinished(mode));
                 mSharedMixedReality.stopSharing();
-                mPet.stopBone();
-                if (mode == PetConstants.SHARE_MODE_GUEST) {
-                    mPet.exit();
+                mEva.stopBone();
+                if (mode == EvaConstants.SHARE_MODE_GUEST) {
+                    mEva.exit();
                 }
             }
         }
@@ -239,10 +239,10 @@ public class PetMain extends DisableNativeSplashScreen {
 
     @Subscribe
     public void handlePlaneDetected(SXRPlane plane) {
-        mViewInitialMessage.onHide(mPetContext.getMainScene());
+        mViewInitialMessage.onHide(mEvaContext.getMainScene());
         if (mChoosePlan == null) {
-            mChoosePlan = new ViewChoosePlan(mPetContext);
-            mChoosePlan.onShow(mPetContext.getMainScene());
+            mChoosePlan = new ViewChoosePlan(mEvaContext);
+            mChoosePlan.onShow(mEvaContext.getMainScene());
         }
     }
 
@@ -257,7 +257,7 @@ public class PetMain extends DisableNativeSplashScreen {
     @Subscribe
     public void handleBallEvent(BallThrowHandlerEvent event) {
         if (event.getPerformedAction().equals(BallThrowHandlerEvent.THROWN)) {
-            mPet.setCurrentAction(PetActions.TO_BALL.ID);
+            mEva.setCurrentAction(EvaActions.TO_BALL.ID);
         }
     }
 
@@ -273,10 +273,10 @@ public class PetMain extends DisableNativeSplashScreen {
                 mCurrentMode.exit();
             }
 
-            mCurrentMode = new SharingAnchorMode(mPetContext, mHandlerBackToHud);
+            mCurrentMode = new SharingAnchorMode(mEvaContext, mHandlerBackToHud);
             mCurrentMode.enter();
-            mPet.stopBone();
-            mPet.setCurrentAction(PetActions.IDLE.ID);
+            mEva.stopBone();
+            mEva.setCurrentAction(EvaActions.IDLE.ID);
         }
 
         @Override
@@ -290,7 +290,7 @@ public class PetMain extends DisableNativeSplashScreen {
                 mCurrentMode.exit();
             }
 
-            mCurrentMode = new ScreenshotMode(mPetContext, mHandlerBackToHud);
+            mCurrentMode = new ScreenshotMode(mEvaContext, mHandlerBackToHud);
             mCurrentMode.enter();
         }
     }
@@ -304,10 +304,10 @@ public class PetMain extends DisableNativeSplashScreen {
             }
 
             mCurrentMode.exit();
-            mCurrentMode = new HudMode(mPetContext, mPet, mHandlerModeChange);
+            mCurrentMode = new HudMode(mEvaContext, mEva, mHandlerModeChange);
             mCurrentMode.enter();
 
-            mPet.setCurrentAction(PetActions.IDLE.ID);
+            mEva.setCurrentAction(EvaActions.IDLE.ID);
         }
     }
 
@@ -331,7 +331,7 @@ public class PetMain extends DisableNativeSplashScreen {
         public void onTouchEnd(SXRNode sxrNode, SXRPicker.SXRPickedObject sxrPickedObject) {
 
             // Ignores if is playing with bone
-            if (mPet.isPlaying()) {
+            if (mEva.isPlaying()) {
                 return;
             }
 
@@ -356,24 +356,24 @@ public class PetMain extends DisableNativeSplashScreen {
             // TODO: Improve this if
             if (selectedPlane != null) {
                 if (mChoosePlan != null) {
-                    mChoosePlan.onHide(mPetContext.getMainScene());
+                    mChoosePlan.onHide(mEvaContext.getMainScene());
                     mChoosePlan = null;
                 }
 
                 final float[] modelMtx = sxrNode.getTransform().getModelMatrix();
 
-                if (!mPet.isRunning()) {
-                    mPet.setPlane(sxrNode);
-                    mPet.getView().getTransform().setPosition(modelMtx[12], modelMtx[13], modelMtx[14]);
-                    mPet.enter();
-                    mPet.setInitialScale();
-                    mPet.enableActions();
+                if (!mEva.isRunning()) {
+                    mEva.setPlane(sxrNode);
+                    mEva.getView().getTransform().setPosition(modelMtx[12], modelMtx[13], modelMtx[14]);
+                    mEva.enter();
+                    mEva.setInitialScale();
+                    mEva.enableActions();
 
                     if (mCurrentMode == null) {
-                        mCurrentMode = new HudMode(mPetContext, mPet, mHandlerModeChange);
+                        mCurrentMode = new HudMode(mEvaContext, mEva, mHandlerModeChange);
                         mCurrentMode.enter();
                     } else if (mCurrentMode instanceof HudMode) {
-                        mCurrentMode.view().show(mPetContext.getMainScene());
+                        mCurrentMode.view().show(mEvaContext.getMainScene());
                     }
 
                     mPlaneHandler.setSelectedPlane(selectedPlane, sxrNode);
@@ -383,9 +383,9 @@ public class PetMain extends DisableNativeSplashScreen {
                     mSharedMixedReality.getEventReceiver().removeListener(mPointCloudHandler);
                 }
 
-                if (sxrNode == mPet.getPlane() && mCurrentMode instanceof HudMode) {
+                if (sxrNode == mEva.getPlane() && mCurrentMode instanceof HudMode) {
                     final float[] hitPos = sxrPickedObject.hitLocation;
-                    mPet.goToTap(hitPos[0], hitPos[1], hitPos[2]);
+                    mEva.goToTap(hitPos[0], hitPos[1], hitPos[2]);
                 }
             }
         }

@@ -15,24 +15,11 @@
  *
  */
 
-package br.org.sidia.eva.constant;
+package br.org.sidia.eva.manager.connection;
 
-import android.support.annotation.IntDef;
+import br.org.sidia.eva.manager.connection.event.EvaConnectionEvent;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-public interface PetConstants {
-    int HOST_VISIBILITY_DURATION = 5 * 60; // in seconds
-    int TEXTURE_BUFFER_SIZE = 2048;
-    float MODEL3D_DEFAULT_SCALE = 0.003f;
-
-    int SHARE_MODE_NONE = 0;
-    int SHARE_MODE_HOST = 1;
-    int SHARE_MODE_GUEST = 2;
-
-    @IntDef({SHARE_MODE_NONE, SHARE_MODE_HOST, SHARE_MODE_GUEST})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface ShareMode {
-    }
+@FunctionalInterface
+public interface EvaConnectionEventHandler {
+    void handleEvent(EvaConnectionEvent event);
 }

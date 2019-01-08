@@ -17,7 +17,7 @@
 
 package br.org.sidia.eva.mainview;
 
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.view.BaseViewController;
 import br.org.sidia.eva.view.shared.ConnectionFinishedView;
@@ -25,8 +25,8 @@ import br.org.sidia.eva.view.shared.IConnectionFinishedView;
 
 public class MainViewController extends BaseViewController {
 
-    public MainViewController(PetContext petContext) {
-        super(petContext);
+    public MainViewController(EvaContext evaContext) {
+        super(evaContext);
         registerView(IExitView.class, R.layout.screen_exit_application, ExitView.class);
         registerView(ICleanView.class, R.layout.view_clean, CleanView.class);
         registerView(IAboutView.class, R.layout.view_about, AboutView.class);

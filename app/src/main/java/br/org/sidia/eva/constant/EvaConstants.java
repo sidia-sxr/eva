@@ -15,19 +15,24 @@
  *
  */
 
-package br.org.sidia.eva.service.event;
+package br.org.sidia.eva.constant;
 
-import br.org.sidia.eva.service.data.PetActionCommand;
+import android.support.annotation.IntDef;
 
-public class PetActionCommandReceivedMessage extends ReceivedMessage {
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-    private PetActionCommand petActionCommand;
+public interface EvaConstants {
+    int HOST_VISIBILITY_DURATION = 5 * 60; // in seconds
+    int TEXTURE_BUFFER_SIZE = 2048;
+    float MODEL3D_DEFAULT_SCALE = 0.003f;
 
-    public PetActionCommandReceivedMessage(PetActionCommand petActionCommand) {
-        this.petActionCommand = petActionCommand;
-    }
+    int SHARE_MODE_NONE = 0;
+    int SHARE_MODE_HOST = 1;
+    int SHARE_MODE_GUEST = 2;
 
-    public PetActionCommand getPetActionCommand() {
-        return petActionCommand;
+    @IntDef({SHARE_MODE_NONE, SHARE_MODE_HOST, SHARE_MODE_GUEST})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface ShareMode {
     }
 }

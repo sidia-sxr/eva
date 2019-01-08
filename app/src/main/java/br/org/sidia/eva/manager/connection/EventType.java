@@ -23,16 +23,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @IntDef({
-        IPetConnectionManager.EVENT_CONNECTION_ESTABLISHED,
-        IPetConnectionManager.EVENT_NO_CONNECTION_FOUND,
-        IPetConnectionManager.EVENT_ALL_CONNECTIONS_LOST,
-        IPetConnectionManager.EVENT_ONE_CONNECTION_LOST,
-        IPetConnectionManager.EVENT_ON_LISTENING_TO_GUESTS,
-        IPetConnectionManager.EVENT_ON_REQUEST_CONNECTION_TO_HOST,
-        IPetConnectionManager.EVENT_GUEST_CONNECTION_ESTABLISHED,
-        IPetConnectionManager.EVENT_MESSAGE_RECEIVED,
-        IPetConnectionManager.EVENT_ENABLE_BLUETOOTH_DENIED,
-        IPetConnectionManager.EVENT_HOST_VISIBILITY_DENIED})
+        IEvaConnectionManager.EVENT_CONNECTION_ESTABLISHED,
+        IEvaConnectionManager.EVENT_NO_CONNECTION_FOUND,
+        IEvaConnectionManager.EVENT_ALL_CONNECTIONS_LOST,
+        IEvaConnectionManager.EVENT_ONE_CONNECTION_LOST,
+        IEvaConnectionManager.EVENT_ON_LISTENING_TO_GUESTS,
+        IEvaConnectionManager.EVENT_ON_REQUEST_CONNECTION_TO_HOST,
+        IEvaConnectionManager.EVENT_GUEST_CONNECTION_ESTABLISHED,
+        IEvaConnectionManager.EVENT_MESSAGE_RECEIVED,
+        IEvaConnectionManager.EVENT_ENABLE_BLUETOOTH_DENIED,
+        IEvaConnectionManager.EVENT_HOST_VISIBILITY_DENIED})
 @Retention(RetentionPolicy.SOURCE)
 public @interface EventType {
 }

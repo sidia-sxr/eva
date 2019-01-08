@@ -20,24 +20,24 @@ package br.org.sidia.eva.movement;
 import android.support.annotation.IntDef;
 
 @IntDef({
-        PetActions.IDLE.ID,
-        PetActions.TO_BALL.ID,
-        PetActions.TO_PLAYER.ID,
-        PetActions.TO_TAP.ID,
-        PetActions.GRAB.ID,
-        PetActions.TO_BED.ID,
-        PetActions.TO_BOWL.ID,
-        PetActions.TO_HYDRANT.ID,
-        PetActions.DRINK_ENTER.ID,
-        PetActions.DRINK_EXIT.ID,
-        PetActions.DRINK_LOOP.ID,
-        PetActions.HYDRANT_ENTER.ID,
-        PetActions.HYDRANT_EXIT.ID,
-        PetActions.HYDRANT_LOOP.ID,
-        PetActions.SLEEP_ENTER.ID,
-        PetActions.SLEEP_EXIT.ID,
-        PetActions.SLEEP_LOOP.ID,
-        PetActions.AT_EDIT.ID
+        EvaActions.IDLE.ID,
+        EvaActions.TO_BALL.ID,
+        EvaActions.TO_PLAYER.ID,
+        EvaActions.TO_TAP.ID,
+        EvaActions.GRAB.ID,
+        EvaActions.TO_BED.ID,
+        EvaActions.TO_BOWL.ID,
+        EvaActions.TO_HYDRANT.ID,
+        EvaActions.DRINK_ENTER.ID,
+        EvaActions.DRINK_EXIT.ID,
+        EvaActions.DRINK_LOOP.ID,
+        EvaActions.HYDRANT_ENTER.ID,
+        EvaActions.HYDRANT_EXIT.ID,
+        EvaActions.HYDRANT_LOOP.ID,
+        EvaActions.SLEEP_ENTER.ID,
+        EvaActions.SLEEP_EXIT.ID,
+        EvaActions.SLEEP_LOOP.ID,
+        EvaActions.AT_EDIT.ID
 })
-public @interface PetActionType {
+public @interface EvaActionType {
 }

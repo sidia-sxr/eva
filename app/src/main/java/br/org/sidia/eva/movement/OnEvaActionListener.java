@@ -15,19 +15,8 @@
  *
  */
 
-package br.org.sidia.eva.service.event;
+package br.org.sidia.eva.movement;
 
-import br.org.sidia.eva.manager.cloud.anchor.CloudAnchor;
-
-public class PetAnchorReceivedMessage extends ReceivedMessage {
-
-    private CloudAnchor petAnchor;
-
-    public PetAnchorReceivedMessage(CloudAnchor petAnchor) {
-        this.petAnchor = petAnchor;
-    }
-
-    public CloudAnchor getPetAnchor() {
-        return petAnchor;
-    }
+public interface OnEvaActionListener {
+    void onActionEnd(IEvaAction action, boolean success);
 }

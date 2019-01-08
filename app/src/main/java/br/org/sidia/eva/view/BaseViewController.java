@@ -26,10 +26,11 @@ import android.view.ViewGroup;
 
 import com.samsungxr.SXRRenderData;
 import com.samsungxr.SXRScene;
-import br.org.sidia.eva.PetContext;
+
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
-import br.org.sidia.eva.constant.PetConstants;
-import br.org.sidia.eva.mode.BasePetView;
+import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.mode.BaseEvaView;
 import com.samsungxr.nodes.SXRViewNode;
 
 import java.lang.reflect.Constructor;
@@ -37,7 +38,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BaseViewController extends BasePetView implements IViewController {
+public class BaseViewController extends BaseEvaView implements IViewController {
 
     private final String TAG = getClass().getSimpleName();
     private Map<Class<? extends IView>, ViewInfo> mViewInfo = new HashMap<>();
@@ -46,22 +47,22 @@ public class BaseViewController extends BasePetView implements IViewController {
     private BaseView mViewModel;
     private DisplayMetrics mDisplayMetrics;
 
-    public BaseViewController(PetContext petContext) {
-        this(petContext, R.layout.view_main_content_dimmed);
+    public BaseViewController(EvaContext evaContext) {
+        this(evaContext, R.layout.view_main_content_dimmed);
     }
 
-    public BaseViewController(PetContext petContext, @LayoutRes int viewContentId) {
-        super(petContext);
+    public BaseViewController(EvaContext evaContext, @LayoutRes int viewContentId) {
+        super(evaContext);
 
         mDisplayMetrics = new DisplayMetrics();
-        petContext.getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(mDisplayMetrics);
+        evaContext.getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(mDisplayMetrics);
 
-        mViewContent = (ViewGroup) View.inflate(petContext.getSXRContext().getContext(), viewContentId, null);
+        mViewContent = (ViewGroup) View.inflate(evaContext.getSXRContext().getContext(), viewContentId, null);
         mViewContent.setLayoutParams(new ViewGroup.LayoutParams(mDisplayMetrics.widthPixels, mDisplayMetrics.heightPixels));
 
-        SXRViewNode viewObject = new SXRViewNode(petContext.getSXRContext(), mViewContent);
+        SXRViewNode viewObject = new SXRViewNode(evaContext.getSXRContext(), mViewContent);
         viewObject.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
-        viewObject.setTextureBufferSize(PetConstants.TEXTURE_BUFFER_SIZE);
+        viewObject.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
 
         addChildObject(viewObject);
     }
@@ -80,7 +81,7 @@ public class BaseViewController extends BasePetView implements IViewController {
             throw new RuntimeException("View type not registered: " + type.getClass().getSimpleName());
         }
 
-        View view = View.inflate(mPetContext.getSXRContext().getContext(), viewInfo.layoutId, null);
+        View view = View.inflate(mEvaContext.getSXRContext().getContext(), viewInfo.layoutId, null);
         T viewModel = null;
 
         try {
@@ -98,7 +99,7 @@ public class BaseViewController extends BasePetView implements IViewController {
     public void showView(IView viewModel) {
 
         if (!viewModel.getClass().isInstance(mViewModel)) {
-            mPetContext.getActivity().runOnUiThread(() -> {
+            mEvaContext.getActivity().runOnUiThread(() -> {
 
                 BaseView vm = (BaseView) viewModel;
 
@@ -120,7 +121,7 @@ public class BaseViewController extends BasePetView implements IViewController {
     }
 
     private void clearContentView() {
-        mPetContext.getActivity().runOnUiThread(() -> {
+        mEvaContext.getActivity().runOnUiThread(() -> {
             mViewContent.removeAllViews();
             mViewModel = null;
         });
@@ -129,7 +130,7 @@ public class BaseViewController extends BasePetView implements IViewController {
     @Override
     public void onShow(SXRScene mainScene) {
         mainScene.getMainCameraRig().addChildObject(this);
-        mPetContext.runDelayedOnPetThread(() ->
+        mEvaContext.runDelayedOnEvaThread(() ->
                 getTransform().setPosition(0.0f, 0.0f, -0.74f), 100);
     }
 

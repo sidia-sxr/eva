@@ -19,11 +19,11 @@ package br.org.sidia.eva.manager.connection;
 
 import android.support.annotation.NonNull;
 
-public abstract class BasePetConnectionEventHandler implements PetConnectionEventHandler {
+public abstract class BaseEvaConnectionEventHandler implements EvaConnectionEventHandler {
 
     private String mName;
 
-    public BasePetConnectionEventHandler(@NonNull String name) {
+    public BaseEvaConnectionEventHandler(@NonNull String name) {
         this.mName = name;
     }
 
@@ -31,7 +31,7 @@ public abstract class BasePetConnectionEventHandler implements PetConnectionEven
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BasePetConnectionEventHandler that = (BasePetConnectionEventHandler) o;
+        BaseEvaConnectionEventHandler that = (BaseEvaConnectionEventHandler) o;
         return mName != null ? mName.equals(that.mName) : that.mName == null;
     }
 
@@ -42,7 +42,7 @@ public abstract class BasePetConnectionEventHandler implements PetConnectionEven
 
     @Override
     public String toString() {
-        return "BasePetConnectionEventHandler{" +
+        return "BaseEvaConnectionEventHandler{" +
                 "mName='" + mName + '\'' +
                 '}';
     }

@@ -15,10 +15,10 @@
 
 package br.org.sidia.eva.mode;
 
-public interface IPetMode {
+public interface IEvaMode {
     void enter();
     void exit();
-    IPetView view();
+    IEvaView view();
     void handleOrientation();
 
     void load(ILoadEvents listener);

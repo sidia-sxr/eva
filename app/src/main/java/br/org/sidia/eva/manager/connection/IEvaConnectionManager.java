@@ -19,12 +19,12 @@ package br.org.sidia.eva.manager.connection;
 
 import android.support.annotation.NonNull;
 
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.connection.Message;
 import br.org.sidia.eva.connection.SendMessageCallback;
 import br.org.sidia.eva.connection.socket.ConnectionMode;
 
-public interface IPetConnectionManager {
+public interface IEvaConnectionManager {
 
     // Connection status
 
@@ -88,7 +88,7 @@ public interface IPetConnectionManager {
      *
      * @param context A context
      */
-    void init(@NonNull PetContext context);
+    void init(@NonNull EvaContext context);
 
     /**
      * Starts connection listener.
@@ -129,5 +129,5 @@ public interface IPetConnectionManager {
 
     void sendMessage(Message message, @NonNull SendMessageCallback callback);
 
-    PetContext getContext();
+    EvaContext getContext();
 }

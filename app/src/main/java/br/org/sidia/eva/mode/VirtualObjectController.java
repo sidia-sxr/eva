@@ -17,11 +17,11 @@ package br.org.sidia.eva.mode;
 
 import com.samsungxr.SXRDrawFrameListener;
 import com.samsungxr.SXRNode;
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.animations.DustyAnimation;
 import br.org.sidia.eva.character.CharacterController;
 import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.util.LoadModelHelper;
 import com.samsungxr.mixedreality.SXRPlane;
 import com.samsungxr.utility.Log;
@@ -32,19 +32,19 @@ import org.joml.Vector4f;
 public class VirtualObjectController {
     private static final String TAG = VirtualObjectController.class.getSimpleName();
 
-    private PetContext mPetContext;
-    private CharacterController mPetController;
+    private EvaContext mEvaContext;
+    private CharacterController mEvaController;
     private SXRNode mVirtualObject = null;
     private final DustyAnimation mDustyAnimation;
     private String mObjectType = "";
 
     private VirtualObjectShow virtualObjectShow = new VirtualObjectShow();
 
-    public VirtualObjectController(PetContext petContext, CharacterController petController) {
-        mPetContext = petContext;
-        mPetController = petController;
+    public VirtualObjectController(EvaContext evaContext, CharacterController controller) {
+        mEvaContext = evaContext;
+        mEvaController = controller;
 
-        mDustyAnimation = new DustyAnimation(petContext.getSXRContext(), 2);
+        mDustyAnimation = new DustyAnimation(evaContext.getSXRContext(), 2);
     }
 
     private SXRNode load3DModel(@EvaObjectType String type) {
@@ -52,20 +52,20 @@ public class VirtualObjectController {
 
         switch (type) {
             case EvaObjectType.BED:
-                objectModel = LoadModelHelper.loadModelSceneObject(mPetContext.getSXRContext(), LoadModelHelper.BED_MODEL_PATH);
+                objectModel = LoadModelHelper.loadModelSceneObject(mEvaContext.getSXRContext(), LoadModelHelper.BED_MODEL_PATH);
                 break;
             case EvaObjectType.BOWL:
-                objectModel = LoadModelHelper.loadModelSceneObject(mPetContext.getSXRContext(), LoadModelHelper.BOWL_MODEL_PATH);
+                objectModel = LoadModelHelper.loadModelSceneObject(mEvaContext.getSXRContext(), LoadModelHelper.BOWL_MODEL_PATH);
                 break;
             case EvaObjectType.HYDRANT:
-                objectModel = LoadModelHelper.loadModelSceneObject(mPetContext.getSXRContext(), LoadModelHelper.HYDRANT_MODEL_PATH);
+                objectModel = LoadModelHelper.loadModelSceneObject(mEvaContext.getSXRContext(), LoadModelHelper.HYDRANT_MODEL_PATH);
                 break;
         }
         return objectModel;
     }
 
     public void showObject(@EvaObjectType String objectType) {
-        final SXRPlane mainPlane = (SXRPlane)mPetController.getPlane().getParent().getComponent(SXRPlane.getComponentType());
+        final SXRPlane mainPlane = (SXRPlane) mEvaController.getPlane().getParent().getComponent(SXRPlane.getComponentType());
         if (mainPlane == null) {
             Log.d(TAG, "no plane detected");
             return;
@@ -93,18 +93,18 @@ public class VirtualObjectController {
             orientation = new Vector4f(0.0f, 0.5f, 0f, 0);
         }
 
-        final Matrix4f planeMtx = mPetController.getPlane().getTransform().getModelMatrix4f();
-        final Matrix4f petMtx = mPetController.getView().getTransform().getModelMatrix4f();
+        final Matrix4f planeMtx = mEvaController.getPlane().getTransform().getModelMatrix4f();
+        final Matrix4f evaMtx = mEvaController.getView().getTransform().getModelMatrix4f();
 
-        Vector4f  petOrientation = new Vector4f(petMtx.m30() - planeMtx.m30(),
-                petMtx.m31() - planeMtx.m31(), petMtx.m32() - planeMtx.m32(), 0);
+        Vector4f  evaOrientation = new Vector4f(evaMtx.m30() - planeMtx.m30(),
+                evaMtx.m31() - planeMtx.m31(), evaMtx.m32() - planeMtx.m32(), 0);
 
         // Apply plane's rotation in the vector
         orientation.mul(planeMtx);
 
-        // Opposite side of the Pet
-        if (petOrientation.x * orientation.x > 0
-                || petOrientation.z * orientation.z > 0) {
+        // Opposite side of the Eva
+        if (evaOrientation.x * orientation.x > 0
+                || evaOrientation.z * orientation.z > 0) {
             orientation.mul(-1);
         }
 
@@ -119,7 +119,7 @@ public class VirtualObjectController {
         final float planeY = planeMtx.m31() + orientation.y;
         final float planeZ = planeMtx.m32() + orientation.z;
 
-        final float scale = mPetController.getView().getScale() * PetConstants.MODEL3D_DEFAULT_SCALE;
+        final float scale = mEvaController.getView().getScale() * EvaConstants.MODEL3D_DEFAULT_SCALE;
 
         virtualObjectShow.startAnimation(scale, planeX, planeY + 2, planeZ);
     }
@@ -144,26 +144,26 @@ public class VirtualObjectController {
             float minScale = scale * 0.1f;
             mVirtualObject.getTransform().setPosition(posX, posY, posZ);
             mVirtualObject.getTransform().setScale(minScale, minScale, minScale);
-            mPetContext.getMainScene().addNode(mVirtualObject);
+            mEvaContext.getMainScene().addNode(mVirtualObject);
 
             countTime = 0f;
             jumpEnded = false;
-            mPetContext.getSXRContext().registerDrawFrameListener(this);
+            mEvaContext.getSXRContext().registerDrawFrameListener(this);
         }
 
         @Override
         public void onDrawFrame(float d) {
             if (mVirtualObject == null) {
-                mPetContext.getSXRContext().unregisterDrawFrameListener(this);
+                mEvaContext.getSXRContext().unregisterDrawFrameListener(this);
                 return;
             }
 
             if (countTime >= DURATION3) {
-                mPetContext.getSXRContext().unregisterDrawFrameListener(this);
+                mEvaContext.getSXRContext().unregisterDrawFrameListener(this);
                 mVirtualObject.getTransform().setPositionY(posY);
                 mVirtualObject.getTransform().setScale(scale, scale, scale);
 
-                startPetAnimation();
+                startEvaAnimation();
             } else if (countTime >= DURATION2) {
                 // Scale animation 3: object will grow to 100% in Y axis only
                 float t = countTime - 1.02f;
@@ -207,22 +207,22 @@ public class VirtualObjectController {
         mDustyAnimation.setDustySize(mVirtualObject.getBoundingVolume().radius * 4);
         mDustyAnimation.setDustyPosition(x, y, z);
 
-        mPetContext.getSXRContext().getAnimationEngine().start(mDustyAnimation);
+        mEvaContext.getSXRContext().getAnimationEngine().start(mDustyAnimation);
     }
 
-    private void startPetAnimation() {
+    private void startEvaAnimation() {
         float x = mVirtualObject.getTransform().getPositionX();
         float y = mVirtualObject.getTransform().getPositionY();
         float z = mVirtualObject.getTransform().getPositionZ();
         switch (mObjectType) {
             case EvaObjectType.BED:
-                mPetController.goToBed(x, y, z);
+                mEvaController.goToBed(x, y, z);
                 break;
             case EvaObjectType.BOWL:
-                mPetController.goToBowl(x, y, z);
+                mEvaController.goToBowl(x, y, z);
                 break;
             case EvaObjectType.HYDRANT:
-                mPetController.goToHydrant(x, y, z);
+                mEvaController.goToHydrant(x, y, z);
                 break;
         }
     }

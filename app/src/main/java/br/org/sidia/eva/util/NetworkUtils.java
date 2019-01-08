@@ -21,16 +21,16 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 
 public final class NetworkUtils {
 
     private NetworkUtils() {
     }
 
-    public static boolean hasInternetConnection(PetContext petContext) {
+    public static boolean hasInternetConnection(EvaContext evaContext) {
 
-        ConnectivityManager cm = (ConnectivityManager) petContext.getSXRContext().getContext()
+        ConnectivityManager cm = (ConnectivityManager) evaContext.getSXRContext().getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = null;
 

@@ -24,22 +24,22 @@ import com.samsungxr.IViewEvents;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRRenderData;
 import com.samsungxr.SXRScene;
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.util.LayoutViewUtils;
 import com.samsungxr.nodes.SXRViewNode;
 
-public class EditView extends BasePetView implements View.OnClickListener {
+public class EditView extends BaseEvaView implements View.OnClickListener {
     private SXRNode mEditBackObject;
     private SXRNode mEditSaveObject;
     private Button mSaveButton;
     private LinearLayout mBackButton;
     private OnEditModeClickedListener mListenerEditMode;
 
-    public EditView(PetContext petContext) {
-        super(petContext);
-        mEditBackObject = new SXRViewNode(petContext.getSXRContext(),
+    public EditView(EvaContext evaContext) {
+        super(evaContext);
+        mEditBackObject = new SXRViewNode(evaContext.getSXRContext(),
                 R.layout.edit_back_layout, new IViewEvents() {
             @Override
             public void onInitView(SXRViewNode sxrViewNode, View view) {
@@ -49,17 +49,17 @@ public class EditView extends BasePetView implements View.OnClickListener {
 
             @Override
             public void onStartRendering(SXRViewNode sxrViewNode, View view) {
-                sxrViewNode.setTextureBufferSize(PetConstants.TEXTURE_BUFFER_SIZE);
+                sxrViewNode.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
                 sxrViewNode.getRenderData().setRenderingOrder(
                         SXRRenderData.SXRRenderingOrder.OVERLAY);
-                LayoutViewUtils.setWorldPosition(mPetContext.getMainScene(),
+                LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
                         sxrViewNode, 5f, 11f, 44 + 136, 44);
 
                 EditView.this.addChildObject(sxrViewNode);
             }
         });
 
-        mEditSaveObject = new SXRViewNode(petContext.getSXRContext(),
+        mEditSaveObject = new SXRViewNode(evaContext.getSXRContext(),
                 R.layout.edit_save_layout, new IViewEvents() {
             @Override
             public void onInitView(SXRViewNode sxrViewNode, View view) {
@@ -69,10 +69,10 @@ public class EditView extends BasePetView implements View.OnClickListener {
 
             @Override
             public void onStartRendering(SXRViewNode sxrViewNode, View view) {
-                sxrViewNode.setTextureBufferSize(PetConstants.TEXTURE_BUFFER_SIZE);
+                sxrViewNode.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
                 sxrViewNode.getRenderData().setRenderingOrder(
                         SXRRenderData.SXRRenderingOrder.OVERLAY);
-                LayoutViewUtils.setWorldPosition(mPetContext.getMainScene(),
+                LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
                         sxrViewNode, 510f, 12f, 121, 44);
 
                 EditView.this.addChildObject(sxrViewNode);

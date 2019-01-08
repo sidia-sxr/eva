@@ -17,14 +17,14 @@
 
 package br.org.sidia.eva.mode.photo;
 
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.view.BaseViewController;
 
 public class PhotoViewController extends BaseViewController {
 
-    public PhotoViewController(PetContext petContext) {
-        super(petContext, R.layout.view_main_content_transparent);
+    public PhotoViewController(EvaContext evaContext) {
+        super(evaContext, R.layout.view_main_content_transparent);
         registerView(IPhotoView.class, R.layout.view_photo, PhotoView.class);
     }
 }

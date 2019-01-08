@@ -27,19 +27,19 @@ import android.widget.Toast;
 
 import com.google.ar.core.exceptions.NotTrackingException;
 import com.samsungxr.SXRCameraRig;
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.manager.cloud.anchor.CloudAnchor;
 import br.org.sidia.eva.manager.cloud.anchor.CloudAnchorManager;
 import br.org.sidia.eva.manager.cloud.anchor.ManagedAnchor;
 import br.org.sidia.eva.manager.cloud.anchor.exception.CloudAnchorException;
 import br.org.sidia.eva.manager.cloud.anchor.exception.NetworkException;
-import br.org.sidia.eva.manager.connection.IPetConnectionManager;
-import br.org.sidia.eva.manager.connection.PetConnectionManager;
-import br.org.sidia.eva.manager.connection.event.PetConnectionEvent;
-import br.org.sidia.eva.mode.BasePetMode;
+import br.org.sidia.eva.manager.connection.IEvaConnectionManager;
+import br.org.sidia.eva.manager.connection.EvaConnectionManager;
+import br.org.sidia.eva.manager.connection.event.EvaConnectionEvent;
+import br.org.sidia.eva.mode.BaseEvaMode;
 import br.org.sidia.eva.mode.OnBackToHudModeListener;
 import br.org.sidia.eva.mode.sharinganchor.view.IConnectionFoundView;
 import br.org.sidia.eva.mode.sharinganchor.view.IGuestLookingAtTargetView;
@@ -53,7 +53,7 @@ import br.org.sidia.eva.service.IMessageService;
 import br.org.sidia.eva.service.MessageService;
 import br.org.sidia.eva.service.data.RequestStatus;
 import br.org.sidia.eva.service.data.ViewCommand;
-import br.org.sidia.eva.service.event.PetAnchorReceivedMessage;
+import br.org.sidia.eva.service.event.EvaAnchorReceivedMessage;
 import br.org.sidia.eva.service.event.RequestStatusReceivedMessage;
 import br.org.sidia.eva.service.event.ViewCommandReceivedMessage;
 import br.org.sidia.eva.service.share.SharedMixedReality;
@@ -67,43 +67,43 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_CONNECTION_ESTABLISHED;
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_ENABLE_BLUETOOTH_DENIED;
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_GUEST_CONNECTION_ESTABLISHED;
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_HOST_VISIBILITY_DENIED;
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_NO_CONNECTION_FOUND;
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_ONE_CONNECTION_LOST;
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_ON_LISTENING_TO_GUESTS;
-import static br.org.sidia.eva.manager.connection.IPetConnectionManager.EVENT_ON_REQUEST_CONNECTION_TO_HOST;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_CONNECTION_ESTABLISHED;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ENABLE_BLUETOOTH_DENIED;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_GUEST_CONNECTION_ESTABLISHED;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_HOST_VISIBILITY_DENIED;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_NO_CONNECTION_FOUND;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ONE_CONNECTION_LOST;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ON_LISTENING_TO_GUESTS;
+import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ON_REQUEST_CONNECTION_TO_HOST;
 
-public class SharingAnchorMode extends BasePetMode {
+public class SharingAnchorMode extends BaseEvaMode {
 
     private final String TAG = SharingAnchorMode.class.getSimpleName();
 
-    private IPetConnectionManager mConnectionManager;
+    private IEvaConnectionManager mConnectionManager;
     private SharingAnchorViewController mSharingAnchorViewController;
     private IMessageService mMessageService;
     private OnBackToHudModeListener mBackToHudModeListener;
     private SharedMixedReality mSharedMixedReality;
-    private PetAnchorSharingStatusHandler mPetAnchorSharingStatusHandler;
+    private EvaAnchorSharingStatusHandler mEvaAnchorSharingStatusHandler;
     private Resources mResources;
 
-    @PetConstants.ShareMode
-    private int mCurrentMode = PetConstants.SHARE_MODE_NONE;
+    @EvaConstants.ShareMode
+    private int mCurrentMode = EvaConstants.SHARE_MODE_NONE;
 
-    public SharingAnchorMode(PetContext petContext, OnBackToHudModeListener listener) {
-        super(petContext, new SharingAnchorViewController(petContext));
+    public SharingAnchorMode(EvaContext evaContext, OnBackToHudModeListener listener) {
+        super(evaContext, new SharingAnchorViewController(evaContext));
 
-        mConnectionManager = PetConnectionManager.getInstance();
+        mConnectionManager = EvaConnectionManager.getInstance();
         mSharingAnchorViewController = (SharingAnchorViewController) mModeScene;
 
-        mResources = mPetContext.getActivity().getResources();
+        mResources = mEvaContext.getActivity().getResources();
         showViewLetsStart();
 
         mBackToHudModeListener = listener;
         mMessageService = MessageService.getInstance();
-        mSharedMixedReality = petContext.getMixedReality();
+        mSharedMixedReality = evaContext.getMixedReality();
     }
 
     private void showViewLetsStart() {
@@ -118,7 +118,7 @@ public class SharingAnchorMode extends BasePetMode {
     }
 
     private void showViewWaitingForGuest() {
-        mCurrentMode = PetConstants.SHARE_MODE_HOST;
+        mCurrentMode = EvaConstants.SHARE_MODE_HOST;
         IWaitingForGuestView view = mSharingAnchorViewController.makeView(IWaitingForGuestView.class);
         view.setCancelClickListener(v -> cancelSharing());
         view.setContinueClickListener(v -> mConnectionManager.stopInvitation());
@@ -126,7 +126,7 @@ public class SharingAnchorMode extends BasePetMode {
     }
 
     private void showViewWaitingForHost() {
-        mCurrentMode = PetConstants.SHARE_MODE_GUEST;
+        mCurrentMode = EvaConstants.SHARE_MODE_GUEST;
         IWaitingForHostView view = mSharingAnchorViewController.makeView(IWaitingForHostView.class);
         view.setCancelClickListener(v -> cancelSharing());
         view.show();
@@ -164,7 +164,7 @@ public class SharingAnchorMode extends BasePetMode {
         view.show();
     }
 
-    private void hostPetAnchor() {
+    private void hostEvaAnchor() {
 
         final AtomicBoolean isHosting = new AtomicBoolean(true);
 
@@ -176,24 +176,24 @@ public class SharingAnchorMode extends BasePetMode {
 
         ManagedAnchor<SXRAnchor> managedAnchor;
         try {
-            // Get the model matrix from the actual Pet's position and create an anchor to be
+            // Get the model matrix from the actual eva's position and create an anchor to be
             // hosted by Cloud Anchor service
-            float[] anchorMatrix = mPetContext.getPetController().getView().getTransform().getModelMatrix();
-            SXRAnchor petAnchor = mSharedMixedReality.createAnchor(anchorMatrix);
-            managedAnchor = new ManagedAnchor<>(EvaObjectType.PET, petAnchor);
+            float[] anchorMatrix = mEvaContext.getEvaController().getView().getTransform().getModelMatrix();
+            SXRAnchor anchor = mSharedMixedReality.createAnchor(anchorMatrix);
+            managedAnchor = new ManagedAnchor<>(EvaObjectType.EVA, anchor);
         } catch (Throwable throwable) {
             isHosting.set(false);
             onHostingError(new CloudAnchorException(throwable));
             return;
         }
 
-        Log.d(TAG, "Hosting pet anchor");
-        new CloudAnchorManager(mPetContext).hostAnchors(managedAnchor, new CloudAnchorManager.OnCloudAnchorCallback<SXRAnchor>() {
+        Log.d(TAG, "Hosting eva anchor");
+        new CloudAnchorManager(mEvaContext).hostAnchors(managedAnchor, new CloudAnchorManager.OnCloudAnchorCallback<SXRAnchor>() {
             @Override
             public void onResult(ManagedAnchor<SXRAnchor> managedAnchor) {
                 isHosting.set(false);
                 showViewHostLookingAtTarget(R.string.stay_in_position);
-                sharePetAnchorWithGuests(managedAnchor.getAnchor());
+                shareEvaAnchorWithGuests(managedAnchor.getAnchor());
             }
 
             @Override
@@ -205,22 +205,22 @@ public class SharingAnchorMode extends BasePetMode {
     }
 
     private void onHostingError(CloudAnchorException e) {
-        Log.e(TAG, "Error hosting pet anchor", e);
+        Log.e(TAG, "Error hosting eva anchor", e);
         showViewSharingError(
                 this::cancelSharing,
                 () -> {
-                    showViewHostLookingAtTarget(R.string.center_pet);
-                    new Handler().postDelayed(this::hostPetAnchor, 1500);
+                    showViewHostLookingAtTarget(R.string.center_eva);
+                    new Handler().postDelayed(this::hostEvaAnchor, 1500);
                 }
         );
         handleCloudAnchorException(e);
     }
 
-    private void resolvePetAnchor(PetAnchorReceivedMessage message) {
+    private void resolveEvaAnchor(EvaAnchorReceivedMessage message) {
 
-        ManagedAnchor<CloudAnchor> managedAnchor = new ManagedAnchor<>(EvaObjectType.PET, message.getPetAnchor());
+        ManagedAnchor<CloudAnchor> managedAnchor = new ManagedAnchor<>(EvaObjectType.EVA, message.getEvaAnchor());
 
-        new CloudAnchorManager(mPetContext).resolveAnchors(managedAnchor, new CloudAnchorManager.OnCloudAnchorCallback<SXRAnchor>() {
+        new CloudAnchorManager(mEvaContext).resolveAnchors(managedAnchor, new CloudAnchorManager.OnCloudAnchorCallback<SXRAnchor>() {
             @Override
             public void onResult(ManagedAnchor<SXRAnchor> managedAnchor) {
                 Log.d(TAG, "Anchor resolved successfully");
@@ -230,7 +230,7 @@ public class SharingAnchorMode extends BasePetMode {
                 mMessageService.sendRequestStatus(requestStatus);
 
                 mSharedMixedReality.startSharing(
-                        managedAnchor.getAnchor(), PetConstants.SHARE_MODE_GUEST);
+                        managedAnchor.getAnchor(), EvaConstants.SHARE_MODE_GUEST);
 
                 gotToHudView();
             }
@@ -241,7 +241,7 @@ public class SharingAnchorMode extends BasePetMode {
                         () -> cancelSharing(),
                         () -> {
                             showViewGuestLookingAtTarget();
-                            new Handler().postDelayed(() -> resolvePetAnchor(message), 1500);
+                            new Handler().postDelayed(() -> resolveEvaAnchor(message), 1500);
                         });
                 handleCloudAnchorException(e);
             }
@@ -249,12 +249,12 @@ public class SharingAnchorMode extends BasePetMode {
     }
 
     private void handleCloudAnchorException(CloudAnchorException e) {
-        mPetContext.runOnPetThread(() -> {
+        mEvaContext.runOnEvaThread(() -> {
             if (e.getCause() instanceof NetworkException) {
-                Toast.makeText(mPetContext.getActivity(),
+                Toast.makeText(mEvaContext.getActivity(),
                         R.string.no_internet_connection, Toast.LENGTH_LONG).show();
             } else if (NotTrackingException.class.isInstance(e.getCause())) {
-                Toast.makeText(mPetContext.getActivity(),
+                Toast.makeText(mEvaContext.getActivity(),
                         R.string.not_tracking, Toast.LENGTH_LONG).show();
             }
         });
@@ -278,7 +278,7 @@ public class SharingAnchorMode extends BasePetMode {
 
         showViewConnectionFound();
 
-        if (mCurrentMode == PetConstants.SHARE_MODE_HOST) {
+        if (mCurrentMode == EvaConstants.SHARE_MODE_HOST) {
             new Handler().postDelayed(this::startHostSharingFlow, 3000);
         }
     }
@@ -288,28 +288,28 @@ public class SharingAnchorMode extends BasePetMode {
         int total = mConnectionManager.getTotalConnected();
 
         IConnectionFoundView view = mSharingAnchorViewController.makeView(IConnectionFoundView.class);
-        int pluralsText = mCurrentMode == PetConstants.SHARE_MODE_GUEST ? R.plurals.hosts_found : R.plurals.guests_found;
+        int pluralsText = mCurrentMode == EvaConstants.SHARE_MODE_GUEST ? R.plurals.hosts_found : R.plurals.guests_found;
         view.setStatusText(mResources.getQuantityString(pluralsText, total, total));
         view.show();
     }
 
     private void startHostSharingFlow() {
 
-        showViewHostLookingAtTarget(R.string.center_pet);
+        showViewHostLookingAtTarget(R.string.center_eva);
 
-        // Make the guests wait while host prepare pet anchor
+        // Make the guests wait while host prepare eva anchor
         Log.d(TAG, "Request to show remote view: " + ViewCommand.SHOW_VIEW_LOOKING_AT_TARGET);
         mMessageService.sendViewCommand(new ViewCommand(ViewCommand.SHOW_VIEW_LOOKING_AT_TARGET));
 
-        hostPetAnchor();
+        hostEvaAnchor();
     }
 
-    private void sharePetAnchorWithGuests(SXRAnchor hostedAnchor) {
-        Log.d(TAG, "Sharing pet anchor with guests");
-        CloudAnchor cloudAnchor = new CloudAnchor(hostedAnchor.getCloudAnchorId(), EvaObjectType.PET);
+    private void shareEvaAnchorWithGuests(SXRAnchor hostedAnchor) {
+        Log.d(TAG, "Sharing eva anchor with guests");
+        CloudAnchor cloudAnchor = new CloudAnchor(hostedAnchor.getCloudAnchorId(), EvaObjectType.EVA);
 
-        int requestId = mMessageService.sharePetAnchor(cloudAnchor);
-        mPetAnchorSharingStatusHandler = new PetAnchorSharingStatusHandler(
+        int requestId = mMessageService.shareEvaAnchor(cloudAnchor);
+        mEvaAnchorSharingStatusHandler = new EvaAnchorSharingStatusHandler(
                 mConnectionManager.getTotalConnected(), requestId, hostedAnchor);
     }
 
@@ -319,25 +319,25 @@ public class SharingAnchorMode extends BasePetMode {
         mSharedMixedReality.stopSharing();
 
         // Disconnect from remotes
-        if (mCurrentMode == PetConstants.SHARE_MODE_GUEST) {
+        if (mCurrentMode == EvaConstants.SHARE_MODE_GUEST) {
             mConnectionManager.stopFindInvitationAndDisconnect();
             mConnectionManager.disconnect();
         } else {
             mConnectionManager.stopInvitationAndDisconnect();
         }
 
-        mCurrentMode = PetConstants.SHARE_MODE_NONE;
+        mCurrentMode = EvaConstants.SHARE_MODE_NONE;
         gotToHudView();
 
         Log.d(TAG, "Sharing canceled");
     }
 
     private void gotToHudView() {
-        mPetContext.getSXRContext().runOnGlThread(() -> mBackToHudModeListener.OnBackToHud());
+        mEvaContext.getSXRContext().runOnGlThread(() -> mBackToHudModeListener.OnBackToHud());
     }
 
     private void updateTotalConnectedUI() {
-        if (mCurrentMode == PetConstants.SHARE_MODE_HOST) {
+        if (mCurrentMode == EvaConstants.SHARE_MODE_HOST) {
             IView view = mSharingAnchorViewController.getCurrentView();
             if (view instanceof IWaitingForGuestView) {
                 ((IWaitingForGuestView) view).setTotalConnected(
@@ -347,22 +347,22 @@ public class SharingAnchorMode extends BasePetMode {
     }
 
     private void onNoConnectionFound() {
-        if (mCurrentMode == PetConstants.SHARE_MODE_GUEST) {
+        if (mCurrentMode == EvaConstants.SHARE_MODE_GUEST) {
             mConnectionManager.findInvitationThenConnect();
         }
     }
 
     private void onAllConnectionLost() {
-        String text = mResources.getString(mCurrentMode == PetConstants.SHARE_MODE_GUEST
+        String text = mResources.getString(mCurrentMode == EvaConstants.SHARE_MODE_GUEST
                 ? R.string.view_host_disconnected
                 : R.string.view_guests_disconnected);
         showViewSharingFinished(text);
-        mPetAnchorSharingStatusHandler = null;
+        mEvaAnchorSharingStatusHandler = null;
     }
 
     @SuppressLint("SwitchIntDef")
     @Subscribe
-    public void handleConnectionEvent(PetConnectionEvent message) {
+    public void handleConnectionEvent(EvaConnectionEvent message) {
         switch (message.getType()) {
             case EVENT_CONNECTION_ESTABLISHED:
                 onConnectionEstablished();
@@ -374,8 +374,8 @@ public class SharingAnchorMode extends BasePetMode {
             case EVENT_GUEST_CONNECTION_ESTABLISHED:
             case EVENT_ONE_CONNECTION_LOST:
                 updateTotalConnectedUI();
-                if (mPetAnchorSharingStatusHandler != null) {
-                    mPetAnchorSharingStatusHandler.decrementTotalPending();
+                if (mEvaAnchorSharingStatusHandler != null) {
+                    mEvaAnchorSharingStatusHandler.decrementTotalPending();
                 }
                 break;
             case EVENT_ALL_CONNECTIONS_LOST:
@@ -388,11 +388,11 @@ public class SharingAnchorMode extends BasePetMode {
                 showViewWaitingForHost();
                 break;
             case EVENT_ENABLE_BLUETOOTH_DENIED:
-                Toast.makeText(mPetContext.getActivity(),
+                Toast.makeText(mEvaContext.getActivity(),
                         R.string.bluetooth_disabled, Toast.LENGTH_LONG).show();
                 break;
             case EVENT_HOST_VISIBILITY_DENIED:
-                Toast.makeText(mPetContext.getActivity(),
+                Toast.makeText(mEvaContext.getActivity(),
                         R.string.device_not_visible, Toast.LENGTH_LONG).show();
                 break;
             default:
@@ -415,25 +415,25 @@ public class SharingAnchorMode extends BasePetMode {
     }
 
     @Subscribe
-    public void handleReceivedMessage(PetAnchorReceivedMessage message) {
-        resolvePetAnchor(message);
+    public void handleReceivedMessage(EvaAnchorReceivedMessage message) {
+        resolveEvaAnchor(message);
     }
 
     @Subscribe
     public void handleReceivedMessage(RequestStatusReceivedMessage message) {
-        if (mPetAnchorSharingStatusHandler != null) {
-            mPetAnchorSharingStatusHandler.handle(message.getRequestStatus());
+        if (mEvaAnchorSharingStatusHandler != null) {
+            mEvaAnchorSharingStatusHandler.handle(message.getRequestStatus());
         }
     }
 
-    private class PetAnchorSharingStatusHandler {
+    private class EvaAnchorSharingStatusHandler {
 
         int mTotalPendingStatus;
         int mRequestId;
         SXRAnchor mResolvedAnchor;
         ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();
 
-        PetAnchorSharingStatusHandler(int mTotalPendingStatus, int mRequestId, SXRAnchor resolvedAnchor) {
+        EvaAnchorSharingStatusHandler(int mTotalPendingStatus, int mRequestId, SXRAnchor resolvedAnchor) {
             this.mTotalPendingStatus = mTotalPendingStatus;
             this.mRequestId = mRequestId;
             this.mResolvedAnchor = resolvedAnchor;
@@ -455,10 +455,10 @@ public class SharingAnchorMode extends BasePetMode {
                 mLock.readLock().lock();
                 try {
                     if (mTotalPendingStatus == 0) {
-                        mSharedMixedReality.startSharing(mResolvedAnchor, PetConstants.SHARE_MODE_HOST);
+                        mSharedMixedReality.startSharing(mResolvedAnchor, EvaConstants.SHARE_MODE_HOST);
                         // Sharing succeeded, back host to hud view
                         gotToHudView();
-                        mPetAnchorSharingStatusHandler = null;
+                        mEvaAnchorSharingStatusHandler = null;
                     }
                 } finally {
                     mLock.readLock().unlock();

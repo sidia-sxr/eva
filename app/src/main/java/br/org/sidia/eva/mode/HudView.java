@@ -31,15 +31,15 @@ import com.samsungxr.IViewEvents;
 import com.samsungxr.SXRDrawFrameListener;
 import com.samsungxr.SXRRenderData;
 import com.samsungxr.SXRScene;
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.connection.socket.ConnectionMode;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.util.LayoutViewUtils;
 import com.samsungxr.nodes.SXRViewNode;
 import com.samsungxr.utility.Log;
 
-public class HudView extends BasePetView implements View.OnClickListener {
+public class HudView extends BaseEvaView implements View.OnClickListener {
     private static final String TAG = "HudView";
 
     private View mMenuOptionsHud, mShareAnchorButton, mCameraButton, mCleanButton, mCloseButton, mMenuButton;
@@ -63,33 +63,33 @@ public class HudView extends BasePetView implements View.OnClickListener {
     private boolean mIsActionsButtonActived = false;
     private BounceInterpolator interpolator = new BounceInterpolator(0.1, 20);
 
-    private final PetContext mPetContext;
+    private final EvaContext mEvaContext;
 
     private BounceView bounceView = new BounceView();
 
-    public HudView(PetContext petContext) {
-        super(petContext);
+    public HudView(EvaContext evaContext) {
+        super(evaContext);
 
         // Create a root layout to set the display metrics on it
-        mRootLayout = new LinearLayout(petContext.getActivity());
+        mRootLayout = new LinearLayout(evaContext.getActivity());
         final DisplayMetrics metrics = new DisplayMetrics();
-        petContext.getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-        mPetContext = petContext;
+        evaContext.getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        mEvaContext = evaContext;
         mRootLayout.setLayoutParams(new LinearLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels));
 
-        View.inflate(petContext.getActivity(), R.layout.view_disconnect_sharing, mRootLayout);
+        View.inflate(evaContext.getActivity(), R.layout.view_disconnect_sharing, mRootLayout);
 
         mListener = null;
         mDisconnectListener = null;
-        mStartMenuObject = new SXRViewNode(petContext.getSXRContext(),
+        mStartMenuObject = new SXRViewNode(evaContext.getSXRContext(),
                 R.layout.hud_start_layout, startMenuInitEvents);
-        mSubmenuObject = new SXRViewNode(petContext.getSXRContext(),
+        mSubmenuObject = new SXRViewNode(evaContext.getSXRContext(),
                 R.layout.actions_submenus_layout, startSubmenuInitEvents);
-        mHudMenuObject = new SXRViewNode(petContext.getSXRContext(),
+        mHudMenuObject = new SXRViewNode(evaContext.getSXRContext(),
                 R.layout.hud_menus_layout, hudMenuInitEvents);
-        mConnectedLabel = new SXRViewNode(petContext.getSXRContext(),
+        mConnectedLabel = new SXRViewNode(evaContext.getSXRContext(),
                 R.layout.share_connected_layout, connectButtonInitEvents);
-        mDisconnectViewObject = new SXRViewNode(petContext.getSXRContext(), mRootLayout);
+        mDisconnectViewObject = new SXRViewNode(evaContext.getSXRContext(), mRootLayout);
         mRootLayout.post(() -> {
             disconnectViewInitEvents.onInitView(mDisconnectViewObject, mRootLayout);
             disconnectViewInitEvents.onStartRendering(mDisconnectViewObject, mRootLayout);
@@ -98,8 +98,8 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
     @Override
     protected void onShow(SXRScene mainScene) {
-        mConnectedLabel.setEnable(mPetContext.getMode() != PetConstants.SHARE_MODE_NONE);
-        mStartMenuObject.setEnable(mPetContext.getMode() != PetConstants.SHARE_MODE_GUEST);
+        mConnectedLabel.setEnable(mEvaContext.getMode() != EvaConstants.SHARE_MODE_NONE);
+        mStartMenuObject.setEnable(mEvaContext.getMode() != EvaConstants.SHARE_MODE_GUEST);
         mainScene.getMainCameraRig().addChildObject(this);
     }
 
@@ -153,13 +153,13 @@ public class HudView extends BasePetView implements View.OnClickListener {
             countTime = 0f;
             target = viewNode;
 
-            mPetContext.getSXRContext().registerDrawFrameListener(this);
+            mEvaContext.getSXRContext().registerDrawFrameListener(this);
         }
 
         @Override
         public void onDrawFrame(float d) {
             if (countTime >= DURATION) {
-                mPetContext.getSXRContext().unregisterDrawFrameListener(this);
+                mEvaContext.getSXRContext().unregisterDrawFrameListener(this);
                 target.getTransform().setScale(scaleX, scaleY, scaleZ);
                 target = null;
             } else {
@@ -199,7 +199,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        mPetContext.getSXRContext().runOnGlThread(() -> mListener.onCleanClicked());
+                        mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onCleanClicked());
                         mBounce.setAnimationListener(null);
                     }
 
@@ -219,7 +219,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        mPetContext.getSXRContext().runOnGlThread(() -> mListener.onBoneClicked());
+                        mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onBoneClicked());
                         mBounce.setAnimationListener(null);
                     }
 
@@ -238,7 +238,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        mPetContext.getSXRContext().runOnGlThread(() -> mListener.onBedClicked());
+                        mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onBedClicked());
                         mBounce.setAnimationListener(null);
                     }
 
@@ -257,7 +257,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        mPetContext.getSXRContext().runOnGlThread(() -> mListener.onHydrantClicked());
+                        mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onHydrantClicked());
                         mBounce.setAnimationListener(null);
                     }
 
@@ -276,7 +276,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        mPetContext.getSXRContext().runOnGlThread(() -> mListener.onBowlClicked());
+                        mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onBowlClicked());
                         mBounce.setAnimationListener(null);
                     }
 
@@ -295,7 +295,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        mPetContext.getSXRContext().runOnGlThread(() -> mListener.onShareAnchorClicked());
+                        mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onShareAnchorClicked());
                     }
 
                     @Override
@@ -312,7 +312,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        mPetContext.getSXRContext().runOnGlThread(() -> mListener.onCameraClicked());
+                        mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onCameraClicked());
                     }
 
                     @Override
@@ -321,7 +321,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
                 });
                 break;
             case R.id.btn_connected:
-                mPetContext.getSXRContext().runOnGlThread(() -> mListener.onConnectedClicked());
+                mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onConnectedClicked());
                 break;
             case R.id.btn_actions:
                 mActionsButton.startAnimation(mBounce);
@@ -362,7 +362,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        mPetContext.getSXRContext().runOnGlThread(() -> mListener.onAbout());
+                        mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onAbout());
                         mBounce.setAnimationListener(null);
                     }
 
@@ -382,19 +382,19 @@ public class HudView extends BasePetView implements View.OnClickListener {
     }
 
     public void setStateInMenuButtons() {
-        final int shareMode = mPetContext.getMode();
-        mCleanButton.setEnabled(shareMode == PetConstants.SHARE_MODE_NONE);
-        mCleanButton.setClickable(shareMode == PetConstants.SHARE_MODE_NONE);
+        final int shareMode = mEvaContext.getMode();
+        mCleanButton.setEnabled(shareMode == EvaConstants.SHARE_MODE_NONE);
+        mCleanButton.setClickable(shareMode == EvaConstants.SHARE_MODE_NONE);
     }
 
     public void setStateInActionButtons() {
-        final int shareMode = mPetContext.getMode();
-        mHydrantButton.setEnabled(shareMode == PetConstants.SHARE_MODE_NONE);
-        mHydrantButton.setClickable(shareMode == PetConstants.SHARE_MODE_NONE);
-        mBedButton.setEnabled(shareMode == PetConstants.SHARE_MODE_NONE);
-        mBedButton.setClickable(shareMode == PetConstants.SHARE_MODE_NONE);
-        mBowlButton.setEnabled(shareMode == PetConstants.SHARE_MODE_NONE);
-        mBowlButton.setClickable(shareMode == PetConstants.SHARE_MODE_NONE);
+        final int shareMode = mEvaContext.getMode();
+        mHydrantButton.setEnabled(shareMode == EvaConstants.SHARE_MODE_NONE);
+        mHydrantButton.setClickable(shareMode == EvaConstants.SHARE_MODE_NONE);
+        mBedButton.setEnabled(shareMode == EvaConstants.SHARE_MODE_NONE);
+        mBedButton.setClickable(shareMode == EvaConstants.SHARE_MODE_NONE);
+        mBowlButton.setEnabled(shareMode == EvaConstants.SHARE_MODE_NONE);
+        mBowlButton.setClickable(shareMode == EvaConstants.SHARE_MODE_NONE);
     }
 
     public void closeMenu() {
@@ -427,17 +427,17 @@ public class HudView extends BasePetView implements View.OnClickListener {
             mActionsButton.setOnClickListener(HudView.this);
             mAboutButton.setOnClickListener(HudView.this);
             mAboutButton.setOnClickListener(HudView.this);
-            mOpenMenuHud = AnimationUtils.loadAnimation(mPetContext.getActivity(), R.anim.open);
-            mCloseMenuHud = AnimationUtils.loadAnimation(mPetContext.getActivity(), R.anim.close);
-            mBounce = AnimationUtils.loadAnimation(mPetContext.getActivity(), R.anim.bounce);
+            mOpenMenuHud = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.open);
+            mCloseMenuHud = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.close);
+            mBounce = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.bounce);
             mBounce.setInterpolator(interpolator);
         }
 
         @Override
         public void onStartRendering(SXRViewNode sxrViewNode, View view) {
-            sxrViewNode.setTextureBufferSize(PetConstants.TEXTURE_BUFFER_SIZE);
+            sxrViewNode.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
             sxrViewNode.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
-            LayoutViewUtils.setWorldPosition(mPetContext.getMainScene(),
+            LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
                     sxrViewNode, 593f, 20f, 44f, 270f);
             sxrViewNode.setEnable(false);
             addChildObject(sxrViewNode);
@@ -455,9 +455,9 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
         @Override
         public void onStartRendering(SXRViewNode sxrViewNode, View view) {
-            sxrViewNode.setTextureBufferSize(PetConstants.TEXTURE_BUFFER_SIZE);
+            sxrViewNode.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
             sxrViewNode.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
-            LayoutViewUtils.setWorldPosition(mPetContext.getMainScene(),
+            LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
                     sxrViewNode, 590f, 304f, 48f, 48f);
             addChildObject(sxrViewNode);
         }
@@ -473,7 +473,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
         @Override
         public void onStartRendering(SXRViewNode sxrViewNode, View view) {
             sxrViewNode.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
-            LayoutViewUtils.setWorldPosition(mPetContext.getMainScene(),
+            LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
                     sxrViewNode, 4.0f, 4.0f, 144.0f, 44.0f);
             addChildObject(sxrViewNode);
         }
@@ -492,7 +492,7 @@ public class HudView extends BasePetView implements View.OnClickListener {
 
         @Override
         public void onStartRendering(SXRViewNode sxrViewNode, View view) {
-            sxrViewNode.setTextureBufferSize(PetConstants.TEXTURE_BUFFER_SIZE);
+            sxrViewNode.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
             sxrViewNode.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
             sxrViewNode.getTransform().setPosition(0.0f, 0.0f, -0.74f);
             sxrViewNode.setEnable(false);
@@ -513,15 +513,15 @@ public class HudView extends BasePetView implements View.OnClickListener {
             mHydrantButton.setOnClickListener(HudView.this);
             mBedButton.setOnClickListener(HudView.this);
             mBowlButton.setOnClickListener(HudView.this);
-            mOpenSubmenu = AnimationUtils.loadAnimation(mPetContext.getActivity(), R.anim.open);
-            mCloseSubmenu = AnimationUtils.loadAnimation(mPetContext.getActivity(), R.anim.close);
+            mOpenSubmenu = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.open);
+            mCloseSubmenu = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.close);
         }
 
         @Override
         public void onStartRendering(SXRViewNode sxrViewNode, View view) {
-            sxrViewNode.setTextureBufferSize(PetConstants.TEXTURE_BUFFER_SIZE);
+            sxrViewNode.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
             sxrViewNode.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
-            LayoutViewUtils.setWorldPosition(mPetContext.getMainScene(),
+            LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
                     sxrViewNode, 522f, 69f, 90f, 90f);
             addChildObject(sxrViewNode);
         }

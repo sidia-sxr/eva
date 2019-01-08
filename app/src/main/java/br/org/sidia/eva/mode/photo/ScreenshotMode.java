@@ -50,16 +50,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import br.org.sidia.eva.BuildConfig;
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.context.ActivityResultEvent;
 import br.org.sidia.eva.context.RequestPermissionResultEvent;
-import br.org.sidia.eva.mode.BasePetMode;
+import br.org.sidia.eva.mode.BaseEvaMode;
 import br.org.sidia.eva.mode.OnBackToHudModeListener;
 import br.org.sidia.eva.util.EventBusUtils;
 import br.org.sidia.eva.util.StorageUtils;
 
-public class ScreenshotMode extends BasePetMode {
+public class ScreenshotMode extends BaseEvaMode {
 
     private static final String TAG = ScreenshotMode.class.getSimpleName();
 
@@ -87,8 +87,8 @@ public class ScreenshotMode extends BasePetMode {
     private @interface SocialAppId {
     }
 
-    public ScreenshotMode(PetContext petContext, OnBackToHudModeListener listener) {
-        super(petContext, new PhotoViewController(petContext));
+    public ScreenshotMode(EvaContext evaContext, OnBackToHudModeListener listener) {
+        super(evaContext, new PhotoViewController(evaContext));
         mBackToHudModeListener = listener;
         mPhotoViewController = (PhotoViewController) mModeScene;
     }
@@ -131,8 +131,8 @@ public class ScreenshotMode extends BasePetMode {
     }
 
     private void backToHudView() {
-        mPetContext.getSXRContext().runOnGlThread(() -> {
-            mPetContext.getPlaneHandler().getSelectedPlane().setEnable(true);
+        mEvaContext.getSXRContext().runOnGlThread(() -> {
+            mEvaContext.getPlaneHandler().getSelectedPlane().setEnable(true);
             mBackToHudModeListener.OnBackToHud();
         });
     }
@@ -154,11 +154,11 @@ public class ScreenshotMode extends BasePetMode {
     private void takePhoto() {
         try {
             mSavedFile = null;
-            mPetContext.getPlaneHandler().getSelectedPlane().setEnable(false);
-            mPetContext.getSXRContext().captureScreenCenter(this::onPhotoCaptured);
+            mEvaContext.getPlaneHandler().getSelectedPlane().setEnable(false);
+            mEvaContext.getSXRContext().captureScreenCenter(this::onPhotoCaptured);
         } catch (Throwable t) {
             Log.e(TAG, "Error taking photo", t);
-            mPetContext.getPlaneHandler().getSelectedPlane().setEnable(true);
+            mEvaContext.getPlaneHandler().getSelectedPlane().setEnable(true);
         }
     }
 
@@ -195,7 +195,7 @@ public class ScreenshotMode extends BasePetMode {
         mSavedFile = file;
 
         // Scan file to make it available on gallery immediately
-        MediaScannerConnection.scanFile(mPetContext.getActivity(),
+        MediaScannerConnection.scanFile(mEvaContext.getActivity(),
                 new String[]{mSavedFile.toString()}, null,
                 (path, uri) -> {
                 });
@@ -207,11 +207,11 @@ public class ScreenshotMode extends BasePetMode {
 
     private void requestStoragePermission(OnStoragePermissionGranted callback) {
         mPermissionCallback = callback;
-        mPetContext.getActivity().requestPermissions(PERMISSION_STORAGE, REQUEST_STORAGE_PERMISSION);
+        mEvaContext.getActivity().requestPermissions(PERMISSION_STORAGE, REQUEST_STORAGE_PERMISSION);
     }
 
     private boolean hasStoragePermission() {
-        return ContextCompat.checkSelfPermission(mPetContext.getActivity(), PERMISSION_STORAGE[0])
+        return ContextCompat.checkSelfPermission(mEvaContext.getActivity(), PERMISSION_STORAGE[0])
                 == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -233,7 +233,7 @@ public class ScreenshotMode extends BasePetMode {
             if (hasStoragePermission()) {
                 mPermissionCallback.onGranted();
             } else {
-                if (mPetContext.getActivity().shouldShowRequestPermissionRationale(PERMISSION_STORAGE[0])) {
+                if (mEvaContext.getActivity().shouldShowRequestPermissionRationale(PERMISSION_STORAGE[0])) {
                     backToHudView();
                     showToastPermissionDenied();
                 } else {
@@ -245,12 +245,12 @@ public class ScreenshotMode extends BasePetMode {
     }
 
     private void showToastPermissionDenied() {
-        Toast.makeText(mPetContext.getActivity(),
+        Toast.makeText(mEvaContext.getActivity(),
                 "Storage access not allowed", Toast.LENGTH_LONG).show();
     }
 
     private void openAppPermissionsSettings() {
-        Activity context = mPetContext.getActivity();
+        Activity context = mEvaContext.getActivity();
         Intent intent = new Intent(
                 Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + context.getPackageName()));
@@ -266,12 +266,12 @@ public class ScreenshotMode extends BasePetMode {
             } else {
                 intent.setPackage(info.mPackageName);
             }
-            mPetContext.getActivity().startActivity(intent);
+            mEvaContext.getActivity().startActivity(intent);
         }
     }
 
     private Intent createIntent() {
-        Activity context = mPetContext.getActivity();
+        Activity context = mEvaContext.getActivity();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_STREAM,
                 FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, mSavedFile));
@@ -290,7 +290,7 @@ public class ScreenshotMode extends BasePetMode {
     }
 
     private void installApp(String appName) {
-        Activity context = mPetContext.getActivity();
+        Activity context = mEvaContext.getActivity();
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName));
             intent.setPackage("com.android.vending");
@@ -302,7 +302,7 @@ public class ScreenshotMode extends BasePetMode {
     }
 
     private boolean isAppInstalled(String packageName) {
-        Activity context = mPetContext.getActivity();
+        Activity context = mEvaContext.getActivity();
         try {
             context.getPackageManager().getApplicationInfo(packageName, 0);
             return true;
@@ -313,7 +313,7 @@ public class ScreenshotMode extends BasePetMode {
 
     private void loadSounds() {
         AsyncExecutor.create().execute(() -> {
-            mPetContext.getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
+            mEvaContext.getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
             AudioAttributes audioAttributes = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -331,7 +331,7 @@ public class ScreenshotMode extends BasePetMode {
 
     private void playClickSound() {
 
-        AudioManager audioManager = (AudioManager) mPetContext.getActivity().getSystemService(Context.AUDIO_SERVICE);
+        AudioManager audioManager = (AudioManager) mEvaContext.getActivity().getSystemService(Context.AUDIO_SERVICE);
         float vol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         float maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         float leftVolume = vol / maxVol;

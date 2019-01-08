@@ -22,7 +22,7 @@ import android.support.annotation.StringDef;
 
 import br.org.sidia.eva.manager.cloud.anchor.CloudAnchor;
 import br.org.sidia.eva.service.data.BallCommand;
-import br.org.sidia.eva.service.data.PetActionCommand;
+import br.org.sidia.eva.service.data.EvaActionCommand;
 import br.org.sidia.eva.service.data.RequestStatus;
 import br.org.sidia.eva.service.data.ViewCommand;
 import br.org.sidia.eva.service.share.SharedObjectPose;
@@ -32,33 +32,33 @@ import java.lang.annotation.RetentionPolicy;
 
 public interface IMessageService {
 
-    String MESSAGE_TYPE_PET_ANCHOR = "MESSAGE_TYPE_PET_ANCHOR";
+    String MESSAGE_TYPE_EVA_ANCHOR = "MESSAGE_TYPE_EVA_ANCHOR";
     String MESSAGE_TYPE_VIEW_COMMAND = "MESSAGE_TYPE_VIEW_COMMAND";
     String MESSAGE_TYPE_BALL_COMMAND = "MESSAGE_TYPE_BALL_COMMAND";
-    String MESSAGE_TYPE_PET_ACTION_COMMAND = "MESSAGE_TYPE_PET_ACTION_COMMAND";
+    String MESSAGE_TYPE_EVA_ACTION_COMMAND = "MESSAGE_TYPE_EVA_ACTION_COMMAND";
     String MESSAGE_TYPE_UPDATE_POSES = "MESSAGE_TYPE_UPDATE_POSES";
     String MESSAGE_TYPE_REQUEST_STATUS = "MESSAGE_TYPE_REQUEST_STATUS";
 
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
-            MESSAGE_TYPE_PET_ANCHOR,
+            MESSAGE_TYPE_EVA_ANCHOR,
             MESSAGE_TYPE_VIEW_COMMAND,
             MESSAGE_TYPE_BALL_COMMAND,
-            MESSAGE_TYPE_PET_ACTION_COMMAND,
+            MESSAGE_TYPE_EVA_ACTION_COMMAND,
             MESSAGE_TYPE_UPDATE_POSES,
             MESSAGE_TYPE_REQUEST_STATUS
     })
     @interface MessageType {
     }
 
-    int sharePetAnchor(@NonNull CloudAnchor petAnchor);
+    int shareEvaAnchor(@NonNull CloudAnchor anchor);
 
     void sendViewCommand(@NonNull ViewCommand command);
 
     void sendBallCommand(@NonNull BallCommand command);
 
-    void sendPetActionCommand(@NonNull PetActionCommand command);
+    void sendEvaActionCommand(@NonNull EvaActionCommand command);
 
     void updatePoses(@NonNull SharedObjectPose[] poses);
 

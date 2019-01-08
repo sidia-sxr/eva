@@ -16,21 +16,21 @@
 package br.org.sidia.eva.mode;
 
 import com.samsungxr.SXRCameraRig;
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import com.samsungxr.utility.Log;
 
-public abstract class BasePetMode implements IPetMode {
+public abstract class BaseEvaMode implements IEvaMode {
     protected final String TAG;
 
-    protected final PetContext mPetContext;
-    protected final IPetView mModeScene;
+    protected final EvaContext mEvaContext;
+    protected final IEvaView mModeScene;
     protected ILoadEvents mLoadListener;
     protected boolean mIsRunning;
     protected boolean mIsLoaded;
 
-    public BasePetMode(PetContext petContext, IPetView sceneMode) {
+    public BaseEvaMode(EvaContext evaContext, IEvaView sceneMode) {
         TAG = getClass().getSimpleName();
-        mPetContext = petContext;
+        mEvaContext = evaContext;
         mModeScene = sceneMode;
         mLoadListener = null;
         mIsRunning = false;
@@ -40,7 +40,7 @@ public abstract class BasePetMode implements IPetMode {
     @Override
     public void enter() {
         Log.w(TAG, "enter");
-        mModeScene.show(mPetContext.getMainScene());
+        mModeScene.show(mEvaContext.getMainScene());
         onEnter();
 
         mIsRunning = true;
@@ -49,7 +49,7 @@ public abstract class BasePetMode implements IPetMode {
     @Override
     public void exit() {
         Log.w(TAG, "exit");
-        mModeScene.hide(mPetContext.getMainScene());
+        mModeScene.hide(mEvaContext.getMainScene());
         onExit();
 
         mIsRunning = false;
@@ -68,12 +68,12 @@ public abstract class BasePetMode implements IPetMode {
     }
 
     @Override
-    public IPetView view() {
+    public IEvaView view() {
         return mModeScene;
     }
 
     public void handleOrientation() {
-        onHandleOrientation(mPetContext.getMainScene().getMainCameraRig());
+        onHandleOrientation(mEvaContext.getMainScene().getMainCameraRig());
     }
 
     public boolean isRunning() {

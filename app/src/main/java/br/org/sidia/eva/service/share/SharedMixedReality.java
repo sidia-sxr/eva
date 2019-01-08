@@ -7,9 +7,10 @@ import android.util.Log;
 import com.samsungxr.SXREventReceiver;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRPicker;
-import br.org.sidia.eva.PetContext;
+
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.service.IMessageService;
 import br.org.sidia.eva.service.MessageService;
 import br.org.sidia.eva.service.event.UpdatePosesReceivedMessage;
@@ -39,24 +40,24 @@ public class SharedMixedReality implements IMixedReality {
     public static final int GUEST = 2;
 
     private final IMixedReality mMixedReality;
-    private final PetContext mPetContext;
+    private final EvaContext mEvaContext;
     private final List<SharedSceneObject> mSharedSceneObjects;
     private final IMessageService mMessageService;
     private SXREventReceiver mListeners;
 
-    @PetConstants.ShareMode
-    private int mMode = PetConstants.SHARE_MODE_NONE;
+    @EvaConstants.ShareMode
+    private int mMode = EvaConstants.SHARE_MODE_NONE;
     private SXRAnchor mSharedAnchor = null;
     private SXRNode mSharedAnchorObject = null;
     private float[] mSpaceMatrix = new float[16];
 
-    public SharedMixedReality(PetContext petContext) {
-        mMixedReality = new SXRMixedReality(petContext.getMainScene(), true);
-        mPetContext = petContext;
+    public SharedMixedReality(EvaContext evaContext) {
+        mMixedReality = new SXRMixedReality(evaContext.getMainScene(), true);
+        mEvaContext = evaContext;
         mSharedSceneObjects = new ArrayList<>();
         mMessageService = MessageService.getInstance();
         Matrix.setIdentityM(mSpaceMatrix, 0);
-        mSharedAnchorObject = new SXRNode(petContext.getSXRContext());
+        mSharedAnchorObject = new SXRNode(evaContext.getSXRContext());
     }
 
     @Override
@@ -77,12 +78,12 @@ public class SharedMixedReality implements IMixedReality {
     /**
      * Starts the sharing mode
      *
-     * @param mode {@link PetConstants#SHARE_MODE_HOST} or {@link PetConstants#SHARE_MODE_GUEST}
+     * @param mode {@link EvaConstants#SHARE_MODE_HOST} or {@link EvaConstants#SHARE_MODE_GUEST}
      */
-    public void startSharing(SXRAnchor sharedAnchor, @PetConstants.ShareMode int mode) {
+    public void startSharing(SXRAnchor sharedAnchor, @EvaConstants.ShareMode int mode) {
         Log.d(TAG, "startSharing => " + mode);
 
-        if (mMode != PetConstants.SHARE_MODE_NONE) {
+        if (mMode != EvaConstants.SHARE_MODE_NONE) {
             return;
         }
 
@@ -93,8 +94,8 @@ public class SharedMixedReality implements IMixedReality {
 
         mMode = mode;
 
-        if (mode == PetConstants.SHARE_MODE_HOST) {
-            mPetContext.runOnPetThread(mSharingLoop);
+        if (mode == EvaConstants.SHARE_MODE_HOST) {
+            mEvaContext.runOnEvaThread(mSharingLoop);
         } else {
             startGuest();
         }
@@ -103,10 +104,10 @@ public class SharedMixedReality implements IMixedReality {
     public void stopSharing() {
         EventBusUtils.unregister(this);
         mSharedAnchorObject.detachComponent(SXRAnchor.getComponentType());
-        if (mMode == PetConstants.SHARE_MODE_GUEST) {
+        if (mMode == EvaConstants.SHARE_MODE_GUEST) {
             stopGuest();
         }
-        mMode = PetConstants.SHARE_MODE_NONE;
+        mMode = EvaConstants.SHARE_MODE_NONE;
     }
 
     public SXRAnchor getSharedAnchor() {
@@ -123,7 +124,7 @@ public class SharedMixedReality implements IMixedReality {
         shared.parent = shared.object.getParent();
         if (shared.parent != null) {
             shared.parent.removeChildObject(shared.object);
-            mPetContext.getMainScene().addNode(shared.object);
+            mEvaContext.getMainScene().addNode(shared.object);
         }
     }
 
@@ -134,11 +135,11 @@ public class SharedMixedReality implements IMixedReality {
             shared = iterator.next();
             if (shared.parent != null) {
                 shared.object.getTransform().setModelMatrix(shared.localMtx);
-                mPetContext.getMainScene().removeNode(shared.object);
+                mEvaContext.getMainScene().removeNode(shared.object);
                 shared.parent.addChildObject(shared.object);
             }
         }
-        mPetContext.getPlaneHandler().resetPlanes();
+        mEvaContext.getPlaneHandler().resetPlanes();
     }
 
     public synchronized void registerSharedObject(SXRNode object, @EvaObjectType String type,
@@ -152,7 +153,7 @@ public class SharedMixedReality implements IMixedReality {
 
         SharedSceneObject newShared = new SharedSceneObject(type, object);
         newShared.repeat = repeat;
-        if (mMode == PetConstants.SHARE_MODE_GUEST) {
+        if (mMode == EvaConstants.SHARE_MODE_GUEST) {
             initAsGuest(newShared);
         }
         mSharedSceneObjects.add(newShared);
@@ -256,7 +257,7 @@ public class SharedMixedReality implements IMixedReality {
         return mMixedReality.acquirePointCloud();
     }
 
-    @PetConstants.ShareMode
+    @EvaConstants.ShareMode
     public int getMode() {
         return mMode;
     }
@@ -302,9 +303,9 @@ public class SharedMixedReality implements IMixedReality {
 
         @Override
         public void run() {
-            if (mMode != PetConstants.SHARE_MODE_NONE) {
+            if (mMode != EvaConstants.SHARE_MODE_NONE) {
                 sendSharedSceneObjects();
-                mPetContext.runDelayedOnPetThread(this, LOOP_TIME);
+                mEvaContext.runDelayedOnEvaThread(this, LOOP_TIME);
             }
         }
     };

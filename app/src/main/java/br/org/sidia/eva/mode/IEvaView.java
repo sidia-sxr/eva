@@ -15,8 +15,14 @@
  *
  */
 
-package br.org.sidia.eva.movement;
+package br.org.sidia.eva.mode;
 
-public interface OnPetActionListener {
-    void onActionEnd(IPetAction action, boolean success);
+import com.samsungxr.SXRScene;
+
+public interface IEvaView {
+    void show(SXRScene mainScene);
+    void hide(SXRScene mainScene);
+
+    void load(ILoadEvents listener);
+    void unload();
 }

@@ -17,7 +17,7 @@
 
 package br.org.sidia.eva.mode.sharinganchor.view.impl;
 
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.mode.sharinganchor.view.IConnectionFoundView;
 import br.org.sidia.eva.mode.sharinganchor.view.IGuestLookingAtTargetView;
@@ -32,8 +32,8 @@ import br.org.sidia.eva.view.shared.IConnectionFinishedView;
 
 public class SharingAnchorViewController extends BaseViewController {
 
-    public SharingAnchorViewController(PetContext petContext) {
-        super(petContext);
+    public SharingAnchorViewController(EvaContext evaContext) {
+        super(evaContext);
         registerView(ILetsStartView.class, R.layout.view_lets_start, LetsStartView.class);
         registerView(IWaitingForHostView.class, R.layout.view_waiting_for_host, WaitingForHostView.class);
         registerView(IWaitingForGuestView.class, R.layout.view_waiting_for_guests, WaitingForGuestView.class);

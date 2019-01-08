@@ -35,15 +35,15 @@ import com.samsungxr.animation.SXRAnimator;
 import com.samsungxr.animation.SXRAvatar;
 import com.samsungxr.animation.SXRRepeatMode;
 import com.samsungxr.animation.SXRSkeleton;
-import br.org.sidia.eva.PetContext;
+import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.constant.PetConstants;
+import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.gesture.OnScaleListener;
 import br.org.sidia.eva.gesture.ScalableObject;
 import br.org.sidia.eva.gesture.impl.ScaleGestureDetector;
 import br.org.sidia.eva.mode.ILoadEvents;
-import br.org.sidia.eva.mode.IPetView;
+import br.org.sidia.eva.mode.IEvaView;
 import br.org.sidia.eva.shaders.SXRTiledMaskShader;
 import br.org.sidia.eva.util.LoadModelHelper;
 import com.samsungxr.utility.Log;
@@ -56,7 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterView extends SXRNode implements
-        IPetView,
+        IEvaView,
         ScalableObject {
 
     private final String TAG = getClass().getSimpleName();
@@ -67,20 +67,20 @@ public class CharacterView extends SXRNode implements
     private float[] mPlaneCenterPose = new float[16];
     private SXRNode mShadow;
     private SXRNode mInfinityPlan;
-    public final static String PET_COLLIDER = "corpo_GEO";  // From 3D model
-    private final PetContext mPetContext;
+    public final static String EVA_COLLIDER = "corpo_GEO";  // From 3D model
+    private final EvaContext mEvaContext;
     private SXRNode m3DModel;
-    private SXRAvatar mPetAvatar;
+    private SXRAvatar mEvaAvatar;
     private String mBoneMap;
     protected ILoadEvents mLoadListener = null;
     private SXRNode mTapObject;
     private SXRNode mGrabbingPivot = null;
 
-    CharacterView(@NonNull PetContext petContext) {
-        super(petContext.getSXRContext());
+    CharacterView(@NonNull EvaContext evaContext) {
+        super(evaContext.getSXRContext());
 
-        mPetContext = petContext;
-        mTapObject = new SXRNode(mPetContext.getSXRContext());
+        mEvaContext = evaContext;
+        mTapObject = new SXRNode(mEvaContext.getSXRContext());
         mTapObject.getTransform().setScale(0.01f, 0.01f, 0.01f);
     }
 
@@ -93,8 +93,8 @@ public class CharacterView extends SXRNode implements
     }
 
     public SXRAnimator getAnimation(int i) {
-        if (mPetAvatar != null && mPetAvatar.getAnimationCount() > i) {
-            return mPetAvatar.getAnimation(i);
+        if (mEvaAvatar != null && mEvaAvatar.getAnimationCount() > i) {
+            return mEvaAvatar.getAnimation(i);
         }
 
         return null;
@@ -110,7 +110,7 @@ public class CharacterView extends SXRNode implements
     private void createShadow() {
         final SXRContext sxrContext = getSXRContext();
         SXRTexture tex = sxrContext.getAssetLoader().loadTexture(
-                new SXRAndroidResource(sxrContext, R.drawable.pet_shadow));
+                new SXRAndroidResource(sxrContext, R.drawable.eva_shadow));
         SXRMaterial mat = new SXRMaterial(sxrContext);
         mat.setMainTexture(tex);
         mShadow = new SXRNode(sxrContext, 0.3f, 0.6f);
@@ -168,7 +168,7 @@ public class CharacterView extends SXRNode implements
     }
 
     public boolean updatePose(float[] poseMatrix) {
-        if (mPetContext.getMode() != PetConstants.SHARE_MODE_GUEST) {
+        if (mEvaContext.getMode() != EvaConstants.SHARE_MODE_GUEST) {
             float[] planeModel = mBoundaryPlane.getTransform().getModelMatrix();
             Vector3f centerPlane = new Vector3f(planeModel[12], planeModel[13], planeModel[14]);
             poseMatrix[13] = planeModel[13] + 2;
@@ -177,8 +177,8 @@ public class CharacterView extends SXRNode implements
             if (!infinityPlane) {
                 SXRPicker.SXRPickedObject pickedObject = SXRPicker.pickNode(mBoundaryPlane,
                         0, 0, 0, poseMatrix[12], poseMatrix[13], poseMatrix[14]);
-                float[] petModel = getTransform().getModelMatrix();
-                if (pickedObject == null && centerPlane.distance(petModel[12], petModel[13], petModel[14])
+                float[] evaModel = getTransform().getModelMatrix();
+                if (pickedObject == null && centerPlane.distance(evaModel[12], evaModel[13], evaModel[14])
                         < centerPlane.distance(poseMatrix[12], poseMatrix[13], poseMatrix[14])) {
                     return false;
                 }
@@ -193,11 +193,11 @@ public class CharacterView extends SXRNode implements
     public void setBoundaryPlane(SXRNode boundary) {
         if (mBoundaryPlane != null) {
             mBoundaryPlane.removeChildObject(mTapObject);
-            mPetContext.unregisterSharedObject(mBoundaryPlane);
+            mEvaContext.unregisterSharedObject(mBoundaryPlane);
         }
 
         boundary.addChildObject(mTapObject);
-        mPetContext.registerSharedObject(boundary, EvaObjectType.PLANE);
+        mEvaContext.registerSharedObject(boundary, EvaObjectType.PLANE);
 
         mPlaneCenterPose = boundary.getTransform().getModelMatrix();
         mBoundaryPlane = boundary;
@@ -268,12 +268,12 @@ public class CharacterView extends SXRNode implements
 
         // createInfinityPlan();
 
-        mBoneMap = LoadModelHelper.readFile(sxrContext, LoadModelHelper.PET_BONES_MAP_PATH);
-        mPetAvatar = new SXRAvatar(sxrContext, "PetModel");
-        mPetAvatar.getEventReceiver().addListener(mAvatarListener);
+        mBoneMap = LoadModelHelper.readFile(sxrContext, LoadModelHelper.EVA_BONES_MAP_PATH);
+        mEvaAvatar = new SXRAvatar(sxrContext, "EvaModel");
+        mEvaAvatar.getEventReceiver().addListener(mAvatarListener);
         try
         {
-            mPetAvatar.loadModel(new SXRAndroidResource(sxrContext, LoadModelHelper.PET_MODEL_PATH));
+            mEvaAvatar.loadModel(new SXRAndroidResource(sxrContext, LoadModelHelper.EVA_MODEL_PATH));
         }
         catch (IOException e)
         {
@@ -290,7 +290,7 @@ public class CharacterView extends SXRNode implements
     }
 
     /**
-     * Sets the initial scale according to the distance between the pet and camera
+     * Sets the initial scale according to the distance between the Eva and camera
      */
     public void setInitialScale() {
         Vector3f vectorDistance = new Vector3f();
@@ -307,9 +307,9 @@ public class CharacterView extends SXRNode implements
 
     public SXRNode getGrabPivot() {
         if (mGrabbingPivot == null) {
-            int i = mPetAvatar.getSkeleton().getBoneIndex(LoadModelHelper.PET_GRAB_PIVOT);
-            if (!(i < 0) && i < mPetAvatar.getSkeleton().getNumBones()) {
-                mGrabbingPivot = mPetAvatar.getSkeleton().getBone(i);
+            int i = mEvaAvatar.getSkeleton().getBoneIndex(LoadModelHelper.EVA_GRAB_PIVOT);
+            if (!(i < 0) && i < mEvaAvatar.getSkeleton().getNumBones()) {
+                mGrabbingPivot = mEvaAvatar.getSkeleton().getBone(i);
             }
         }
 
@@ -355,17 +355,17 @@ public class CharacterView extends SXRNode implements
         int i = 0;
         try
         {
-            for (i = 0; i < LoadModelHelper.PET_ANIMATIONS_PATH.length; i++) {
+            for (i = 0; i < LoadModelHelper.EVA_ANIMATIONS_PATH.length; i++) {
                 SXRAndroidResource res = new SXRAndroidResource(sxrContext,
-                        LoadModelHelper.PET_ANIMATIONS_PATH[i]);
-                mPetAvatar.loadAnimation(res, mBoneMap);
+                        LoadModelHelper.EVA_ANIMATIONS_PATH[i]);
+                mEvaAvatar.loadAnimation(res, mBoneMap);
             }
         }
         catch (IOException ex)
         {
             ex.printStackTrace();
             Log.e(TAG, "Animation could not be loaded from "
-                    + LoadModelHelper.PET_ANIMATIONS_PATH[i]);
+                    + LoadModelHelper.EVA_ANIMATIONS_PATH[i]);
 
             if (mLoadListener != null) {
                 mLoadListener.onFailure();
@@ -374,8 +374,8 @@ public class CharacterView extends SXRNode implements
     }
 
     private void setDefaultScaleAndPosition() {
-        m3DModel.getTransform().setScale(PetConstants.MODEL3D_DEFAULT_SCALE,
-                PetConstants.MODEL3D_DEFAULT_SCALE, PetConstants.MODEL3D_DEFAULT_SCALE);
+        m3DModel.getTransform().setScale(EvaConstants.MODEL3D_DEFAULT_SCALE,
+                EvaConstants.MODEL3D_DEFAULT_SCALE, EvaConstants.MODEL3D_DEFAULT_SCALE);
         m3DModel.getTransform().setPosition(0, 0.2f, 0);
     }
 
@@ -403,11 +403,11 @@ public class CharacterView extends SXRNode implements
 
                         setDefaultScaleAndPosition();
 
-                        // Get the pet's body from 3D model
-                        SXRNode body = m3DModel.getNodeByName(PET_COLLIDER);
+                        // Get the eva's body from 3D model
+                        SXRNode body = m3DModel.getNodeByName(EVA_COLLIDER);
                         if (body != null) {
                             // Create a mesh collider and attach it to the body
-                            body.attachCollider(new SXRMeshCollider(mPetContext.getSXRContext(), true));
+                            body.attachCollider(new SXRMeshCollider(mEvaContext.getSXRContext(), true));
                         }
                         CharacterView.this.addChildObject(m3DModel);
                     }
@@ -430,14 +430,14 @@ public class CharacterView extends SXRNode implements
             animation.setRepeatMode(SXRRepeatMode.REPEATED);
             animation.setSpeed(1f);
             /*
-            if (!mPetAvatar.isRunning())
+            if (!mEvaAvatar.isRunning())
             {
-                mPetAvatar.startAll(GVRRepeatMode.REPEATED);
+                mEvaAvatar.startAll(GVRRepeatMode.REPEATED);
 
             }*/
-            //mPetAvatar.start(animation.getName());
+            //mEvaAvatar.start(animation.getName());
 
-            if (contAnim == LoadModelHelper.PET_ANIMATIONS_PATH.length) {
+            if (contAnim == LoadModelHelper.EVA_ANIMATIONS_PATH.length) {
                 if (mLoadListener != null) {
                     mLoadListener.onSuccess();
                 }
