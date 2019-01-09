@@ -31,23 +31,19 @@
 
     <TextView
         android:id="@+id/text_total"
+        style="@style/StatusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8.8dp"
-        android:fontFamily="@font/roboto_bold"
-        android:includeFontPadding="false"
         android:text="00"
-        android:textColor="#FFFFFF"
         android:textSize="15sp" />
 
     <TextView
         android:id="@+id/text_guests"
+        style="@style/StatusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_light"
-        android:includeFontPadding="false"
         android:text="guest"
-        android:textColor="#FFFFFF"
         android:textSize="15sp" />
 
 </LinearLayout>

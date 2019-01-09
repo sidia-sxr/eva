@@ -22,23 +22,15 @@
     android:background="@drawable/bg_overlay"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ImageView
         android:id="@+id/button_back"
         android:layout_width="49.9dp"
         android:layout_height="49.9dp"
         android:layout_marginStart="26dp"
         android:layout_marginTop="19.5dp"
-        android:background="@drawable/bg_menu"
         android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="20.5dp"
-            android:layout_height="20.5dp"
-            android:src="@drawable/icon_back_sharing"
-            tools:ignore="ContentDescription" />
-
-    </LinearLayout>
+        android:orientation="vertical"
+        android:src="@drawable/ic_back_sharing_anchor" />
 
     <LinearLayout
         android:layout_width="match_parent"
