@@ -6,6 +6,12 @@ android.applicationVariants.all { variant ->
     }
 }
 
+def useLocalDependencies() {
+    return project.hasProperty("useLocalDependencies") && new Boolean(project.useLocalDependencies)
+}
+
+def sxrSDK = getPropertyOrDefault("SXR_SDK", null)
+
 allprojects {
     repositories {
         google()
@@ -15,6 +21,11 @@ allprojects {
         }
         maven {
             url "http://google.bintray.com/googlevr"
+        }
+        if (sxrSDK != null && useLocalDependencies()) {
+            flatDir {
+                dirs sxrSDK
+            }
         }
     }
 }
@@ -69,12 +80,41 @@ ext.sxrVersion = '5.0.1-SNAPSHOT'
 project.ext.jomlVersion = "1.9.3-SNAPSHOT"
 
 dependencies {
+    // ARCore library
+    implementation "com.google.ar:core:1.5.0"
     implementation "org.joml:joml-android:${jomlVersion}"
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
-    implementation "com.samsungxr:sxrsdk:$sxrVersion"
-    implementation "com.samsungxr:MixedReality:$sxrVersion"
-    implementation "com.samsungxr:sxr-physics:$sxrVersion"
 
-    monoscopicImplementation "com.samsungxr:backend_monoscopic:$sxrVersion"
+    if (useLocalDependencies()) {
+        if (findProject(':sxrsdk')) {
+            implementation project(':sxrsdk')
+        } else {
+            debugImplementation(name: 'sxrsdk-debug', ext: 'aar')
+            releaseImplementation(name: 'sxrsdk-release', ext: 'aar')
+        }
+        if (findProject(':backend_monoscopic')) {
+            monoscopicImplementation project(':backend_monoscopic')
+        } else {
+            monoscopicImplementation(':backend_monoscopic-release@aar')
+        }
+        if (findProject(':MixedReality')) {
+            implementation project(':MixedReality')
+        } else {
+            debugImplementation(name: 'MixedReality-debug', ext: 'aar')
+            releaseImplementation(name: 'MixedReality-release', ext: 'aar')
+        }
+        if (findProject(':sxr-physics')) {
+            implementation project(':sxr-physics')
+        } else {
+            debugImplementation(name: 'sxr-physics-debug', ext: 'aar')
+            releaseImplementation(name: 'sxr-physics-release', ext: 'aar')
+        }
+
+    } else {
+        implementation "com.samsungxr:sxrsdk:$sxrVersion"
+        implementation "com.samsungxr:MixedReality:$sxrVersion"
+        implementation "com.samsungxr:sxr-physics:$sxrVersion"
+        monoscopicImplementation "com.samsungxr:backend_monoscopic:$sxrVersion"
+    }
 }
