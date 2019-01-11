@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="8.8dp"
-            android:fontFamily="samsungone_400"
             android:text="00"
             android:textSize="10sp"
             tools:ignore="SmallSp" />
@@ -53,7 +52,6 @@
             android:layout_marginStart="2dp"
             android:layout_marginTop="8.8dp"
             android:layout_toEndOf="@id/text_total"
-            android:fontFamily="@font/samsung_one_500"
             android:text="GUEST"
             android:textAllCaps="true"
             android:textSize="10sp"

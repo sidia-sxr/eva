@@ -26,17 +26,24 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.samsungxr.SXRCameraRig;
+import com.samsungxr.mixedreality.SXRAnchor;
+
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
-import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.manager.cloud.anchor.CloudAnchor;
 import br.org.sidia.eva.manager.cloud.anchor.CloudAnchorManager;
 import br.org.sidia.eva.manager.cloud.anchor.ManagedAnchor;
 import br.org.sidia.eva.manager.cloud.anchor.exception.CloudAnchorException;
 import br.org.sidia.eva.manager.cloud.anchor.exception.NetworkException;
-import br.org.sidia.eva.manager.connection.IEvaConnectionManager;
 import br.org.sidia.eva.manager.connection.EvaConnectionManager;
+import br.org.sidia.eva.manager.connection.IEvaConnectionManager;
 import br.org.sidia.eva.manager.connection.event.EvaConnectionEvent;
 import br.org.sidia.eva.mode.BaseEvaMode;
 import br.org.sidia.eva.mode.OnBackToHudModeListener;
@@ -59,12 +66,6 @@ import br.org.sidia.eva.service.share.SharedMixedReality;
 import br.org.sidia.eva.util.EventBusUtils;
 import br.org.sidia.eva.view.IView;
 import br.org.sidia.eva.view.shared.IConnectionFinishedView;
-import com.samsungxr.mixedreality.SXRAnchor;
-
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
 import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_CONNECTION_ESTABLISHED;
@@ -150,7 +151,7 @@ public class SharingAnchorMode extends BaseEvaMode {
         showViewHostLookingAtTarget(stringId, null);
     }
 
-        private void showViewGuestLookingAtTarget() {
+    private void showViewGuestLookingAtTarget() {
         IGuestLookingAtTargetView view = mSharingAnchorViewController.makeView(IGuestLookingAtTargetView.class);
         view.show();
     }

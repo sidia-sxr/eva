@@ -39,7 +39,7 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_margin="5dp"
-        android:src="@drawable/icon_share" />
+        android:src="@drawable/action_share_button" />
 
     <ImageView
         android:id="@+id/btn_clean"

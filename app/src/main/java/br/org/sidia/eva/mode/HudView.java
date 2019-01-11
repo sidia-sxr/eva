@@ -385,6 +385,7 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
         final int shareMode = mEvaContext.getMode();
         mCleanButton.setEnabled(shareMode == EvaConstants.SHARE_MODE_NONE);
         mCleanButton.setClickable(shareMode == EvaConstants.SHARE_MODE_NONE);
+        mShareAnchorButton.setEnabled(shareMode == EvaConstants.SHARE_MODE_NONE);
     }
 
     public void setStateInActionButtons() {
