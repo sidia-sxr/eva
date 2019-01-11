@@ -17,7 +17,7 @@
     <string name="app_name">Eva</string>
     <string name="editing_mode">Editing Mode</string>
     <string name="save">SAVE</string>
-    <string name="guest_looking_at_target">Make sure you and your friends are side-by-side looking\n at the same thing.</string>
+    <string name="guest_looking_at_target">Make sure you and your friends are side-by-side\n looking at the same thing.</string>
     <string name="common_text_host">Host</string>
     <string name="common_text_guest">Guest</string>
     <string name="view_waiting_for_guests_status_text">Waiting for the guests to\nenter on the Sharing Anchor.</string>
@@ -27,7 +27,7 @@
     <string name="stay_in_position">Stay in this position while we connect the phones.</string>
     <string name="view_no_connection_found_status_text">No %1$s found!\nWould you like to try again?</string>
     <string name="common_text_retry">Retry</string>
-    <string translatable="false" name="common_text_cancel">Cancel</string>
+    <string name="common_text_cancel" translatable="false">Cancel</string>
     <string name="common_text_continue">Continue</string>
     <string name="connected">CONNECTED</string>
     <string name="application_permissions">The application needs camera and location permissions</string>
@@ -61,8 +61,8 @@
         <item quantity="one">Guest</item>
         <item quantity="other">Guests</item>
     </plurals>
-    <string translatable="false" name="message_initial">MOVE AROUND TO FIND A HORIZONTAL SURFACE</string>
-    <string translatable="false" name="choose_a_plan">CHOOSE A PLAN TO APPEAR EVA</string>
+    <string name="message_initial" translatable="false">MOVE AROUND TO FIND A HORIZONTAL SURFACE</string>
+    <string name="choose_a_plan" translatable="false">CHOOSE A PLAN TO APPEAR EVA</string>
     <string name="clear">Do you want to clear the screen and start\n a new experience with the Eva?</string>
     <string name="sxr">Eva AR\n Project by Sidia</string>
     <string name="lorem_ipsum">“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.”</string>
