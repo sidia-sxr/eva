@@ -22,23 +22,15 @@
     android:background="@drawable/bg_overlay"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ImageView
         android:id="@+id/button_back"
         android:layout_width="49.9dp"
         android:layout_height="49.9dp"
         android:layout_marginStart="26dp"
         android:layout_marginTop="19.5dp"
-        android:background="@drawable/bg_menu"
         android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="20.5dp"
-            android:layout_height="20.5dp"
-            android:src="@drawable/icon_back_sharing"
-            tools:ignore="ContentDescription" />
-
-    </LinearLayout>
+        android:orientation="vertical"
+        android:src="@drawable/bg_back_button_enabled_disabled" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,12 +45,11 @@
             android:gravity="center">
 
             <TextView
+                style="@style/StatusText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8.2dp"
+                android:layout_marginTop="20dp"
                 android:layout_toEndOf="@id/ic_eva"
-                android:fontFamily="@font/roboto_bold"
-                android:gravity="center"
                 android:text="@string/sxr"
                 android:textColor="#ffffff" />
 
@@ -82,14 +73,14 @@
             android:textSize="14sp" />
 
         <TextView
+            style="@style/StatusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/roboto_bold"
             android:layout_marginTop="10dp"
             android:text="@string/site"
             android:textColor="#ffffff"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
     </LinearLayout>
 
 </RelativeLayout>
