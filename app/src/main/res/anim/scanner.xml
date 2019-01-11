@@ -14,18 +14,14 @@
   ~ limitations under the License.
   ~
   -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+    android:fillAfter="false">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <Button
-        android:id="@+id/btn_connected"
-        style="@style/Button"
-        android:layout_width="155dp"
-        android:layout_height="44.3dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="@string/connected" />
-</LinearLayout>
+    <translate
+        android:fromYDelta="0%p"
+        android:toYDelta="28%p"
+        android:duration="1500"
+        android:repeatCount="infinite"
+        android:repeatMode="restart"/>
+</set>

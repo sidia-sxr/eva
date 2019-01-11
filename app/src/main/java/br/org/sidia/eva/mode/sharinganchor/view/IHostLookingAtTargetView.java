@@ -22,4 +22,6 @@ import br.org.sidia.eva.view.IView;
 public interface IHostLookingAtTargetView extends IView {
 
     void setStatusText(CharSequence text);
+
+    void setColor(String color);
 }

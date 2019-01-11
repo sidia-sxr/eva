@@ -17,33 +17,50 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="55dp"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:ignore="HardcodedText">
 
     <ImageView
-        android:layout_width="20.9dp"
-        android:layout_height="27.1dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/icon_guest"
         tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/text_total"
-        style="@style/StatusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8.8dp"
-        android:text="00"
-        android:textSize="15sp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_guests"
-        style="@style/StatusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="guest"
-        android:textSize="15sp" />
+        <TextView
+            android:id="@+id/text_total"
+            style="@style/StatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="8.8dp"
+            android:fontFamily="samsungone_400"
+            android:text="00"
+            android:textSize="10sp"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/text_guests"
+            style="@style/StatusText"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8.8dp"
+            android:layout_toEndOf="@id/text_total"
+            android:fontFamily="@font/samsung_one_500"
+            android:text="GUEST"
+            android:textAllCaps="true"
+            android:textSize="10sp"
+            tools:ignore="SmallSp" />
+
+
+    </RelativeLayout>
+
 
 </LinearLayout>

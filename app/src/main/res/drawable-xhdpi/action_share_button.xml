@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
   ~ Copyright 2015 Samsung Electronics Co., LTD
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +17,9 @@
   ~
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <Button
-        android:id="@+id/btn_connected"
-        style="@style/Button"
-        android:layout_width="155dp"
-        android:layout_height="44.3dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="@string/connected" />
-</LinearLayout>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/icon_share"
+        android:state_activated="false" />
+    <item android:drawable="@drawable/icon_share_actived"
+        android:state_activated="true" />
+</selector>

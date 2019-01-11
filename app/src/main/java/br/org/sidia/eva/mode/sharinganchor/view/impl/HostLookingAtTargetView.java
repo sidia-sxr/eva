@@ -17,6 +17,7 @@
 
 package br.org.sidia.eva.mode.sharinganchor.view.impl;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
@@ -37,5 +38,12 @@ public class HostLookingAtTargetView extends BaseView implements IHostLookingAtT
     @Override
     public void setStatusText(CharSequence text) {
         runOnUiThread(() -> mStatusText.setText(text));
+    }
+
+    @Override
+    public void setColor(String color) {
+        if (color != null) {
+            runOnUiThread(() -> mStatusText.setTextColor(Color.parseColor("#5cffba")));
+        }
     }
 }

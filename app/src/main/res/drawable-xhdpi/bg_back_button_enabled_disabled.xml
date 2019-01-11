@@ -14,18 +14,7 @@
   ~ limitations under the License.
   ~
   -->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <Button
-        android:id="@+id/btn_connected"
-        style="@style/Button"
-        android:layout_width="155dp"
-        android:layout_height="44.3dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="@string/connected" />
-</LinearLayout>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_back_sharing_anchor" android:state_enabled="true" android:state_pressed="false" />
+    <item android:drawable="@drawable/ic_back_enabled" android:state_enabled="true" android:state_pressed="true" />
+</selector>

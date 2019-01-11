@@ -131,20 +131,26 @@ public class SharingAnchorMode extends BaseEvaMode {
         view.show();
     }
 
-    private void showViewHostLookingAtTarget(@StringRes int stringId) {
+    private void showViewHostLookingAtTarget(@StringRes int stringId, String color) {
         IHostLookingAtTargetView view;
         String text = mResources.getString(stringId);
         if (mSharingAnchorViewController.getCurrentView() instanceof IHostLookingAtTargetView) {
             view = (IHostLookingAtTargetView) mSharingAnchorViewController.getCurrentView();
             view.setStatusText(text);
+            view.setColor(color);
         } else {
             view = mSharingAnchorViewController.makeView(IHostLookingAtTargetView.class);
             view.setStatusText(text);
+            view.setColor(color);
             view.show();
         }
     }
 
-    private void showViewGuestLookingAtTarget() {
+    private void showViewHostLookingAtTarget(@StringRes int stringId) {
+        showViewHostLookingAtTarget(stringId, null);
+    }
+
+        private void showViewGuestLookingAtTarget() {
         IGuestLookingAtTargetView view = mSharingAnchorViewController.makeView(IGuestLookingAtTargetView.class);
         view.show();
     }
@@ -191,7 +197,7 @@ public class SharingAnchorMode extends BaseEvaMode {
             @Override
             public void onResult(ManagedAnchor<SXRAnchor> managedAnchor) {
                 isHosting.set(false);
-                showViewHostLookingAtTarget(R.string.stay_in_position);
+                showViewHostLookingAtTarget(R.string.stay_in_position, "#5cffba");
                 shareEvaAnchorWithGuests(managedAnchor.getAnchor());
             }
 

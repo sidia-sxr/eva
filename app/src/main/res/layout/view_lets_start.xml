@@ -30,7 +30,7 @@
         android:layout_marginTop="19.5dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:src="@drawable/ic_back_sharing_anchor" />
+        android:src="@drawable/bg_back_button_enabled_disabled" />
 
     <LinearLayout
         android:layout_width="match_parent"
