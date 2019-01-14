@@ -12,32 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
-package br.org.sidia.eva.service.data;
+package br.org.sidia.eva.actions;
 
-import br.org.sidia.eva.actions.EvaActionType;
+import android.os.Handler;
 
-public class EvaActionCommand implements Command {
+import br.org.sidia.eva.util.EventBusUtils;
 
-    @EvaActionType
-    private int type;
+public final class TimerActionsController {
+    private static final String TAG = TimerActionsController.class.getSimpleName();
 
-    public EvaActionCommand(@EvaActionType int type) {
-        this.type = type;
+    private static Handler mHandler = new Handler();
+
+    private TimerActionsController() {
     }
 
-    @EvaActionType
-    @Override
-    public Integer getType() {
-        return type;
-    }
-
-    @Override
-    public String toString() {
-        return "EvaActionCommand{" +
-                "type=" + type +
-                '}';
+    public static void startTimer(@EvaActions.Action int action, @TimerActionType long time) {
+        TimerActionEvent actionEvent = new TimerActionEvent(action, time);
+        mHandler.postDelayed(() -> {
+            EventBusUtils.post(actionEvent);
+        }, time);
     }
 }

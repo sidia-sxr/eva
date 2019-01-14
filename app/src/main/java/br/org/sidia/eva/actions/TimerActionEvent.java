@@ -12,32 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
-package br.org.sidia.eva.service.data;
+package br.org.sidia.eva.actions;
 
-import br.org.sidia.eva.actions.EvaActionType;
+public class TimerActionEvent {
+    @EvaActions.Action
+    private int mActionType;
+    @TimerActionType
+    private long mActionTime;
 
-public class EvaActionCommand implements Command {
-
-    @EvaActionType
-    private int type;
-
-    public EvaActionCommand(@EvaActionType int type) {
-        this.type = type;
+    public TimerActionEvent(@EvaActions.Action int action, @TimerActionType long time) {
+        mActionType = action;
+        mActionTime = time;
     }
 
-    @EvaActionType
-    @Override
-    public Integer getType() {
-        return type;
+    @EvaActions.Action
+    public int getActionType() {
+        return mActionType;
     }
 
-    @Override
-    public String toString() {
-        return "EvaActionCommand{" +
-                "type=" + type +
-                '}';
+    @TimerActionType
+    public long getActionTime() {
+        return mActionTime;
     }
 }

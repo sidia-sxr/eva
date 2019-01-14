@@ -15,7 +15,7 @@
  *
  */
 
-package br.org.sidia.eva.movement;
+package br.org.sidia.eva.actions;
 
 import android.support.annotation.IntDef;
 

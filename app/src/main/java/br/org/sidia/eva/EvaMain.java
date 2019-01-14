@@ -19,23 +19,6 @@ import com.samsungxr.ITouchEvents;
 import com.samsungxr.SXRContext;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRPicker;
-import br.org.sidia.eva.character.CharacterController;
-import br.org.sidia.eva.constant.EvaConstants;
-import br.org.sidia.eva.custom.TouchEventsAdapter;
-import br.org.sidia.eva.mainview.IExitView;
-import br.org.sidia.eva.mainview.MainViewController;
-import br.org.sidia.eva.manager.connection.event.EvaConnectionEvent;
-import br.org.sidia.eva.mode.HudMode;
-import br.org.sidia.eva.mode.ILoadEvents;
-import br.org.sidia.eva.mode.IEvaMode;
-import br.org.sidia.eva.mode.OnBackToHudModeListener;
-import br.org.sidia.eva.mode.OnModeChange;
-import br.org.sidia.eva.mode.photo.ScreenshotMode;
-import br.org.sidia.eva.mode.sharinganchor.SharingAnchorMode;
-import br.org.sidia.eva.movement.EvaActions;
-import br.org.sidia.eva.service.share.SharedMixedReality;
-import br.org.sidia.eva.util.EventBusUtils;
-import br.org.sidia.eva.view.shared.IConnectionFinishedView;
 import com.samsungxr.io.SXRCursorController;
 import com.samsungxr.io.SXRGazeCursorController;
 import com.samsungxr.io.SXRInputManager;
@@ -49,6 +32,24 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+
+import br.org.sidia.eva.actions.EvaActions;
+import br.org.sidia.eva.character.CharacterController;
+import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.custom.TouchEventsAdapter;
+import br.org.sidia.eva.mainview.IExitView;
+import br.org.sidia.eva.mainview.MainViewController;
+import br.org.sidia.eva.manager.connection.event.EvaConnectionEvent;
+import br.org.sidia.eva.mode.HudMode;
+import br.org.sidia.eva.mode.IEvaMode;
+import br.org.sidia.eva.mode.ILoadEvents;
+import br.org.sidia.eva.mode.OnBackToHudModeListener;
+import br.org.sidia.eva.mode.OnModeChange;
+import br.org.sidia.eva.mode.photo.ScreenshotMode;
+import br.org.sidia.eva.mode.sharinganchor.SharingAnchorMode;
+import br.org.sidia.eva.service.share.SharedMixedReality;
+import br.org.sidia.eva.util.EventBusUtils;
+import br.org.sidia.eva.view.shared.IConnectionFinishedView;
 
 import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
 

@@ -23,24 +23,25 @@ import com.samsungxr.SXRCameraRig;
 import com.samsungxr.SXRDrawFrameListener;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRTransform;
+import com.samsungxr.utility.Log;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.joml.Vector2f;
+
 import br.org.sidia.eva.BallThrowHandler;
 import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.mode.BaseEvaMode;
 import br.org.sidia.eva.mode.ILoadEvents;
-import br.org.sidia.eva.movement.IEvaAction;
-import br.org.sidia.eva.movement.EvaActionType;
-import br.org.sidia.eva.movement.EvaActions;
+import br.org.sidia.eva.actions.EvaActionType;
+import br.org.sidia.eva.actions.EvaActions;
+import br.org.sidia.eva.actions.IEvaAction;
 import br.org.sidia.eva.service.IMessageService;
 import br.org.sidia.eva.service.MessageService;
 import br.org.sidia.eva.service.data.EvaActionCommand;
 import br.org.sidia.eva.service.event.EvaActionCommandReceivedMessage;
 import br.org.sidia.eva.service.share.SharedMixedReality;
 import br.org.sidia.eva.util.EventBusUtils;
-import com.samsungxr.utility.Log;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.joml.Vector2f;
 
 public class CharacterController extends BaseEvaMode {
 
@@ -244,15 +245,14 @@ public class CharacterController extends BaseEvaMode {
     private void onSetCurrentAction(@EvaActionType int action) {
         mCurrentAction = mEvaActions.get(action);
 
-        if (mIsPlaying || mEvaContext.getMode() == EvaConstants.SHARE_MODE_GUEST) {
-            if (mCurrentAction.id() == EvaActions.IDLE.ID) {
-                mBallThrowHandler.reset();
-            } if (mCurrentAction.id() == EvaActions.GRAB.ID) {
-                mBallThrowHandler.disableBallsPhysics();
+        if (mCurrentAction != null) {
+            if (mIsPlaying || mEvaContext.getMode() == EvaConstants.SHARE_MODE_GUEST) {
+                if (mCurrentAction.id() == EvaActions.IDLE.ID) {
+                    mBallThrowHandler.reset();
+                } if (mCurrentAction.id() == EvaActions.GRAB.ID) {
+                    mBallThrowHandler.disableBallsPhysics();
+                }
             }
-        }
-
-        if (mCurrentAction != null && action == EvaActions.IDLE.ID) {
             EventBusUtils.post(mCurrentAction);
         }
     }

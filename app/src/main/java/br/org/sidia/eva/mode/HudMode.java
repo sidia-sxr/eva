@@ -21,21 +21,25 @@ import android.util.Log;
 
 import com.samsungxr.SXRCameraRig;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import br.org.sidia.eva.EvaContext;
+import br.org.sidia.eva.actions.EvaActions;
+import br.org.sidia.eva.actions.IEvaAction;
+import br.org.sidia.eva.actions.TimerActionEvent;
+import br.org.sidia.eva.actions.TimerActionType;
+import br.org.sidia.eva.actions.TimerActionsController;
 import br.org.sidia.eva.character.CharacterController;
-import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.constant.EvaObjectType;
 import br.org.sidia.eva.mainview.IAboutView;
 import br.org.sidia.eva.mainview.ICleanView;
 import br.org.sidia.eva.mainview.MainViewController;
 import br.org.sidia.eva.manager.connection.EvaConnectionManager;
 import br.org.sidia.eva.manager.connection.event.EvaConnectionEvent;
-import br.org.sidia.eva.movement.IEvaAction;
-import br.org.sidia.eva.movement.EvaActions;
 import br.org.sidia.eva.service.share.SharedMixedReality;
 import br.org.sidia.eva.util.EventBusUtils;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
 
@@ -251,11 +255,19 @@ public class HudMode extends BaseEvaMode {
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvaActionChanged(IEvaAction action) {
         if (action.id() == EvaActions.IDLE.ID) {
             mVirtualObjectController.hideObject();
         }
+        if (action.id() == EvaActions.DRINK_LOOP.ID) {
+            TimerActionsController.startTimer(EvaActions.DRINK_LOOP.ID, TimerActionType.DRINK_NORMAL);
+        }
+    }
+
+    @Subscribe
+    public void onActionTimerFired(TimerActionEvent event) {
+        Log.d(TAG, "action timer finished: " + event.getActionType());
     }
 
     private void evaExit() {

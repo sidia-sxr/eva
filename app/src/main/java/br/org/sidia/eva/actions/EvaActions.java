@@ -15,17 +15,13 @@
  *
  */
 
-package br.org.sidia.eva.movement;
+package br.org.sidia.eva.actions;
 
 import android.support.annotation.IntDef;
 
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRTransform;
 import com.samsungxr.animation.SXRAnimator;
-
-import br.org.sidia.eva.EvaContext;
-import br.org.sidia.eva.character.CharacterView;
-import br.org.sidia.eva.constant.EvaObjectType;
 import com.samsungxr.utility.Log;
 
 import org.joml.Matrix4f;
@@ -34,6 +30,10 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.util.Arrays;
+
+import br.org.sidia.eva.EvaContext;
+import br.org.sidia.eva.character.CharacterView;
+import br.org.sidia.eva.constant.EvaObjectType;
 
 /**
  * Represents a state of the Character.

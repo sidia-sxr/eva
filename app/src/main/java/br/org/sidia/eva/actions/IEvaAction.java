@@ -15,7 +15,7 @@
  *
  */
 
-package br.org.sidia.eva.movement;
+package br.org.sidia.eva.actions;
 
 public interface IEvaAction {
     int id();
