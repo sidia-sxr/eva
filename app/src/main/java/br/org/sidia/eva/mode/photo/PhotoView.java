@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.view.BaseView;
@@ -34,7 +35,7 @@ public class PhotoView extends BaseView implements IPhotoView {
     private View mPhotoTarget;
     private LinearLayout mPhotoContent;
     private View mFlashView;
-    private LinearLayout mToast_photo;
+    private RelativeLayout mToast_photo;
 
     public PhotoView(View view, IViewController controller) {
         super(view, controller);

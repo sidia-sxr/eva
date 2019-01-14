@@ -21,7 +21,33 @@
     android:background="@drawable/bg_overlay"
     android:orientation="horizontal">
 
+    <RelativeLayout
+        android:id="@+id/toast_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/content_main"
+        android:layout_alignStart="@id/content_main"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/toast_photo" />
+
+        <TextView
+            style="@style/StatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/photo_saved"
+            android:textSize="10sp"
+            tools:ignore="SmallSp" />
+
+    </RelativeLayout>
+
     <LinearLayout
+        android:id="@+id/content_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -41,33 +67,6 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/toast_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_toast"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="16.3dp"
-                android:paddingTop="7.4dp"
-                android:paddingEnd="16.3dp"
-                android:paddingBottom="7.4dp"
-                android:visibility="invisible">
-
-                <ImageView
-                    android:layout_width="21.3dp"
-                    android:layout_height="21.3dp"
-                    android:src="@drawable/ic_check_mark" />
-
-                <TextView
-                    style="@style/ToastPhoto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:text="@string/photo_saved" />
-
-            </LinearLayout>
-
             <TextView
                 style="@style/StatusText"
                 android:layout_width="wrap_content"
@@ -84,70 +83,33 @@
                 android:orientation="vertical"
                 android:rowCount="2">
 
-                <LinearLayout
-                    android:id="@+id/button_facebook"
+                <ImageView
+                    android:id="@+id/button_instagram"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/bg_functions_buttons"
-                    android:clickable="false"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:src="@drawable/bg_instagram_pressed_unpressed" />
 
-                    <ImageView
-                        android:layout_width="20.5dp"
-                        android:layout_height="20.5dp"
-                        android:src="@drawable/fb_icn" />
-                </LinearLayout>
-
-                <LinearLayout
+                <ImageView
                     android:id="@+id/button_whatsapp"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="27dp"
-                    android:background="@drawable/bg_functions_buttons"
-                    android:clickable="false"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:src="@drawable/bg_whatsapp_pressed_unpressed" />
 
-                    <ImageView
-                        android:layout_width="20.5dp"
-                        android:layout_height="20.5dp"
-                        android:src="@drawable/wpp_icn" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/button_instagram"
+                <ImageView
+                    android:id="@+id/button_facebook"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="56dp"
-                    android:background="@drawable/bg_functions_buttons"
-                    android:clickable="false"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:src="@drawable/bg_facebook_pressed_unpressed" />
 
-                    <ImageView
-                        android:layout_width="20.5dp"
-                        android:layout_height="20.5dp"
-                        android:src="@drawable/insta_icn" />
-                </LinearLayout>
-
-                <LinearLayout
+                <ImageView
                     android:id="@+id/button_twitter"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="56dp"
                     android:layout_marginTop="27dp"
-                    android:background="@drawable/bg_functions_buttons"
-                    android:clickable="false"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="20.5dp"
-                        android:layout_height="20.5dp"
-                        android:src="@drawable/tt_icon" />
-                </LinearLayout>
-
+                    android:src="@drawable/bg_twitter_pressed_unpressed" />
             </GridLayout>
 
             <RelativeLayout
