@@ -27,14 +27,14 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/disconnect"
+        android:src="@drawable/ic_disconnected"
         tools:ignore="ContentDescription"
         android:layout_marginTop="84dp"/>
 
     <TextView
         android:id="@+id/disconnect_message_text"
         style="@style/StatusText"
-        android:layout_width="wrap_content"
+        android:layout_width="520dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="38.6dp"
         android:layout_marginStart="76.3dp"

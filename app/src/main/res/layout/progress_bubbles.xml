@@ -29,7 +29,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/white_bubble_white" />
+            android:src="@drawable/ic_white_bubble" />
 
     </LinearLayout>
 
@@ -41,7 +41,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/white_bubble_white" />
+            android:src="@drawable/ic_white_bubble" />
 
     </LinearLayout>
 
@@ -53,7 +53,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/white_bubble_white" />
+            android:src="@drawable/ic_white_bubble" />
 
     </LinearLayout>
 
@@ -65,7 +65,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/white_bubble_white" />
+            android:src="@drawable/ic_white_bubble" />
 
     </LinearLayout>
 

@@ -93,15 +93,15 @@ public class LoadingBubbles extends LinearLayout {
                             if (mCurrent > 0) {
                                 LinearLayout parent = (LinearLayout) mLoadingBubble.getChildAt(mCurrent - 1);
                                 mImageView = (ImageView) parent.getChildAt(0);
-                                mImageView.setImageResource(R.drawable.white_bubble_white);
+                                mImageView.setImageResource(R.drawable.ic_white_bubble);
                             } else {
                                 LinearLayout parent = (LinearLayout) mLoadingBubble.getChildAt(mTotal - 1);
                                 mImageView = (ImageView) parent.getChildAt(0);
-                                mImageView.setImageResource(R.drawable.white_bubble_white);
+                                mImageView.setImageResource(R.drawable.ic_white_bubble);
                             }
                             LinearLayout parent = (LinearLayout) mLoadingBubble.getChildAt(mCurrent);
                             mImageView = (ImageView) parent.getChildAt(0);
-                            mImageView.setImageResource(R.drawable.bubble_blue);
+                            mImageView.setImageResource(R.drawable.ic_blue_bubble);
 
                             mCurrent = (mCurrent + 1) % mTotal;
 
