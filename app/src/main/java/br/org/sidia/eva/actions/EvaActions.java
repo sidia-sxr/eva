@@ -666,15 +666,6 @@ public class EvaActions {
         public void onExit() {
             Log.w(TAG, "exit => DRINK_LOOP");
         }
-
-        @Override
-        public void onRun(float frameTime) {
-            if (mElapsedTime + frameTime < mAnimDuration) {
-                super.onRun(frameTime);
-            } else {
-                mListener.onActionEnd(this, true);
-            }
-        }
     }
 
     public static class HYDRANT_ENTER extends LoopAction {
@@ -774,15 +765,6 @@ public class EvaActions {
         public void onExit() {
             Log.w(TAG, "exit => HYDRANT_LOOP");
         }
-
-        @Override
-        public void onRun(float frameTime) {
-            if (mElapsedTime + frameTime < mAnimDuration) {
-                super.onRun(frameTime);
-            } else {
-                mListener.onActionEnd(this, true);
-            }
-        }
     }
 
     public static class SLEEP_ENTER extends LoopAction {
@@ -881,15 +863,6 @@ public class EvaActions {
         @Override
         public void onExit() {
             Log.w(TAG, "exit => SLEEP_LOOP");
-        }
-
-        @Override
-        public void onRun(float frameTime) {
-            if (mElapsedTime + frameTime < mAnimDuration) {
-                super.onRun(frameTime);
-            } else {
-                mListener.onActionEnd(this, true);
-            }
         }
     }
 

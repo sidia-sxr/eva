@@ -27,7 +27,10 @@ import java.lang.annotation.RetentionPolicy;
         TimerActionType.DRINK_CRITICAL,
         TimerActionType.PEE_NORMAL,
         TimerActionType.PEE_WARNING,
-        TimerActionType.PEE_CRITICAL})
+        TimerActionType.PEE_CRITICAL,
+        TimerActionType.SLEEP_NORMAL,
+        TimerActionType.SLEEP_WARNING,
+        TimerActionType.SLEEP_CRITICAL})
 public @interface TimerActionType {
     long DRINK_NORMAL = 3000; // 3s
     long DRINK_WARNING = 8000; // 8s
@@ -36,4 +39,8 @@ public @interface TimerActionType {
     long PEE_NORMAL = 5500; // 5,5s
     long PEE_WARNING = 10500; // 10,5s
     long PEE_CRITICAL = 20500; // 20,5s
+
+    long SLEEP_NORMAL = 6000;  // 6s
+    long SLEEP_WARNING = 15000;  // 15s
+    long SLEEP_CRITICAL = 25000;  // 25s
 }

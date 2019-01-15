@@ -17,9 +17,9 @@ package br.org.sidia.eva.mode;
 
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
-import android.util.Log;
 
 import com.samsungxr.SXRCameraRig;
+import com.samsungxr.utility.Log;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -257,17 +257,37 @@ public class HudMode extends BaseEvaMode {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvaActionChanged(IEvaAction action) {
-        if (action.id() == EvaActions.IDLE.ID) {
-            mVirtualObjectController.hideObject();
-        }
-        if (action.id() == EvaActions.DRINK_LOOP.ID) {
-            TimerActionsController.startTimer(EvaActions.DRINK_LOOP.ID, TimerActionType.DRINK_NORMAL);
+        switch (action.id()) {
+            case EvaActions.IDLE.ID:
+                mVirtualObjectController.hideObject();
+                break;
+            case EvaActions.DRINK_LOOP.ID:
+                TimerActionsController.startTimer(EvaActions.DRINK_LOOP.ID, TimerActionType.DRINK_NORMAL);
+                break;
+            case EvaActions.HYDRANT_LOOP.ID:
+                TimerActionsController.startTimer(EvaActions.HYDRANT_LOOP.ID, TimerActionType.PEE_NORMAL);
+                break;
+            case EvaActions.SLEEP_LOOP.ID:
+                TimerActionsController.startTimer(EvaActions.SLEEP_LOOP.ID, TimerActionType.SLEEP_NORMAL);
+                break;
         }
     }
 
     @Subscribe
     public void onActionTimerFired(TimerActionEvent event) {
-        Log.d(TAG, "action timer finished: " + event.getActionType());
+        switch (event.getActionType()) {
+            case EvaActions.DRINK_LOOP.ID:
+                mEvaController.setCurrentAction(EvaActions.DRINK_EXIT.ID);
+                break;
+            case EvaActions.HYDRANT_LOOP.ID:
+                mEvaController.setCurrentAction(EvaActions.HYDRANT_EXIT.ID);
+                break;
+            case EvaActions.SLEEP_LOOP.ID:
+                mEvaController.setCurrentAction(EvaActions.SLEEP_EXIT.ID);
+                break;
+            default:
+                Log.w(TAG, "event type not handled: " + event.getActionType());
+        }
     }
 
     private void evaExit() {
