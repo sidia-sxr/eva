@@ -30,8 +30,6 @@ import com.samsungxr.SXRScene;
 import com.samsungxr.SXRShaderId;
 import com.samsungxr.SXRTexture;
 import com.samsungxr.SXRTextureParameters;
-import br.org.sidia.eva.shaders.SXRTiledMaskShader;
-import br.org.sidia.eva.util.EventBusUtils;
 import com.samsungxr.mixedreality.IPlaneEvents;
 import com.samsungxr.mixedreality.SXRPlane;
 import com.samsungxr.mixedreality.SXRTrackingState;
@@ -40,6 +38,9 @@ import com.samsungxr.physics.SXRRigidBody;
 import com.samsungxr.utility.Log;
 
 import java.util.LinkedList;
+
+import br.org.sidia.eva.shaders.SXRTiledMaskShader;
+import br.org.sidia.eva.util.EventBusUtils;
 
 public final class PlaneHandler implements IPlaneEvents, SXRDrawFrameListener {
     private final String TAG = PlaneHandler.class.getSimpleName();
@@ -175,8 +176,8 @@ public final class PlaneHandler implements IPlaneEvents, SXRDrawFrameListener {
     public void onPlaneDetected(SXRPlane plane) {
         SXRPlane.Type planeType = plane.getPlaneType();
 
-        // Don't use planes that are downward facing (e.g ceiling) or vertical
-        if (planeType == SXRPlane.Type.HORIZONTAL_DOWNWARD_FACING || planeType == SXRPlane.Type.VERTICAL) {
+        // Don't use planes that are downward facing (e.g ceiling)
+        if (planeType == SXRPlane.Type.HORIZONTAL_DOWNWARD_FACING) {
             return;
         }
 

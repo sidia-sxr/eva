@@ -24,6 +24,7 @@ import com.samsungxr.io.SXRGazeCursorController;
 import com.samsungxr.io.SXRInputManager;
 import com.samsungxr.mixedreality.IMixedReality;
 import com.samsungxr.mixedreality.IMixedRealityEvents;
+import com.samsungxr.mixedreality.SXRMixedReality;
 import com.samsungxr.mixedreality.SXRPlane;
 import com.samsungxr.nodes.SXRViewNode;
 import com.samsungxr.utility.Log;
@@ -156,6 +157,8 @@ public class EvaMain extends DisableNativeSplashScreen {
                 newController.setCursor(null);
             }
         });
+
+        mr.setPlaneFindingMode(SXRMixedReality.PlaneFindingMode.HORIZONTAL);
     }
 
     void resume() {
