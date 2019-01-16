@@ -63,21 +63,39 @@
 
         </RelativeLayout>
 
-        <TextView
-            style="@style/StatusText"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="19.9dp"
-            android:text="@string/team"
-            android:textSize="14sp" />
+            android:gravity="center">
+
+            <TextView
+                style="@style/StatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19.9dp"
+                android:text="@string/team"
+                android:textSize="14sp" />
+
+
+            <TextView
+                style="@style/StatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="90dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/team_part_2"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
 
         <TextView
             style="@style/StatusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:text="@string/site"
             android:textColor="#ffffff"
             android:textSize="14sp" />
