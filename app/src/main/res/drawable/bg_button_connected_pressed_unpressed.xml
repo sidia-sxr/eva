@@ -14,21 +14,7 @@
   ~ limitations under the License.
   ~
   -->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <Button
-        android:id="@+id/btn_connected"
-        android:layout_width="155dp"
-        android:layout_height="45dp"
-        android:background="@drawable/bg_button_connected_pressed_unpressed"
-        android:clickable="true"
-        android:focusable="true"
-        android:fontFamily="@font/luckiest_guy"
-        android:text="@string/connected"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp" />
-</LinearLayout>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bt_connected_unpressed" android:state_enabled="true" android:state_pressed="false" />
+    <item android:drawable="@drawable/bt_connected_pressed" android:state_enabled="true" android:state_pressed="true" />
+</selector>

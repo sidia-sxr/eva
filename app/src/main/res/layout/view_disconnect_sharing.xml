@@ -28,24 +28,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_disconnected"
-        tools:ignore="ContentDescription"
-        android:layout_marginTop="84dp"/>
-
-    <TextView
-        android:id="@+id/disconnect_message_text"
-        style="@style/StatusText"
-        android:layout_width="520dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="38.6dp"
-        android:layout_marginStart="76.3dp"
-        android:layout_marginEnd="78.3dp"
-        android:text="@string/disconnect_host" />
+        tools:ignore="ContentDescription" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="45.8dp"
-        android:layout_marginBottom="50dp">
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/disconnect_message_text"
+            style="@style/StatusText"
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/disconnect_host" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:gravity="center">
 
         <Button
             android:id="@+id/button_cancel"
