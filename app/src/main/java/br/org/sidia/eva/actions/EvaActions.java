@@ -44,7 +44,7 @@ public class EvaActions {
     @IntDef({IDLE.ID, TO_BALL.ID, TO_PLAYER.ID, TO_TAP.ID, GRAB.ID, TO_BED.ID, TO_BOWL.ID,
             TO_HYDRANT.ID, DRINK_ENTER.ID, DRINK_EXIT.ID, DRINK_LOOP.ID,
             HYDRANT_ENTER.ID, HYDRANT_EXIT.ID, HYDRANT_LOOP.ID,
-            SLEEP_ENTER.ID, SLEEP_EXIT.ID, SLEEP_LOOP.ID, AT_EDIT.ID})
+            SLEEP_ENTER.ID, SLEEP_EXIT.ID, SLEEP_LOOP.ID})
     public @interface Action{
     }
 
@@ -863,42 +863,6 @@ public class EvaActions {
         @Override
         public void onExit() {
             Log.w(TAG, "exit => SLEEP_LOOP");
-        }
-    }
-
-    public static class AT_EDIT implements IEvaAction {
-        public static final int ID = 20;
-
-        private final EvaContext mEvaContext;
-        private final CharacterView mCharacter;
-
-        public AT_EDIT(EvaContext evaContext, CharacterView character) {
-            mEvaContext = evaContext;
-            mCharacter = character;
-        }
-
-        @Override
-        public int id() {
-            return ID;
-        }
-
-        @Override
-        public void entry() {
-            Log.w(TAG, "entry => AT_EDIT");
-            // Return the eva to the first position in the animation (IDLE)
-            mCharacter.resetAnimation();
-            mEvaContext.registerSharedObject(mCharacter, EvaObjectType.EVA);
-        }
-
-        @Override
-        public void exit() {
-            Log.w(TAG, "exit => AT_EDIT");
-            mEvaContext.unregisterSharedObject(mCharacter);
-        }
-
-        @Override
-        public void run(float frameTime) {
-
         }
     }
 }

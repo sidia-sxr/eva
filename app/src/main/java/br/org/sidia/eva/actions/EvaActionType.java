@@ -36,8 +36,7 @@ import android.support.annotation.IntDef;
         EvaActions.HYDRANT_LOOP.ID,
         EvaActions.SLEEP_ENTER.ID,
         EvaActions.SLEEP_EXIT.ID,
-        EvaActions.SLEEP_LOOP.ID,
-        EvaActions.AT_EDIT.ID
+        EvaActions.SLEEP_LOOP.ID
 })
 public @interface EvaActionType {
 }

@@ -167,8 +167,6 @@ public class CharacterController extends BaseEvaMode {
             setCurrentAction(EvaActions.SLEEP_EXIT.ID);
         }));
 
-        addAction(new EvaActions.AT_EDIT(mEvaContext, eva));
-
         setCurrentAction(EvaActions.IDLE.ID);
     }
 
