@@ -15,52 +15,52 @@
   ~
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_overlay">
+    android:background="@drawable/bg_overlay"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_exit"
+        tools:ignore="ContentDescription" />
 
     <LinearLayout
         android:id="@+id/screen_exit_application"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/button_back"
+        android:layout_height="148dp"
         android:gravity="center"
         android:orientation="vertical"
         tools:ignore="UselessParent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_exit"
-            tools:ignore="ContentDescription" />
 
         <TextView
             style="@style/StatusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="29.9dp"
             android:text="@string/exit_message" />
+    </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="35.8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:gravity="center">
 
-            <Button
-                android:id="@+id/cancel_button_screen"
-                style="@style/Button"
-                android:text="@string/common_text_cancel" />
+        <Button
+            android:id="@+id/cancel_button_screen"
+            style="@style/Button"
+            android:text="@string/common_text_cancel" />
 
-            <Button
-                android:id="@+id/button_confirm"
-                style="@style/Button"
-                android:layout_marginStart="17dp"
-                android:text="@string/confirm" />
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/button_confirm"
+            style="@style/Button"
+            android:layout_marginStart="17dp"
+            android:text="@string/confirm" />
 
     </LinearLayout>
 
-</RelativeLayout>
+
+</LinearLayout>
