@@ -64,6 +64,7 @@ import br.org.sidia.eva.service.event.RequestStatusReceivedMessage;
 import br.org.sidia.eva.service.event.ViewCommandReceivedMessage;
 import br.org.sidia.eva.service.share.SharedMixedReality;
 import br.org.sidia.eva.util.EventBusUtils;
+import br.org.sidia.eva.util.VibrationUtils;
 import br.org.sidia.eva.view.IView;
 import br.org.sidia.eva.view.shared.IConnectionFinishedView;
 
@@ -198,6 +199,7 @@ public class SharingAnchorMode extends BaseEvaMode {
             @Override
             public void onResult(ManagedAnchor<SXRAnchor> managedAnchor) {
                 isHosting.set(false);
+                VibrationUtils.vibrate(mEvaContext.getActivity());
                 showViewHostLookingAtTarget(R.string.stay_in_position, "#5cffba");
                 shareEvaAnchorWithGuests(managedAnchor.getAnchor());
             }
@@ -349,6 +351,7 @@ public class SharingAnchorMode extends BaseEvaMode {
                 ((IWaitingForGuestView) view).setTotalConnected(
                         mConnectionManager.getTotalConnected());
                 ((IWaitingForGuestView) view).setIconGuestFinded();
+                VibrationUtils.vibrate(mEvaContext.getActivity());
             }
         }
     }
