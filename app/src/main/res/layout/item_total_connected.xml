@@ -24,9 +24,10 @@
     tools:ignore="HardcodedText">
 
     <ImageView
+        android:id="@+id/icon_guest"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/icon_guest"
+        android:src="@drawable/ic_no_guest"
         tools:ignore="ContentDescription" />
 
     <RelativeLayout

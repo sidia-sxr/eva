@@ -30,4 +30,6 @@ public interface IWaitingForGuestView extends IView {
     void setContinueClickListener(View.OnClickListener listener);
 
     void setContinueButtonEnabled(boolean enabled);
+
+    void setIconGuestFinded();
 }

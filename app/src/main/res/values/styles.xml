@@ -27,6 +27,16 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="ButtonShare">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_width">144dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/bg_button_enabled_disabled_continue</item>
+        <item name="android:fontFamily">@font/luckiest_guy</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
     <style name="StatusText">
         <item name="android:includeFontPadding">false</item>
         <item name="android:gravity">center</item>

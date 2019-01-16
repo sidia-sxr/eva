@@ -15,7 +15,7 @@
   ~
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,39 +27,52 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_waiting_for_connection"
-            tools:ignore="ContentDescription" />
-
-        <include
-            layout="@layout/item_total_connected"
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="30dp" />
+    <include
+        layout="@layout/item_total_connected"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="25dp" />
 
     </RelativeLayout>
 
-    <TextView
-        style="@style/StatusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="29.9dp"
-        android:text="@string/view_waiting_for_guests_status_text" />
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <br.org.sidia.eva.custom.LoadingBubbles
-        android:layout_width="105dp"
-        android:layout_height="43.4dp"
-        android:layout_marginTop="17dp" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:src="@drawable/ic_waiting_for_connection"
+            tools:ignore="ContentDescription" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="35.8dp">
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/StatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_waiting_for_guests_status_text" />
+
+        <br.org.sidia.eva.custom.LoadingBubbles
+            android:layout_width="105dp"
+            android:layout_height="43.4dp"
+            android:layout_marginTop="17dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:gravity="center">
 
         <Button
             android:id="@+id/button_cancel"
@@ -68,7 +81,7 @@
 
         <Button
             android:id="@+id/button_continue"
-            style="@style/Button"
+            style="@style/ButtonShare"
             android:layout_marginStart="17dp"
             android:enabled="false"
             android:text="@string/common_text_continue" />
@@ -76,3 +89,5 @@
     </LinearLayout>
 
 </LinearLayout>
+
+</RelativeLayout>

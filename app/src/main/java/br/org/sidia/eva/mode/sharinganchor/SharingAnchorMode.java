@@ -348,6 +348,7 @@ public class SharingAnchorMode extends BaseEvaMode {
             if (view instanceof IWaitingForGuestView) {
                 ((IWaitingForGuestView) view).setTotalConnected(
                         mConnectionManager.getTotalConnected());
+                ((IWaitingForGuestView) view).setIconGuestFinded();
             }
         }
     }
