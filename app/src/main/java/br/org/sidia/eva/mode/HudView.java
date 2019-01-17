@@ -18,6 +18,7 @@
 package br.org.sidia.eva.mode;
 
 import android.util.DisplayMetrics;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -31,13 +32,15 @@ import com.samsungxr.IViewEvents;
 import com.samsungxr.SXRDrawFrameListener;
 import com.samsungxr.SXRRenderData;
 import com.samsungxr.SXRScene;
+import com.samsungxr.nodes.SXRViewNode;
+import com.samsungxr.utility.Log;
+
 import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.connection.socket.ConnectionMode;
 import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.healthmonitor.Notifications;
 import br.org.sidia.eva.util.LayoutViewUtils;
-import com.samsungxr.nodes.SXRViewNode;
-import com.samsungxr.utility.Log;
 
 public class HudView extends BaseEvaView implements View.OnClickListener {
     private static final String TAG = "HudView";
@@ -64,8 +67,8 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
     private BounceInterpolator interpolator = new BounceInterpolator(0.1, 20);
 
     private final EvaContext mEvaContext;
-
     private BounceView bounceView = new BounceView();
+    private SparseArray<ButtonViewHolder> mViewHolderMap;
 
     public HudView(EvaContext evaContext) {
         super(evaContext);
@@ -94,6 +97,8 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             disconnectViewInitEvents.onInitView(mDisconnectViewObject, mRootLayout);
             disconnectViewInitEvents.onStartRendering(mDisconnectViewObject, mRootLayout);
         });
+
+        mViewHolderMap = new SparseArray<>();
     }
 
     @Override
@@ -506,16 +511,27 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
         @Override
         public void onInitView(SXRViewNode sxrViewNode, View view) {
             mSubmenuOptions = view.findViewById(R.id.submenu);
+
             mPlayBoneButton = view.findViewById(R.id.btn_fetchbone);
             mHydrantButton = view.findViewById(R.id.btn_hydrant);
             mBedButton = view.findViewById(R.id.btn_bed);
             mBowlButton = view.findViewById(R.id.btn_bowl);
+
+            mViewHolderMap.put(Notifications.HEALTH_ID_DRINK, new ButtonViewHolder(mBowlButton, view.findViewById(R.id.image_notification_point_drink)));
+            mViewHolderMap.put(Notifications.HEALTH_ID_SLEEP, new ButtonViewHolder(mBedButton, view.findViewById(R.id.image_notification_point_sleep)));
+            mViewHolderMap.put(Notifications.HEALTH_ID_PEE, new ButtonViewHolder(mHydrantButton, view.findViewById(R.id.image_notification_point_pee)));
+            mViewHolderMap.put(Notifications.HEALTH_ID_PLAY, new ButtonViewHolder(mPlayBoneButton, view.findViewById(R.id.image_notification_point_play)));
+
             mPlayBoneButton.setOnClickListener(HudView.this);
             mHydrantButton.setOnClickListener(HudView.this);
             mBedButton.setOnClickListener(HudView.this);
             mBowlButton.setOnClickListener(HudView.this);
             mOpenSubmenu = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.open);
             mCloseSubmenu = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.close);
+
+            if (onSubmenuInitializationListener != null) {
+                onSubmenuInitializationListener.onInitialized();
+            }
         }
 
         @Override
@@ -562,5 +578,44 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             return (float) (-1 * Math.pow(Math.E, -time / mAmplitude) *
                     Math.cos(mFrequency * time) + 1);
         }
+    }
+
+    void updateNotification(@Notifications.HealthId int id, @Notifications.HealthStatus int status) {
+        if (EvaConstants.ENABLE_NOTIFICATION_POINTS) {
+            mEvaContext.getActivity().runOnUiThread(() -> {
+                ImageView view = mViewHolderMap.get(id).mNotificationPoint;
+                if (status != Notifications.HEALTH_STATUS_NORMAL) {
+                    view.setVisibility(View.VISIBLE);
+                    if (status == Notifications.HEALTH_STATUS_WARNING) {
+                        view.setBackgroundResource(R.drawable.bg_notification_point_warning);
+                    } else {
+                        view.setBackgroundResource(R.drawable.bg_notification_point_critical);
+                    }
+                } else {
+                    view.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
+    private static class ButtonViewHolder {
+
+        View mButton;
+        ImageView mNotificationPoint;
+
+        ButtonViewHolder(View mButton, ImageView mNotificationPoint) {
+            this.mButton = mButton;
+            this.mNotificationPoint = mNotificationPoint;
+        }
+    }
+
+    private OnSubmenuInitializationListener onSubmenuInitializationListener;
+
+    void setOnSubmenuInitializationListener(OnSubmenuInitializationListener listener) {
+        this.onSubmenuInitializationListener = listener;
+    }
+
+    public interface OnSubmenuInitializationListener {
+        void onInitialized();
     }
 }

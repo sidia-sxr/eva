@@ -33,6 +33,10 @@ import br.org.sidia.eva.actions.TimerActionsController;
 import br.org.sidia.eva.character.CharacterController;
 import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.constant.EvaObjectType;
+import br.org.sidia.eva.healthmonitor.HealthStateNotificationEvent;
+import br.org.sidia.eva.healthmonitor.HealthStateNotificationManager;
+import br.org.sidia.eva.healthmonitor.Notifications;
+import br.org.sidia.eva.healthmonitor.ScheduledHealthNotificationInfo;
 import br.org.sidia.eva.mainview.IAboutView;
 import br.org.sidia.eva.mainview.ICleanView;
 import br.org.sidia.eva.mainview.MainViewController;
@@ -52,6 +56,7 @@ public class HudMode extends BaseEvaMode {
     private SharedMixedReality mSharedMixedReality;
     private CharacterController mEvaController;
     private VirtualObjectController mVirtualObjectController;
+    private HealthStateNotificationManager mHealthManager;
 
     public HudMode(EvaContext evaContext, CharacterController evaController, OnModeChange listener) {
         super(evaContext, new HudView(evaContext));
@@ -61,11 +66,37 @@ public class HudMode extends BaseEvaMode {
         mHudView = (HudView) mModeScene;
         mHudView.setListener(new OnHudItemClickedHandler());
         mHudView.setDisconnectListener(new OnDisconnectClickedHandler());
+        mHudView.setOnSubmenuInitializationListener(this::updateNotificationPoints);
 
         mConnectionManager = (EvaConnectionManager) EvaConnectionManager.getInstance();
         mSharedMixedReality = evaContext.getMixedReality();
 
         mVirtualObjectController = new VirtualObjectController(evaContext, evaController);
+
+        mHealthManager = HealthStateNotificationManager.getInstance(mEvaContext.getActivity().getApplicationContext());
+
+    }
+
+    private void updateNotificationPoints() {
+
+        if (EvaConstants.ENABLE_NOTIFICATION_POINTS) {
+
+            ScheduledHealthNotificationInfo drinkInfo = mHealthManager.getHealthNotificationInfo(Notifications.HEALTH_ID_DRINK);
+            ScheduledHealthNotificationInfo sleepInfo = mHealthManager.getHealthNotificationInfo(Notifications.HEALTH_ID_SLEEP);
+            ScheduledHealthNotificationInfo peeInfo = mHealthManager.getHealthNotificationInfo(Notifications.HEALTH_ID_PEE);
+            ScheduledHealthNotificationInfo playInfo = mHealthManager.getHealthNotificationInfo(Notifications.HEALTH_ID_PLAY);
+
+            mHudView.updateNotification(drinkInfo.getId(), drinkInfo.getStatus());
+            mHudView.updateNotification(sleepInfo.getId(), sleepInfo.getStatus());
+            mHudView.updateNotification(peeInfo.getId(), peeInfo.getStatus());
+            mHudView.updateNotification(playInfo.getId(), playInfo.getStatus());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleHealthNotificationEvent(HealthStateNotificationEvent event) {
+        android.util.Log.d(TAG, "Health notification event received: " + event.toString());
+        mHudView.updateNotification(event.getId(), event.getStatus());
     }
 
     @Override
@@ -103,6 +134,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.playBone();
                 Log.d(TAG, "Play Bone");
             }
+            mHealthManager.rescheduleNotification(Notifications.HEALTH_ID_PLAY);
             mEvaController.setCurrentAction(EvaActions.IDLE.ID);
         }
 
@@ -113,6 +145,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
+            mHealthManager.rescheduleNotification(Notifications.HEALTH_ID_SLEEP);
             mVirtualObjectController.showObject(EvaObjectType.BED);
         }
 
@@ -123,6 +156,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
+            mHealthManager.rescheduleNotification(Notifications.HEALTH_ID_PEE);
             mVirtualObjectController.showObject(EvaObjectType.HYDRANT);
         }
 
@@ -133,6 +167,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
+            mHealthManager.rescheduleNotification(Notifications.HEALTH_ID_DRINK);
             mVirtualObjectController.showObject(EvaObjectType.BOWL);
         }
 
@@ -196,7 +231,7 @@ public class HudMode extends BaseEvaMode {
         }
     }
 
-    public boolean isPromptEnabled(){
+    public boolean isPromptEnabled() {
         return mMainViewController != null;
     }
 

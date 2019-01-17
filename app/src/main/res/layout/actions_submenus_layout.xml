@@ -18,6 +18,7 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/submenu"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -26,32 +27,87 @@
     android:orientation="vertical"
     android:visibility="invisible">
 
-    <ImageView
-        android:id="@+id/btn_fetchbone"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/action_bone_button" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/btn_bowl"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/action_bowl_button" />
+        <ImageView
+            android:id="@+id/btn_fetchbone"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/action_bone_button" />
 
-    <ImageView
-        android:id="@+id/btn_hydrant"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/action_hydrant_button" />
+        <ImageView
+            android:id="@+id/image_notification_point_play"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:background="@drawable/bg_notification_point_warning"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/btn_bed"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/action_bed_button" />
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/btn_bowl"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/action_bowl_button" />
+
+        <ImageView
+            android:id="@+id/image_notification_point_drink"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:background="@drawable/bg_notification_point_warning"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/btn_hydrant"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/action_hydrant_button" />
+
+        <ImageView
+            android:id="@+id/image_notification_point_pee"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:background="@drawable/bg_notification_point_warning"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/btn_bed"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/action_bed_button" />
+
+        <ImageView
+            android:id="@+id/image_notification_point_sleep"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:background="@drawable/bg_notification_point_warning"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
 </LinearLayout>

@@ -49,6 +49,30 @@
     <string name="ok">OK</string>
     <string name="want_to_share">Do you want to share?</string>
     <string name="photo_saved">Photo was saved in gallery</string>
+    <string name="message_initial" translatable="false">MOVE AROUND TO FIND A HORIZONTAL SURFACE</string>
+    <string name="choose_a_plan" translatable="false">CHOOSE A PLAN TO APPEAR EVA</string>
+    <string name="clear">Do you want to clear the screen and start\n a new experience with the Eva?</string>
+    <string name="sxr">SXR\nEVA</string>
+    <string name="lorem_ipsum">“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.”</string>
+    <string name="team"><b>Afonso Costa</b> -Engineer\n <b>Ana Franco</b> - Designer\n <b>André Naveca</b> - Engineer\n <b>Cristiano Bozzetto</b> - Sr. Engineer\n <b>Diego Azulay</b> - Engineer\n <b>Flávio Ribeiro</b> - Designer\n</string>
+    <string name="team_part_2"><b>Heimar de Oliveira</b> - Project Leader\n <b>Marcos Souza</b> - Product Owner\n <b>Ragner Nascimento</b> - Tech Leader\n <b>Rachel Lima</b> - Engineer\n <b>Susana Silva</b> - QA Engineer</string>
+    <string name="site">www.sidia.org.br</string>
+    <string name="healthnotification_sleep_title_when_warning">I\'m sleepy</string>
+    <string name="healthnotification_sleep_text_when_warning">I\'m sleepy</string>
+    <string name="healthnotification_sleep_title_when_critical">I\'m too sleepy</string>
+    <string name="healthnotification_sleep_text_when_critical">I\'m too sleepy</string>
+    <string name="healthnotification_pee_title_when_warning">I need to pee</string>
+    <string name="healthnotification_pee_text_when_warning">I need to pee</string>
+    <string name="healthnotification_pee_title_when_critical">I really need to pee</string>
+    <string name="healthnotification_pee_text_when_critical">I really need to pee</string>
+    <string name="healthnotification_drink_title_when_warning">I\'m thirsty</string>
+    <string name="healthnotification_drink_text_when_warning">I\'m thirsty</string>
+    <string name="healthnotification_drink_title_when_critical">I\'m thirsty</string>
+    <string name="healthnotification_drink_text_when_critical">I\'m thirsty</string>
+    <string name="healthnotification_play_title_when_warning">I want to play</string>
+    <string name="healthnotification_play_text_when_warning">I want to play</string>
+    <string name="healthnotification_play_title_when_critical">I really want to play</string>
+    <string name="healthnotification_play_text_when_critical">I really want to play</string>
     <plurals name="guests_found">
         <item quantity="one">1 guest found\non sharing anchor</item>
         <item quantity="other">%d guests found\non sharing anchor</item>
@@ -61,12 +85,4 @@
         <item quantity="one">Guest</item>
         <item quantity="other">Guests</item>
     </plurals>
-    <string name="message_initial" translatable="false">MOVE AROUND TO FIND A HORIZONTAL SURFACE</string>
-    <string name="choose_a_plan" translatable="false">CHOOSE A PLAN TO APPEAR EVA</string>
-    <string name="clear">Do you want to clear the screen and start\n a new experience with the Eva?</string>
-    <string name="sxr">SXR\nEVA</string>
-    <string name="lorem_ipsum">“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.”</string>
-    <string name="team"><b>Afonso Costa</b> -Engineer\n <b>Ana Franco</b> - Designer\n <b>André Naveca</b> - Engineer\n <b>Cristiano Bozzetto</b> - Sr. Engineer\n <b>Diego Azulay</b> - Engineer\n <b>Flávio Ribeiro</b> - Designer\n</string>
-    <string name="team_part_2"><b>Heimar de Oliveira</b> - Project Leader\n <b>Marcos Souza</b> - Product Owner\n <b>Ragner Nascimento</b> - Tech Leader\n <b>Rachel Lima</b> - Engineer\n <b>Susana Silva</b> - QA Engineer</string>
-    <string name="site">www.sidia.org.br</string>
 </resources>

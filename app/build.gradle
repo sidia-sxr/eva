@@ -112,6 +112,7 @@ dependencies {
         }
 
     } else {
+        implementation 'com.google.code.gson:gson:2.8.5'
         implementation "com.samsungxr:sxrsdk:$sxrVersion"
         implementation "com.samsungxr:MixedReality:$sxrVersion"
         implementation "com.samsungxr:sxr-physics:$sxrVersion"
