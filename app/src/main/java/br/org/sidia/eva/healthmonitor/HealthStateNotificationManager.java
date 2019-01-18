@@ -169,7 +169,7 @@ public final class HealthStateNotificationManager extends ContextWrapper {
 
     private void showNotification(@Notifications.HealthId int id, @Notifications.HealthStatus int status) {
         if (mShowNotifications) {
-            mHealthStateNotificationHelper.notify(id, mHealthStateNotificationHelper.getNotification(id, status));
+            mHealthStateNotificationHelper.notify(id, mHealthStateNotificationHelper.getHealthNotification(id, status));
         }
     }
 }

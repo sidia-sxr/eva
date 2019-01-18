@@ -38,33 +38,34 @@ import br.org.sidia.eva.R;
 public class HealthStateNotificationHelper extends ContextWrapper {
 
     public static final String HEALTH_STATE_CHANNEL_ID = "HEALTH_STATE_CHANNEL_ID";
-    private static final int HEALTH_STATE_GROUP_ID = 9999;
+    private static final int APP_NOTIFICATIONS_GROUP_ID = 9999;
     private static final String HEALTH_STATE_GROUP_KEY = BuildConfig.APPLICATION_ID + ".HEALTH_STATUS";
 
-    private final NotificationCompat.Builder mGroupBuilder;
+    private final NotificationCompat.Builder mHealthGroupBuilder;
 
     public HealthStateNotificationHelper(Context context) {
         super(context);
-        mGroupBuilder = new NotificationCompat.Builder(getApplicationContext(), HEALTH_STATE_CHANNEL_ID)
+        mHealthGroupBuilder = new NotificationCompat.Builder(getApplicationContext(), HEALTH_STATE_CHANNEL_ID)
                 .setGroup(HEALTH_STATE_GROUP_KEY)
                 .setGroupSummary(true)
                 .setSmallIcon(getSmallIcon());
         createNotificationChannel();
     }
 
-    public NotificationCompat.Builder getNotification(@Notifications.HealthId int id, @Notifications.HealthStatus int status) {
+    public NotificationCompat.Builder getHealthNotification(@Notifications.HealthId int id, @Notifications.HealthStatus int status) {
 
         return new NotificationCompat.Builder(getApplicationContext(), HEALTH_STATE_CHANNEL_ID)
                 .setGroup(HEALTH_STATE_GROUP_KEY)
                 .setSmallIcon(getSmallIcon())
                 .setContentTitle("Eva needs your attention")
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(getRemoteViews(id, status))
                 .setContentIntent(getNotificationContentIntent())
                 .setAutoCancel(true);
     }
 
     public void notify(int id, NotificationCompat.Builder notification) {
-        NotificationManagerCompat.from(this).notify(HEALTH_STATE_GROUP_ID, mGroupBuilder.build());
+        NotificationManagerCompat.from(this).notify(APP_NOTIFICATIONS_GROUP_ID, mHealthGroupBuilder.build());
         NotificationManagerCompat.from(this).notify(id, notification.build());
     }
 
@@ -125,7 +126,8 @@ public class HealthStateNotificationHelper extends ContextWrapper {
 
     private PendingIntent getNotificationContentIntent() {
         Intent intent = new Intent(this, EvaActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        return PendingIntent.getActivity(this, 0, intent, 0);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
     }
 }
