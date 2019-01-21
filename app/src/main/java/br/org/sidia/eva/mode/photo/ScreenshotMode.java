@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaScannerConnection;
@@ -58,6 +59,7 @@ import br.org.sidia.eva.mode.BaseEvaMode;
 import br.org.sidia.eva.mode.OnBackToHudModeListener;
 import br.org.sidia.eva.util.EventBusUtils;
 import br.org.sidia.eva.util.StorageUtils;
+import br.org.sidia.eva.view.OnViewShownCallback;
 
 public class ScreenshotMode extends BaseEvaMode {
 
@@ -113,12 +115,12 @@ public class ScreenshotMode extends BaseEvaMode {
         }
     }
 
-    private void showPhotoView(Bitmap photo) {
+    private void showPhotoView(Bitmap photo, OnViewShownCallback onViewShownCallback) {
         mView = mPhotoViewController.makeView(IPhotoView.class);
         mView.setOnActionsShareClickListener(this::onShareButtonClicked);
         mView.setOnCancelClickListener(view1 -> backToHudView());
         mView.setPhotoBitmap(photo);
-        mView.show();
+        mView.show(onViewShownCallback);
     }
 
     private void onShareButtonClicked(View clickedButton) {
@@ -166,9 +168,24 @@ public class ScreenshotMode extends BaseEvaMode {
         Log.d(TAG, "Photo captured " + capturedPhotoBitmap);
         if (capturedPhotoBitmap != null) {
             playClickSound();
-            showPhotoView(capturedPhotoBitmap);
-            AsyncExecutor.create().execute(() -> savePhoto(capturedPhotoBitmap));
+            showPhotoView(capturedPhotoBitmap, () -> {
+                // FIXME: Put a delay to ensure that the photo view is ready before
+                // we can get its bitmap
+                new Handler().postDelayed(() -> {
+                    Bitmap photoBitmap = getBitmapFromView(mView.getPhotoContent());
+                    AsyncExecutor.create().execute(() -> savePhoto(photoBitmap));
+                }, 150);
+            });
         }
+    }
+
+    private Bitmap getBitmapFromView(View view) {
+        final int viewWidth = view.getLayoutParams().width;
+        final int viewHeight = view.getLayoutParams().height;
+        Bitmap bitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
     }
 
     private void savePhoto(Bitmap capturedPhotoBitmap) {

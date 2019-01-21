@@ -20,7 +20,6 @@ package br.org.sidia.eva.mode.photo;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import br.org.sidia.eva.R;
@@ -33,7 +32,7 @@ public class PhotoView extends BaseView implements IPhotoView {
     private View mFacebookButton, mWhatsAppButton, mInstagramButton, mTwitterButton;
     private ImageView mPhoto;
     private View mPhotoTarget;
-    private LinearLayout mPhotoContent;
+    private RelativeLayout mPhotoContent;
     private View mFlashView;
     private RelativeLayout mToast_photo;
 
@@ -87,6 +86,11 @@ public class PhotoView extends BaseView implements IPhotoView {
             mInstagramButton.setClickable(true);
             mTwitterButton.setClickable(true);
         });
+    }
+
+    @Override
+    public View getPhotoContent() {
+        return mPhotoContent;
     }
 
     private void takeFlash(Runnable onFlashEnds) {

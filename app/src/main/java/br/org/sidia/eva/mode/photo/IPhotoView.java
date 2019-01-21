@@ -33,4 +33,6 @@ public interface IPhotoView extends IView {
     void showToast();
 
     void enableButtons();
+
+    View getPhotoContent();
 }
