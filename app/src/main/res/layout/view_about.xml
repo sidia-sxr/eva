@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="22dp"
-            android:layout_marginBottom="33dp"
+            android:layout_marginBottom="43dp"
             android:text="@string/site"
             android:textSize="10sp"
             tools:ignore="SmallSp" />
@@ -99,7 +99,7 @@
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="62dp"
+                android:layout_marginStart="70dp"
                 android:columnCount="3"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -127,24 +127,24 @@
 
                 <TextView
                     style="@style/Title"
-                    android:layout_marginStart="62dp"
+                    android:layout_marginStart="72dp"
                     android:text="@string/product_owner" />
 
                 <TextView
                     style="@style/Body_text"
-                    android:layout_marginStart="62dp"
+                    android:layout_marginStart="72dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/po_team" />
 
                 <TextView
                     style="@style/Title"
-                    android:layout_marginStart="62dp"
+                    android:layout_marginStart="72dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/product_leader" />
 
                 <TextView
                     style="@style/Body_text"
-                    android:layout_marginStart="62dp"
+                    android:layout_marginStart="72dp"
                     android:text="@string/pl_team" />
 
             </GridLayout>

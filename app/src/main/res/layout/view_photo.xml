@@ -81,13 +81,20 @@
                 android:layout_marginTop="22dp"
                 android:columnCount="2"
                 android:orientation="vertical"
-                android:rowCount="2">
+                android:rowCount="4">
 
                 <ImageView
                     android:id="@+id/button_instagram"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/bg_instagram_pressed_unpressed" />
+
+                <TextView
+                    style="@style/Body_text"
+                    android:layout_marginTop="11dp"
+                    android:text="@string/instagram"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
 
                 <ImageView
                     android:id="@+id/button_whatsapp"
@@ -96,12 +103,27 @@
                     android:layout_marginTop="27dp"
                     android:src="@drawable/bg_whatsapp_pressed_unpressed" />
 
+                <TextView
+                    style="@style/Body_text"
+                    android:layout_marginTop="11dp"
+                    android:text="@string/whatsapp"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
                 <ImageView
                     android:id="@+id/button_facebook"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="56dp"
                     android:src="@drawable/bg_facebook_pressed_unpressed" />
+
+                <TextView
+                    style="@style/Body_text"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginTop="11dp"
+                    android:text="@string/facebook"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
 
                 <ImageView
                     android:id="@+id/button_twitter"
@@ -110,6 +132,14 @@
                     android:layout_marginStart="56dp"
                     android:layout_marginTop="27dp"
                     android:src="@drawable/bg_twitter_pressed_unpressed" />
+
+                <TextView
+                    style="@style/Body_text"
+                    android:layout_marginStart="62dp"
+                    android:layout_marginTop="11dp"
+                    android:text="@string/twitter"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
             </GridLayout>
 
             <RelativeLayout

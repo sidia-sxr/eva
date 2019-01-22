@@ -81,6 +81,10 @@
     <string name="po_team">Marcos Souza</string>
     <string name="product_leader">PRODUCT Leader</string>
     <string name="pl_team">Heimar Oliveira</string>
+    <string name="instagram">Instagram</string>
+    <string name="whatsapp">Whatsapp</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
     <plurals name="guests_found">
         <item quantity="one">1 guest found\non sharing anchor</item>
         <item quantity="other">%d guests found\non sharing anchor</item>
