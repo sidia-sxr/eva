@@ -54,8 +54,6 @@
     <string name="clear">Do you want to clear the screen and start\n a new experience with the Eva?</string>
     <string name="sxr">SXR\nEVA</string>
     <string name="lorem_ipsum">“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.”</string>
-    <string name="team"><b>Afonso Costa</b> -Engineer\n <b>Ana Franco</b> - Designer\n <b>André Naveca</b> - Engineer\n <b>Cristiano Bozzetto</b> - Sr. Engineer\n <b>Diego Azulay</b> - Engineer\n <b>Flávio Ribeiro</b> - Designer\n</string>
-    <string name="team_part_2"><b>Heimar de Oliveira</b> - Project Leader\n <b>Marcos Souza</b> - Product Owner\n <b>Ragner Nascimento</b> - Tech Leader\n <b>Rachel Lima</b> - Engineer\n <b>Susana Silva</b> - QA Engineer</string>
     <string name="site">www.sidia.org.br</string>
     <string name="healthnotification_sleep_title_when_warning">I\'m sleepy</string>
     <string name="healthnotification_sleep_text_when_warning">I\'m sleepy</string>
@@ -73,6 +71,16 @@
     <string name="healthnotification_play_text_when_warning">I want to play</string>
     <string name="healthnotification_play_title_when_critical">I really want to play</string>
     <string name="healthnotification_play_text_when_critical">I really want to play</string>
+    <string name="dev_team">Afonso Costa\n André Naveca\n Cristiano Bozzeto\n Diego Azulay\n Ragner Nascimento\n Rachel Lima</string>
+    <string name="engineer">Engineer</string>
+    <string name="designer">DESIGNER</string>
+    <string name="designer_team">Ana Franco\n Flávio Ribeiro</string>
+    <string name="qa_engineer">QA ENGINEER</string>
+    <string name="susana_silva">Susana silva</string>
+    <string name="product_owner">PRODUCT oWNER</string>
+    <string name="po_team">Marcos Souza</string>
+    <string name="product_leader">PRODUCT Leader</string>
+    <string name="pl_team">Heimar Oliveira</string>
     <plurals name="guests_found">
         <item quantity="one">1 guest found\non sharing anchor</item>
         <item quantity="other">%d guests found\non sharing anchor</item>

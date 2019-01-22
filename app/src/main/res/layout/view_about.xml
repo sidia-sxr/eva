@@ -50,8 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_toEndOf="@id/ic_eva"
-                android:text="@string/sxr"
-                android:textColor="#ffffff" />
+                android:text="@string/sxr" />
 
             <ImageView
                 android:id="@+id/ic_eva"
@@ -60,45 +59,98 @@
                 android:layout_centerInParent="true"
                 android:src="@drawable/ic_eva"
                 tools:ignore="ContentDescription" />
-
         </RelativeLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <TextView
-                style="@style/StatusText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="19.9dp"
-                android:text="@string/team"
-                android:textSize="14sp" />
-
-
-            <TextView
-                style="@style/StatusText"
-                android:layout_width="wrap_content"
-                android:layout_height="90dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/team_part_2"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
 
         <TextView
             style="@style/StatusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginBottom="33dp"
             android:text="@string/site"
-            android:textColor="#ffffff"
-            android:textSize="14sp" />
+            android:textSize="10sp"
+            tools:ignore="SmallSp" />
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:columnCount="2"
+            android:orientation="vertical"
+            android:rowCount="1">
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Title"
+                    android:text="@string/engineer" />
+
+                <TextView
+                    style="@style/Body_text"
+                    android:layout_marginTop="10dp"
+                    android:lineSpacingExtra="5dp"
+                    android:text="@string/dev_team" />
+            </GridLayout>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="62dp"
+                android:columnCount="3"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:rowCount="4">
+
+                <TextView
+                    style="@style/Title"
+                    android:text="@string/designer" />
+
+                <TextView
+                    style="@style/Body_text"
+                    android:layout_marginTop="10dp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="@string/designer_team" />
+
+                <TextView
+                    style="@style/Title"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/qa_engineer" />
+
+                <TextView
+                    style="@style/Body_text"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/susana_silva" />
+
+                <TextView
+                    style="@style/Title"
+                    android:layout_marginStart="62dp"
+                    android:text="@string/product_owner" />
+
+                <TextView
+                    style="@style/Body_text"
+                    android:layout_marginStart="62dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/po_team" />
+
+                <TextView
+                    style="@style/Title"
+                    android:layout_marginStart="62dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/product_leader" />
+
+                <TextView
+                    style="@style/Body_text"
+                    android:layout_marginStart="62dp"
+                    android:text="@string/pl_team" />
+
+            </GridLayout>
+
+        </GridLayout>
+
     </LinearLayout>
 
 </RelativeLayout>
