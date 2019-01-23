@@ -207,7 +207,9 @@ public class EvaActions {
                     pose[12] = pose[12] + mMoveTo.x;
                     pose[14] = pose[14] + mMoveTo.z;
 
-                    mCharacter.updatePose(pose);
+                    if (!mCharacter.updatePose(pose)) {
+                        mListener.onActionEnd(this, true);
+                    }
                 }
             } else {
                 mListener.onActionEnd(this, true);
