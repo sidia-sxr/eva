@@ -88,6 +88,10 @@ public class CharacterController extends BaseEvaMode {
     @Override
     protected void onExit() {
         EventBusUtils.unregister(this);
+        if (isPlaying()) {
+            Log.d(TAG, "stop bone");
+            stopBone();
+        }
     }
 
     @Override
