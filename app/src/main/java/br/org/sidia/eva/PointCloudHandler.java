@@ -56,8 +56,13 @@ public class PointCloudHandler implements IMixedRealityEvents {
     public void onMixedRealityUpdate(IMixedReality iMixedReality) {
         SXRPointCloud newPointCloud = mMixedReality.acquirePointCloud();
         if (mOldPointCloud != newPointCloud) {
+            float[] cloudPoints = newPointCloud.getPoints();
+            if (cloudPoints.length == 0) {
+                return;
+            }
+
             SXRMesh mesh = new SXRMesh(mEvaContext.getSXRContext());
-            mesh.setVertices(newPointCloud.getPoints());
+            mesh.setVertices(cloudPoints);
             mPointCloudNode.getRenderData().setMesh(mesh);
 
             mOldPointCloud = newPointCloud;
