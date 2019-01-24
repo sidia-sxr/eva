@@ -55,7 +55,7 @@ public class EvaActivity extends SXRActivity {
     private void setDefaultUncaughtExceptionHandler() {
         defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            android.util.Log.e(TAG, "Crash error", e);
+            Log.e(TAG, "Crash error", e);
             mHealthStateNotificationManager.scheduleNotifications();
             defaultUncaughtExceptionHandler.uncaughtException(t, e);
         });

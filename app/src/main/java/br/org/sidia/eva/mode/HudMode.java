@@ -95,7 +95,7 @@ public class HudMode extends BaseEvaMode {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleHealthNotificationEvent(HealthStateNotificationEvent event) {
-        android.util.Log.d(TAG, "Health notification event received: " + event.toString());
+        Log.d(TAG, "Health notification event received: " + event.toString());
         mHudView.updateNotification(event.getId(), event.getStatus());
     }
 
