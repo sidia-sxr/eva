@@ -39,6 +39,7 @@ public class VirtualObjectController {
     private String mObjectType = "";
 
     private VirtualObjectShow virtualObjectShow = new VirtualObjectShow();
+    private VirtualObjectLeave virtualObjectLeave = new VirtualObjectLeave();
 
     public VirtualObjectController(EvaContext evaContext, CharacterController controller) {
         mEvaContext = evaContext;
@@ -199,6 +200,73 @@ public class VirtualObjectController {
         }
     }
 
+    private class VirtualObjectLeave implements SXRDrawFrameListener {
+        private float scale;
+        private float posY;
+        private float countTime;
+        private boolean flattingEnded;
+        private final float DURATION1 = 0.2f;
+        private final float DURATION2 = 0.4f;
+        private final float DURATION3 = 0.9f;
+
+        VirtualObjectLeave() {
+
+        }
+
+        void startAnimation() {
+            countTime = 0f;
+            scale = mVirtualObject.getTransform().getScaleX();
+            posY = mVirtualObject.getTransform().getPositionY();
+            flattingEnded = false;
+
+            mEvaContext.getSXRContext().registerDrawFrameListener(this);
+        }
+
+        @Override
+        public void onDrawFrame(float d) {
+            if (mVirtualObject == null) {
+                mEvaContext.getSXRContext().unregisterDrawFrameListener(this);
+                return;
+            }
+
+            if (countTime >= DURATION3) {
+                mEvaContext.getSXRContext().unregisterDrawFrameListener(this);
+
+                mVirtualObject.getParent().removeChildObject(mVirtualObject);
+                mVirtualObject = null;
+                mObjectType = "";
+
+            } else if (countTime >= DURATION2) {
+                // Position animation: object will "jump"
+                float t = countTime - 0.65f;
+                float h = t * t * -160f + 10f;
+                mVirtualObject.getTransform().setPositionY(posY + h);
+
+                // Scale animation 3: object will grow to 110% and then shrink to 10%
+                t = countTime - 0.52f;
+                float s = (t * t * -7f + 1.1f) * scale;
+                mVirtualObject.getTransform().setScale(s, s, s);
+            } else if (countTime >= DURATION1) {
+                if (!flattingEnded) {
+                    startDustyAnimation();
+                    flattingEnded = true;
+                }
+
+                // Scale animation 2: object will grow back to 100% in Y axis only
+                float t = countTime - 0.52f;
+                float s = (t * t * -7f + 1.1f) * scale;
+                mVirtualObject.getTransform().setScaleY(s);
+            } else {
+                // Scale animation 1: object will shrink to 15% in Y axis only
+                float t = countTime + 0.12f;
+                float s = (t * t * -7f + 1.1f) * scale;
+                mVirtualObject.getTransform().setScaleY(s);
+            }
+
+            countTime += d;
+        }
+    }
+
     private void startDustyAnimation() {
         final float x = mVirtualObject.getTransform().getPositionX();
         final float y = mVirtualObject.getTransform().getPositionY();
@@ -229,9 +297,7 @@ public class VirtualObjectController {
 
     public void hideObject() {
         if (mVirtualObject != null && mVirtualObject.getParent() != null) {
-            mVirtualObject.getParent().removeChildObject(mVirtualObject);
-            mVirtualObject = null;
-            mObjectType = "";
+            virtualObjectLeave.startAnimation();
         }
     }
 }
