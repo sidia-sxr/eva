@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 
 import br.org.sidia.eva.actions.EvaActions;
+import br.org.sidia.eva.animations.HandAnimation;
 import br.org.sidia.eva.character.CharacterController;
 import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.custom.TouchEventsAdapter;
@@ -76,7 +77,7 @@ public class EvaMain extends DisableNativeSplashScreen {
     private MainViewController mMainViewController = null;
 
     private ViewInitialMessage mViewInitialMessage;
-    private ViewChoosePlan mChoosePlan = null;
+    private HandAnimation mHandAnimation = null;
 
     EvaMain(EvaContext evaContext) {
         mEvaContext = evaContext;
@@ -244,9 +245,12 @@ public class EvaMain extends DisableNativeSplashScreen {
     @Subscribe
     public void handlePlaneDetected(SXRPlane plane) {
         mViewInitialMessage.onHide(mEvaContext.getMainScene());
-        if (mChoosePlan == null) {
-            mChoosePlan = new ViewChoosePlan(mEvaContext);
-            mChoosePlan.onShow(mEvaContext.getMainScene());
+
+        if (mHandAnimation == null) {
+            mHandAnimation = new HandAnimation(mEvaContext.getSXRContext(), 500);
+            mHandAnimation.setLightPosition(0, 0, -0.74f);
+            mHandAnimation.setLightSize(1);
+            mEvaContext.getSXRContext().getAnimationEngine().start(mHandAnimation);
         }
     }
 
@@ -359,9 +363,9 @@ public class EvaMain extends DisableNativeSplashScreen {
 
             // TODO: Improve this if
             if (selectedPlane != null) {
-                if (mChoosePlan != null) {
-                    mChoosePlan.onHide(mEvaContext.getMainScene());
-                    mChoosePlan = null;
+                if (mHandAnimation != null) {
+                    mHandAnimation.onHide();
+                    mHandAnimation = null;
                 }
 
                 final float[] modelMtx = sxrNode.getTransform().getModelMatrix();
