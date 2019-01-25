@@ -27,14 +27,6 @@ import com.samsungxr.SXREventListeners;
 import com.samsungxr.SXRMeshCollider;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRRenderData;
-import br.org.sidia.eva.constant.EvaConstants;
-import br.org.sidia.eva.service.IMessageService;
-import br.org.sidia.eva.service.MessageService;
-import br.org.sidia.eva.service.data.BallCommand;
-import br.org.sidia.eva.service.event.BallCommandReceivedMessage;
-import br.org.sidia.eva.service.share.PlayerSceneObject;
-import br.org.sidia.eva.util.EventBusUtils;
-import br.org.sidia.eva.util.LoadModelHelper;
 import com.samsungxr.io.SXRTouchPadGestureListener;
 import com.samsungxr.mixedreality.SXRPlane;
 import com.samsungxr.physics.SXRRigidBody;
@@ -43,6 +35,15 @@ import org.greenrobot.eventbus.Subscribe;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+
+import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.service.IMessageService;
+import br.org.sidia.eva.service.MessageService;
+import br.org.sidia.eva.service.data.BallCommand;
+import br.org.sidia.eva.service.event.BallCommandReceivedMessage;
+import br.org.sidia.eva.service.share.PlayerSceneObject;
+import br.org.sidia.eva.util.EventBusUtils;
+import br.org.sidia.eva.util.LoadModelHelper;
 
 public class BallThrowHandler {
 
@@ -145,7 +146,7 @@ public class BallThrowHandler {
     }
 
     public void reset() {
-        if (mBoneGaze.isEnabled()) {
+        if (mBoneGaze.isEnabled() && mEvaContext.getMode() != EvaConstants.SHARE_MODE_GUEST) {
             return;
         }
 
@@ -249,7 +250,10 @@ public class BallThrowHandler {
                     mForce = 150 * vlen / (float) (e2.getEventTime() - e1.getDownTime());
                     mForceVector.set(mForce * -vx, mForce * vy, mForce * -vz);
 
-                    throwRemoteBall(mForceVector);
+                    // Only throw remote command in HOST mode
+                    if (mEvaContext.getMode() == EvaConstants.SHARE_MODE_HOST) {
+                        throwRemoteBall(mForceVector);
+                    }
 
                     throwLocalBall(mForceVector);
                     return true;
