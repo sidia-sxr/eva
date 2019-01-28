@@ -214,8 +214,9 @@ public final class PlaneHandler implements IPlaneEvents, SXRDrawFrameListener {
 
     @Override
     public void onPlaneGeometryChange(SXRPlane sxrPlane) {
-        if (sxrPlane.getOwnerObject() != null) {
-            SXRNode quad = sxrPlane.getOwnerObject().getChildByIndex(0);
+        SXRNode ownerObject = sxrPlane.getOwnerObject();
+        if (ownerObject != null && ownerObject.getChildrenCount() > 0) {
+            SXRNode quad = ownerObject.getChildByIndex(0);
             if (quad != null) {
                 quad.getTransform().setScale(
                         sxrPlane.getWidth() * 0.9f,
