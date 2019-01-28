@@ -11,6 +11,7 @@ import com.samsungxr.SXRShaderId;
 import com.samsungxr.SXRTexture;
 import com.samsungxr.animation.SXRAnimation;
 import com.samsungxr.animation.SXROpacityAnimation;
+import com.samsungxr.animation.SXRRepeatMode;
 
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.shaders.SXRHandShader;
@@ -29,8 +30,8 @@ public class HandAnimation extends SXRAnimation {
         mLightMaterial = mLightObject.getRenderData().getMaterial();
         mLightObject.addChildObject(mHandObject);
         mLightObject.addChildObject(mLabelObject);
-       /* setRepeatMode(SXRRepeatMode.REPEATED);
-        setRepeatCount(-1);*/
+        setRepeatMode(SXRRepeatMode.PINGPONG);
+        setRepeatCount(-1);
     }
 
     public void setLightSize(float size) {
@@ -87,7 +88,7 @@ public class HandAnimation extends SXRAnimation {
 
     @Override
     protected void animate(SXRHybridObject sxrHybridObject, float ratio) {
-        mLightMaterial.setFloat("u_time", mElapsedTime);
+        mLightMaterial.setFloat("u_time", (mElapsedTime % mDuration)+animationOffset);
     }
 
     private static SXRNode createLightObject(SXRContext context) {
