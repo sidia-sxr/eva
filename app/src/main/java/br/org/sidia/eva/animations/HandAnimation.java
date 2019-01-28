@@ -11,7 +11,6 @@ import com.samsungxr.SXRShaderId;
 import com.samsungxr.SXRTexture;
 import com.samsungxr.animation.SXRAnimation;
 import com.samsungxr.animation.SXROpacityAnimation;
-import com.samsungxr.animation.SXRRepeatMode;
 
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.shaders.SXRHandShader;
@@ -30,8 +29,6 @@ public class HandAnimation extends SXRAnimation {
         mLightMaterial = mLightObject.getRenderData().getMaterial();
         mLightObject.addChildObject(mHandObject);
         mLightObject.addChildObject(mLabelObject);
-        setRepeatMode(SXRRepeatMode.PINGPONG);
-        setRepeatCount(-1);
     }
 
     public void setLightSize(float size) {
@@ -88,7 +85,7 @@ public class HandAnimation extends SXRAnimation {
 
     @Override
     protected void animate(SXRHybridObject sxrHybridObject, float ratio) {
-        mLightMaterial.setFloat("u_time", (mElapsedTime % mDuration)+animationOffset);
+        mLightMaterial.setFloat("u_time", mElapsedTime / 0.3f);
     }
 
     private static SXRNode createLightObject(SXRContext context) {
@@ -111,10 +108,12 @@ public class HandAnimation extends SXRAnimation {
                 new SXRAndroidResource(context, R.drawable.ic_hand));
         final SXRMesh mesh = SXRMesh.createQuad(context,
                 "float3 a_position float2 a_texcoord", 0.134f * 0.5f, 0.195f * 0.5f);
-        final SXRNode lightObj = new SXRNode(context, mesh, tex);
-        lightObj.getTransform().setPosition(0, -0.05f, 0.08f);
-        lightObj.getRenderData().getMaterial().setOpacity(0f);
-        return lightObj;
+        final SXRNode handObj = new SXRNode(context, mesh, tex);
+        handObj.getRenderData().setAlphaBlend(true);
+        handObj.getTransform().setPosition(0, -0.05f, 0.08f);
+        handObj.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.TRANSPARENT + 100);
+        handObj.getRenderData().getMaterial().setOpacity(0f);
+        return handObj;
     }
 
     private static SXRNode createLabel(SXRContext context) {
@@ -122,9 +121,9 @@ public class HandAnimation extends SXRAnimation {
                 new SXRAndroidResource(context, R.drawable.ic_label));
         final SXRMesh mesh = SXRMesh.createQuad(context,
                 "float3 a_position float2 a_texcoord", 1.195f * 0.44f, 0.075f * 0.28f);
-        final SXRNode lightObj = new SXRNode(context, mesh, tex);
-        lightObj.getTransform().setPosition(0, -0.164f, 0.02f);
-        lightObj.getRenderData().getMaterial().setOpacity(0f);
-        return lightObj;
+        final SXRNode labelObj = new SXRNode(context, mesh, tex);
+        labelObj.getTransform().setPosition(0, -0.164f, 0.02f);
+        labelObj.getRenderData().getMaterial().setOpacity(0f);
+        return labelObj;
     }
 }
