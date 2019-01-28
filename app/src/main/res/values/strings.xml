@@ -71,7 +71,7 @@
     <string name="healthnotification_play_text_when_warning">I want to play</string>
     <string name="healthnotification_play_title_when_critical">I really want to play</string>
     <string name="healthnotification_play_text_when_critical">I really want to play</string>
-    <string name="dev_team">Afonso Costa\n André Naveca\n Cristiano Bozzeto\n Diego Azulay\n Ragner Nascimento\n Rachel Lima</string>
+    <string name="dev_team">Afonso Costa\n André Naveca\n Cristiano Bozzetto\n Diego Azulay\n Ragner Nascimento\n Rachel Lima</string>
     <string name="engineer">Engineer</string>
     <string name="designer">DESIGNER</string>
     <string name="designer_team">Ana Franco\n Flávio Ribeiro</string>
