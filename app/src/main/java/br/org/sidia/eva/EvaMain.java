@@ -203,6 +203,9 @@ public class EvaMain extends DisableNativeSplashScreen {
         iFinishedView.setOkClickListener(view -> {
             mMainViewController.onHide(mEvaContext.getMainScene());
             mMainViewController = null;
+            if (mode == EvaConstants.SHARE_MODE_GUEST) {
+                onShowHandAnimate();
+            }
         });
 
         String text = getSXRContext().getActivity().getString(
@@ -246,11 +249,8 @@ public class EvaMain extends DisableNativeSplashScreen {
     public void handlePlaneDetected(SXRPlane plane) {
         mViewInitialMessage.onHide(mEvaContext.getMainScene());
 
-        if (mHandAnimation == null) {
-            mHandAnimation = new HandAnimation(mEvaContext.getSXRContext(), 500);
-            mHandAnimation.setLightPosition(0, 0, -0.74f);
-            mHandAnimation.setLightSize(1);
-            mEvaContext.getSXRContext().getAnimationEngine().start(mHandAnimation);
+        if (mHandAnimation == null && mCurrentMode == null) {
+            onShowHandAnimate();
         }
     }
 
@@ -267,6 +267,13 @@ public class EvaMain extends DisableNativeSplashScreen {
         if (event.getPerformedAction().equals(BallThrowHandlerEvent.THROWN)) {
             mEva.setCurrentAction(EvaActions.TO_BALL.ID);
         }
+    }
+
+    private void onShowHandAnimate() {
+        mHandAnimation = new HandAnimation(mEvaContext.getSXRContext(), 500);
+        mHandAnimation.setLightPosition(0, 0, -0.74f);
+        mHandAnimation.setLightSize(1);
+        mEvaContext.getSXRContext().getAnimationEngine().start(mHandAnimation);
     }
 
     public class HandlerModeChange implements OnModeChange {
