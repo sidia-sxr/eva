@@ -72,14 +72,14 @@
     <string name="healthnotification_play_title_when_critical">I really want to play</string>
     <string name="healthnotification_play_text_when_critical">I really want to play</string>
     <string name="dev_team">Afonso Costa\n André Naveca\n Cristiano Bozzetto\n Diego Azulay\n Ragner Nascimento\n Rachel Lima</string>
-    <string name="engineer">Engineer</string>
+    <string name="developer">Developer</string>
     <string name="designer">DESIGNER</string>
     <string name="designer_team">Ana Franco\n Flávio Ribeiro</string>
     <string name="qa_engineer">QA ENGINEER</string>
     <string name="susana_silva">Susana silva</string>
     <string name="product_owner">PRODUCT oWNER</string>
     <string name="po_team">Marcos Souza</string>
-    <string name="product_leader">PRODUCT Leader</string>
+    <string name="project_leader">Project Leader</string>
     <string name="pl_team">Heimar Oliveira</string>
     <string name="instagram">Instagram</string>
     <string name="whatsapp">Whatsapp</string>
