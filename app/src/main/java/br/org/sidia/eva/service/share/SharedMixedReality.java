@@ -7,14 +7,6 @@ import android.util.Log;
 import com.samsungxr.SXREventReceiver;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRPicker;
-
-import br.org.sidia.eva.EvaContext;
-import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.constant.EvaConstants;
-import br.org.sidia.eva.service.IMessageService;
-import br.org.sidia.eva.service.MessageService;
-import br.org.sidia.eva.service.event.UpdatePosesReceivedMessage;
-import br.org.sidia.eva.util.EventBusUtils;
 import com.samsungxr.mixedreality.IMixedReality;
 import com.samsungxr.mixedreality.SXRAnchor;
 import com.samsungxr.mixedreality.SXRHitResult;
@@ -30,6 +22,14 @@ import org.joml.Matrix4f;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import br.org.sidia.eva.EvaContext;
+import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.constant.EvaObjectType;
+import br.org.sidia.eva.service.IMessageService;
+import br.org.sidia.eva.service.MessageService;
+import br.org.sidia.eva.service.event.UpdatePosesReceivedMessage;
+import br.org.sidia.eva.util.EventBusUtils;
 
 public class SharedMixedReality implements IMixedReality {
 
@@ -118,6 +118,7 @@ public class SharedMixedReality implements IMixedReality {
         for (SharedSceneObject shared : mSharedSceneObjects) {
             initAsGuest(shared);
         }
+        setPlaneFindingMode(SXRMixedReality.PlaneFindingMode.DISABLED);
     }
 
     private synchronized void initAsGuest(SharedSceneObject shared) {
@@ -140,6 +141,7 @@ public class SharedMixedReality implements IMixedReality {
             }
         }
         mEvaContext.getPlaneHandler().resetPlanes();
+        setPlaneFindingMode(SXRMixedReality.PlaneFindingMode.HORIZONTAL);
     }
 
     public synchronized void registerSharedObject(SXRNode object, @EvaObjectType String type,
