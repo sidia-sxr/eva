@@ -15,6 +15,8 @@
 
 package br.org.sidia.eva;
 
+import android.os.Handler;
+
 import com.samsungxr.ITouchEvents;
 import com.samsungxr.SXRContext;
 import com.samsungxr.SXRNode;
@@ -180,6 +182,7 @@ public class EvaMain extends DisableNativeSplashScreen {
                 if (mMainViewController != null) {
                     mMainViewController.onHide(mEvaContext.getMainScene());
                     mMainViewController = null;
+                    onShowHandAnimate();
                 }
             });
             iExitView.setOnConfirmClickListener(view -> {
@@ -222,10 +225,18 @@ public class EvaMain extends DisableNativeSplashScreen {
             getSXRContext().runOnGlThread(() -> mHandlerBackToHud.OnBackToHud());
         }
 
-        if (mCurrentMode instanceof HudMode || mCurrentMode == null) {
+        if (mCurrentMode instanceof HudMode) {
             if (mCurrentMode != null && !((HudMode) mCurrentMode).isPromptEnabled()) {
                 getSXRContext().runOnGlThread(this::showViewExit);
             }
+        }
+
+        if (mCurrentMode == null) {
+            onHideHandAnimate();
+            new Handler().postDelayed(() -> {
+                getSXRContext().runOnGlThread(this::showViewExit);
+            }, 800);
+
         }
         return true;
     }
@@ -274,6 +285,13 @@ public class EvaMain extends DisableNativeSplashScreen {
         mHandAnimation.setLightPosition(0, 0, -0.74f);
         mHandAnimation.setLightSize(1);
         mEvaContext.getSXRContext().getAnimationEngine().start(mHandAnimation);
+    }
+
+    private void onHideHandAnimate() {
+        if (mHandAnimation != null) {
+            mHandAnimation.onHide();
+            mHandAnimation = null;
+        }
     }
 
     public class HandlerModeChange implements OnModeChange {
@@ -370,10 +388,7 @@ public class EvaMain extends DisableNativeSplashScreen {
 
             // TODO: Improve this if
             if (selectedPlane != null) {
-                if (mHandAnimation != null) {
-                    mHandAnimation.onHide();
-                    mHandAnimation = null;
-                }
+                onHideHandAnimate();
 
                 final float[] modelMtx = sxrNode.getTransform().getModelMatrix();
 
