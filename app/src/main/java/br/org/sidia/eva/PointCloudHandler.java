@@ -7,16 +7,17 @@ import com.samsungxr.SXRMesh;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRRenderData;
 import com.samsungxr.SXRShaderId;
-import br.org.sidia.eva.shaders.SXRPointCloudShader;
 import com.samsungxr.mixedreality.IMixedReality;
 import com.samsungxr.mixedreality.IMixedRealityEvents;
 import com.samsungxr.mixedreality.SXRPointCloud;
 
+import br.org.sidia.eva.shaders.SXRPointCloudShader;
+
 public class PointCloudHandler implements IMixedRealityEvents {
-    IMixedReality mMixedReality;
-    SXRPointCloud mOldPointCloud;
-    SXRNode mPointCloudNode;
-    EvaContext mEvaContext;
+    private IMixedReality mMixedReality;
+    private SXRPointCloud mOldPointCloud;
+    private final SXRNode mPointCloudNode;
+    private final EvaContext mEvaContext;
 
     public PointCloudHandler(EvaContext evaContext) {
         mEvaContext = evaContext;
@@ -33,7 +34,7 @@ public class PointCloudHandler implements IMixedRealityEvents {
         mPointCloudNode.attachComponent(renderData);
     }
 
-    public void addOnScene() {
+    private void addOnScene() {
         mEvaContext.getMainScene().addNode(mPointCloudNode);
     }
 
