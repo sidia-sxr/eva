@@ -195,6 +195,11 @@ public final class PlaneHandler implements IPlaneEvents, SXRDrawFrameListener {
         }
     }
 
+    public boolean hasPlaneDetected() {
+        return mPlanes.size() != 0;
+
+    }
+
     @Override
     public void onPlaneStateChange(SXRPlane plane, SXRTrackingState trackingState) {
         if (trackingState != SXRTrackingState.TRACKING) {

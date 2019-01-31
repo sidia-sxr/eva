@@ -78,7 +78,7 @@ public class EvaMain extends DisableNativeSplashScreen {
 
     private MainViewController mMainViewController = null;
 
-    private ViewInitialMessage mViewInitialMessage;
+    private ViewInitialMessage mViewInitialMessage = null;
     private HandAnimation mHandAnimation = null;
 
     EvaMain(EvaContext evaContext) {
@@ -100,6 +100,8 @@ public class EvaMain extends DisableNativeSplashScreen {
 
         mPlaneHandler = new PlaneHandler(this, mEvaContext);
         mPointCloudHandler = new PointCloudHandler(mEvaContext);
+
+        mViewInitialMessage = new ViewInitialMessage(mEvaContext);
 
         mSharedMixedReality = mEvaContext.getMixedReality();
 
@@ -182,7 +184,16 @@ public class EvaMain extends DisableNativeSplashScreen {
                 if (mMainViewController != null) {
                     mMainViewController.onHide(mEvaContext.getMainScene());
                     mMainViewController = null;
-                    onShowHandAnimate();
+                    if (mViewInitialMessage == null) {
+                        getSXRContext().runOnGlThread(() -> {
+                            mViewInitialMessage = new ViewInitialMessage(mEvaContext);
+                            mViewInitialMessage.onShow(mEvaContext.getMainScene());
+                        });
+                    }
+                    if (mEvaContext.getPlaneHandler().hasPlaneDetected()) {
+                        getSXRContext().runOnGlThread(() -> mViewInitialMessage.onHide(mEvaContext.getMainScene()));
+                        onShowHandAnimate();
+                    }
                 }
             });
             iExitView.setOnConfirmClickListener(view -> {
@@ -207,7 +218,9 @@ public class EvaMain extends DisableNativeSplashScreen {
             mMainViewController.onHide(mEvaContext.getMainScene());
             mMainViewController = null;
             if (mode == EvaConstants.SHARE_MODE_GUEST) {
-                onShowHandAnimate();
+                new Handler().postDelayed(() -> {
+                    onShowHandAnimate();
+                }, 900);
             }
         });
 
@@ -225,18 +238,21 @@ public class EvaMain extends DisableNativeSplashScreen {
             getSXRContext().runOnGlThread(() -> mHandlerBackToHud.OnBackToHud());
         }
 
-        if (mCurrentMode instanceof HudMode) {
+        if (mCurrentMode instanceof HudMode || mCurrentMode == null) {
             if (mCurrentMode != null && !((HudMode) mCurrentMode).isPromptEnabled()) {
                 getSXRContext().runOnGlThread(this::showViewExit);
             }
-        }
-
-        if (mCurrentMode == null) {
+            if (mViewInitialMessage != null) {
+                mViewInitialMessage.onHide(mEvaContext.getMainScene());
+                mViewInitialMessage = null;
+            }
+            if (mCurrentMode instanceof HudMode) {
+                mHandAnimation.remove();
+            }
             onHideHandAnimate();
             new Handler().postDelayed(() -> {
                 getSXRContext().runOnGlThread(this::showViewExit);
-            }, 800);
-
+            }, 900);
         }
         return true;
     }
@@ -258,7 +274,10 @@ public class EvaMain extends DisableNativeSplashScreen {
 
     @Subscribe
     public void handlePlaneDetected(SXRPlane plane) {
-        mViewInitialMessage.onHide(mEvaContext.getMainScene());
+        if (mViewInitialMessage != null) {
+            mViewInitialMessage.onHide(mEvaContext.getMainScene());
+            mViewInitialMessage = null;
+        }
 
         if (mHandAnimation == null && mCurrentMode == null) {
             onShowHandAnimate();

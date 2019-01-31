@@ -83,6 +83,12 @@ public class HandAnimation extends SXRAnimation {
         mAnimationLabel.setOnFinish(animation -> mContext.getMainScene().getMainCameraRig().removeChildObject(mLightObject));
     }
 
+    public void remove() {
+        if (mLightObject.getParent() != null) {
+            mLightObject.getParent().removeChildObject(mLightObject);
+        }
+    }
+
     @Override
     protected void animate(SXRHybridObject sxrHybridObject, float ratio) {
         mLightMaterial.setFloat("u_time", mElapsedTime / 0.3f);
