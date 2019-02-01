@@ -20,6 +20,7 @@ package br.org.sidia.eva.mode.sharinganchor;
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.util.Log;
@@ -237,10 +238,12 @@ public class SharingAnchorMode extends BaseEvaMode {
                 requestStatus.setStatus(RequestStatus.STATUS_OK);
                 mMessageService.sendRequestStatus(requestStatus);
 
-                mSharedMixedReality.startSharing(
-                        managedAnchor.getAnchor(), EvaConstants.SHARE_MODE_GUEST);
-
-                gotToHudView();
+                // Create a delay to wait the host starts its sharing process
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    mSharedMixedReality.startSharing(
+                            managedAnchor.getAnchor(), EvaConstants.SHARE_MODE_GUEST);
+                    gotToHudView();
+                }, 1500);
             }
 
             @Override
