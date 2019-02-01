@@ -246,7 +246,7 @@ public class EvaMain extends DisableNativeSplashScreen {
                 mViewInitialMessage.onHide(mEvaContext.getMainScene());
                 mViewInitialMessage = null;
             }
-            if (mCurrentMode instanceof HudMode) {
+            if (mCurrentMode instanceof HudMode && mHandAnimation != null) {
                 mHandAnimation.remove();
             }
             onHideHandAnimate();
