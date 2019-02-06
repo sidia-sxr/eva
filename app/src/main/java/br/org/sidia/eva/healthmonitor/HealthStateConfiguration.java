@@ -16,6 +16,9 @@
 
 package br.org.sidia.eva.healthmonitor;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
@@ -25,10 +28,10 @@ import br.org.sidia.eva.R;
 
 public enum HealthStateConfiguration {
 
-    DRINK(Notifications.HEALTH_ID_DRINK, R.drawable.ic_bowl, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10), R.string.healthnotification_drink_title_when_warning, R.string.healthnotification_drink_text_when_warning, R.string.healthnotification_drink_title_when_critical, R.string.healthnotification_drink_text_when_critical),
-    SLEEP(Notifications.HEALTH_ID_SLEEP, R.drawable.ic_bed, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10), R.string.healthnotification_sleep_title_when_warning, R.string.healthnotification_sleep_text_when_warning, R.string.healthnotification_sleep_title_when_critical, R.string.healthnotification_sleep_text_when_critical),
-    PEE(Notifications.HEALTH_ID_PEE, R.drawable.ic_hydrant, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10), R.string.healthnotification_pee_title_when_warning, R.string.healthnotification_pee_text_when_warning, R.string.healthnotification_pee_title_when_critical, R.string.healthnotification_pee_text_when_critical),
-    PLAY(Notifications.HEALTH_ID_PLAY, R.drawable.ic_play_bone, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10), R.string.healthnotification_play_title_when_warning, R.string.healthnotification_play_text_when_warning, R.string.healthnotification_play_title_when_critical, R.string.healthnotification_play_text_when_critical);
+    DRINK(Notifications.HEALTH_ID_DRINK, R.drawable.btn_critical_water, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10), R.string.healthnotification_drink_title_when_critical, R.string.healthnotification_drink_text_when_critical),
+    SLEEP(Notifications.HEALTH_ID_SLEEP, R.drawable.btn_critical_sleep, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10), R.string.healthnotification_sleep_title_when_critical, R.string.healthnotification_sleep_text_when_critical),
+    PEE(Notifications.HEALTH_ID_PEE, R.drawable.btn_critical_peer, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10), R.string.healthnotification_pee_title_when_critical, R.string.healthnotification_pee_text_when_critical),
+    PLAY(Notifications.HEALTH_ID_PLAY, R.drawable.btn_bone, TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10), R.string.healthnotification_play_title_when_critical, R.string.healthnotification_play_text_when_critical);
 
     private int id;
 
@@ -37,20 +40,15 @@ public enum HealthStateConfiguration {
     private long delayUntilWarning;
     private long delayUntilCritical;
 
-    private int titleWhenWarning;
-    private int textWhenWarning;
     private int titleWhenCritical;
     private int textWhenCritical;
 
     HealthStateConfiguration(@Notifications.HealthId int id, @DrawableRes int resourceId,
-                             long delayUntilWarning, long delayUntilCritical, int titleWhenWarning,
-                             int textWhenWarning, int titleWhenCritical, int textWhenCritical) {
+                             long delayUntilWarning, long delayUntilCritical, int titleWhenCritical, int textWhenCritical) {
         this.id = id;
         this.resourceId = resourceId;
         this.delayUntilWarning = delayUntilWarning;
         this.delayUntilCritical = delayUntilCritical;
-        this.titleWhenWarning = titleWhenWarning;
-        this.textWhenWarning = textWhenWarning;
         this.titleWhenCritical = titleWhenCritical;
         this.textWhenCritical = textWhenCritical;
     }
@@ -76,16 +74,6 @@ public enum HealthStateConfiguration {
     }
 
     @StringRes
-    public int getTitleWhenWarning() {
-        return titleWhenWarning;
-    }
-
-    @StringRes
-    public int getTextWhenWarning() {
-        return textWhenWarning;
-    }
-
-    @StringRes
     public int getTitleWhenCritical() {
         return titleWhenCritical;
     }
@@ -93,6 +81,20 @@ public enum HealthStateConfiguration {
     @StringRes
     public int getTextWhenCritical() {
         return textWhenCritical;
+    }
+
+    public Bitmap getLargeIcon(Resources resources) {
+        if (id == Notifications.HEALTH_ID_DRINK) {
+            return BitmapFactory.decodeResource(resources, R.drawable.btn_critical_water);
+        } else if (id == Notifications.HEALTH_ID_PEE) {
+            return BitmapFactory.decodeResource(resources, R.drawable.btn_critical_peer);
+        } else if (id == Notifications.HEALTH_ID_SLEEP) {
+            return BitmapFactory.decodeResource(resources, R.drawable.btn_critical_sleep);
+        } else if (id == Notifications.HEALTH_ID_PLAY) {
+            return BitmapFactory.decodeResource(resources, R.drawable.btn_bone);
+        }
+
+        return null;
     }
 
     public static HealthStateConfiguration getById(@Notifications.HealthId int id) {

@@ -121,7 +121,7 @@ public final class HealthStateNotificationManager extends ContextWrapper {
         if (notification.getStatus() == Notifications.HEALTH_STATUS_NORMAL) {
 
             if (scheduleJob(id, getDelayUntilCritical(id))) {
-                showNotification(id, Notifications.HEALTH_STATUS_WARNING);
+                showNotification(id);
                 notification.setStatus(Notifications.HEALTH_STATUS_WARNING);
                 mSharedPreferenceHelper.setHealthState(notification);
                 EventBus.getDefault().post(
@@ -130,7 +130,7 @@ public final class HealthStateNotificationManager extends ContextWrapper {
 
         } else if (notification.getStatus() == Notifications.HEALTH_STATUS_WARNING) {
 
-            showNotification(id, Notifications.HEALTH_STATUS_CRITICAL);
+            showNotification(id);
             notification.setStatus(Notifications.HEALTH_STATUS_CRITICAL);
             mSharedPreferenceHelper.setHealthState(notification);
             EventBus.getDefault().post(
@@ -167,9 +167,9 @@ public final class HealthStateNotificationManager extends ContextWrapper {
         }
     }
 
-    private void showNotification(@Notifications.HealthId int id, @Notifications.HealthStatus int status) {
+    public void showNotification(@Notifications.HealthId int id) {
         if (mShowNotifications) {
-            mHealthStateNotificationHelper.notify(id, mHealthStateNotificationHelper.getHealthNotification(id, status));
+            mHealthStateNotificationHelper.notify(id, mHealthStateNotificationHelper.getHealthNotification(id));
         }
     }
 }

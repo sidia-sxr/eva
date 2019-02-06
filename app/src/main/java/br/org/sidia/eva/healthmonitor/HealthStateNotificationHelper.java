@@ -26,10 +26,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.DrawableRes;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.widget.RemoteViews;
 
 import br.org.sidia.eva.BuildConfig;
 import br.org.sidia.eva.EvaActivity;
@@ -52,14 +50,15 @@ public class HealthStateNotificationHelper extends ContextWrapper {
         createNotificationChannel();
     }
 
-    public NotificationCompat.Builder getHealthNotification(@Notifications.HealthId int id, @Notifications.HealthStatus int status) {
+    public NotificationCompat.Builder getHealthNotification(@Notifications.HealthId int id) {
+        HealthStateConfiguration configuration = HealthStateConfiguration.getById(id);
 
         return new NotificationCompat.Builder(getApplicationContext(), HEALTH_STATE_CHANNEL_ID)
                 .setGroup(HEALTH_STATE_GROUP_KEY)
                 .setSmallIcon(getSmallIcon())
-                .setContentTitle("Eva needs your attention")
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .setCustomContentView(getRemoteViews(id, status))
+                .setContentTitle(getString(configuration.getTitleWhenCritical()))
+                .setContentText(getString(configuration.getTextWhenCritical()))
+                .setLargeIcon(configuration.getLargeIcon(getResources()))
                 .setContentIntent(getNotificationContentIntent())
                 .setAutoCancel(true);
     }
@@ -79,7 +78,7 @@ public class HealthStateNotificationHelper extends ContextWrapper {
     }
 
     private int getSmallIcon() {
-        return R.mipmap.ic_launcher_foreground;
+        return R.drawable.ic_notification_small;
     }
 
     private void createNotificationChannel() {
@@ -96,32 +95,6 @@ public class HealthStateNotificationHelper extends ContextWrapper {
                 manager.createNotificationChannel(channel);
             }
         }
-    }
-
-    private RemoteViews getRemoteViews(@Notifications.HealthId int id, @Notifications.HealthStatus int status) {
-
-        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.layout_health_notification);
-        HealthStateConfiguration configuration = HealthStateConfiguration.getById(id);
-
-        String title = null, text = null;
-        @DrawableRes int bgStatus = 0;
-
-        if (status == Notifications.HEALTH_STATUS_WARNING) {
-            title = getString(configuration.getTitleWhenWarning());
-            text = getString(configuration.getTextWhenWarning());
-            bgStatus = R.drawable.bg_health_status_warning;
-        } else if (status == Notifications.HEALTH_STATUS_CRITICAL) {
-            title = getString(configuration.getTitleWhenCritical());
-            text = getString(configuration.getTextWhenCritical());
-            bgStatus = R.drawable.bg_health_status_critical;
-        }
-
-        remoteViews.setTextViewText(R.id.text_title, title);
-        remoteViews.setTextViewText(R.id.text_text, text);
-        remoteViews.setImageViewResource(R.id.image_type, configuration.getResourceId());
-        remoteViews.setImageViewResource(R.id.image_background, bgStatus);
-
-        return remoteViews;
     }
 
     private PendingIntent getNotificationContentIntent() {
