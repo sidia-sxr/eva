@@ -43,12 +43,11 @@ public class SharedMixedReality implements IMixedReality {
     private final EvaContext mEvaContext;
     private final List<SharedSceneObject> mSharedSceneObjects;
     private final IMessageService mMessageService;
-    private SXREventReceiver mListeners;
 
     @EvaConstants.ShareMode
     private int mMode = EvaConstants.SHARE_MODE_NONE;
     private SXRAnchor mSharedAnchor = null;
-    private SXRNode mSharedAnchorObject = null;
+    private SXRNode mSharedAnchorObject;
     private float[] mSpaceMatrix = new float[16];
 
     public SharedMixedReality(EvaContext evaContext) {
