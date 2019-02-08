@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ Copyright 2015 Samsung Electronics Co., LTD
+  ~ Copyright 2020 Samsung Electronics Co., LTD
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -24,19 +24,17 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical"
-    android:visibility="invisible">
+    android:orientation="horizontal">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/btn_fetchbone"
+            android:id="@+id/btn_bowl"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginBottom="5dp"
-            android:src="@drawable/action_bone_button" />
+            android:src="@drawable/ic_bowl_mask" />
 
         <ImageView
             android:id="@+id/image_notification_point_play"
@@ -50,14 +48,14 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp">
 
         <ImageView
-            android:id="@+id/btn_bowl"
+            android:id="@+id/btn_hydrant"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginBottom="5dp"
-            android:src="@drawable/action_bowl_button" />
+            android:src="@drawable/ic_hydrant_mask" />
 
         <ImageView
             android:id="@+id/image_notification_point_drink"
@@ -71,14 +69,14 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp">
 
         <ImageView
-            android:id="@+id/btn_hydrant"
+            android:id="@+id/btn_bed"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginBottom="5dp"
-            android:src="@drawable/action_hydrant_button" />
+            android:src="@drawable/ic_bed_mask" />
 
         <ImageView
             android:id="@+id/image_notification_point_pee"
@@ -92,14 +90,14 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp">
 
         <ImageView
-            android:id="@+id/btn_bed"
+            android:id="@+id/btn_fetchbone"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/action_bed_button" />
+            android:background="@drawable/btn_bone" />
 
         <ImageView
             android:id="@+id/image_notification_point_sleep"

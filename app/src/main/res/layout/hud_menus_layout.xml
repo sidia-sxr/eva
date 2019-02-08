@@ -38,28 +38,27 @@
         android:id="@+id/btn_shareanchor"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_margin="5dp"
         android:src="@drawable/action_share_button" />
 
     <ImageView
         android:id="@+id/btn_clean"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_margin="5dp"
+        android:layout_marginTop="15dp"
         android:src="@drawable/menu_clean_button" />
 
     <ImageView
         android:id="@+id/btn_camera"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_margin="5dp"
+        android:layout_marginTop="15dp"
         android:src="@drawable/icon_camera" />
 
     <ImageView
         android:id="@+id/btn_about"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_margin="5dp"
+        android:layout_marginTop="15dp"
         android:src="@drawable/ic_about" />
 
     <ImageView

@@ -194,6 +194,11 @@ public class EvaMain extends DisableNativeSplashScreen {
                         getSXRContext().runOnGlThread(() -> mViewInitialMessage.onHide(mEvaContext.getMainScene()));
                         onShowHandAnimate();
                     }
+                    if (mCurrentMode instanceof HudMode) {
+                        if (mHandAnimation != null) {
+                            mHandAnimation.remove();
+                        }
+                    }
                 }
             });
             iExitView.setOnConfirmClickListener(view -> {

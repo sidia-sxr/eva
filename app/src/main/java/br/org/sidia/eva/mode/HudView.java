@@ -43,6 +43,7 @@ import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.healthmonitor.HealthId;
 import br.org.sidia.eva.healthmonitor.HealthManager;
 import br.org.sidia.eva.healthmonitor.HealthStatus;
+import br.org.sidia.eva.custom.WaveAnimation;
 import br.org.sidia.eva.util.LayoutViewUtils;
 
 import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_DRINK;
@@ -54,29 +55,27 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
     private static final String TAG = "HudView";
 
     private View mMenuOptionsHud, mShareAnchorButton, mCameraButton, mCleanButton, mCloseButton, mMenuButton;
-    private View mHydrantButton, mBedButton, mBowlButton, mSubmenuOptions, mAboutButton, mHealthPreferences;
-    private ImageView mActionsButton, mPlayBoneButton;
+    private ImageView mHydrantButton, mBedButton, mBowlButton, mAboutButton, mHealthPreferences;
+    private View mPlayBoneButton;
     private LinearLayout mRootLayout;
     private final SXRViewNode mHudMenuObject;
     private final SXRViewNode mStartMenuObject;
     private final SXRViewNode mConnectedLabel;
     private final SXRViewNode mDisconnectViewObject;
-    private final SXRViewNode mSubmenuObject;
+    private SXRViewNode mSubmenuObject;
     private Button mConnectedButton, mCancelButton, mDisconnectButton;
     private TextView mDisconnectViewMessage;
     private OnHudItemClicked mListener;
     private OnDisconnectClicked mDisconnectListener;
     private OnClickDisconnectViewHandler mDisconnectViewHandler;
-    private Animation mOpenMenuHud, mOpenSubmenu;
-    private Animation mCloseMenuHud, mCloseSubmenu;
+    private Animation mOpenMenuHud;
+    private Animation mCloseMenuHud;
     private Animation mBounce;
-    private boolean mIsActivedSubmenu = false;
-    private boolean mIsActionsButtonActived = false;
     private BounceInterpolator interpolator = new BounceInterpolator(0.1, 20);
+    private WaveAnimation mNormalWaveAnimation, mWarningWaveAnimation, mCriticalWaveAnimation;
 
     private final EvaContext mEvaContext;
     private BounceView bounceView = new BounceView();
-    private SparseArray<ButtonViewHolder> mViewHolderMap;
 
     public HudView(EvaContext evaContext) {
         super(evaContext);
@@ -106,7 +105,6 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             disconnectViewInitEvents.onStartRendering(mDisconnectViewObject, mRootLayout);
         });
 
-        mViewHolderMap = new SparseArray<>();
     }
 
     @Override
@@ -240,7 +238,6 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
                     public void onAnimationRepeat(Animation animation) {
                     }
                 });
-                mPlayBoneButton.post(this::closeMenu);
                 break;
             case R.id.btn_bed:
                 mBedButton.startAnimation(mBounce);
@@ -259,7 +256,6 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
                     public void onAnimationRepeat(Animation animation) {
                     }
                 });
-                mBedButton.post(this::closeMenu);
                 break;
             case R.id.btn_hydrant:
                 mHydrantButton.startAnimation(mBounce);
@@ -278,7 +274,6 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
                     public void onAnimationRepeat(Animation animation) {
                     }
                 });
-                mHydrantButton.post(this::closeMenu);
                 break;
             case R.id.btn_bowl:
                 mBowlButton.startAnimation(mBounce);
@@ -297,7 +292,6 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
                     public void onAnimationRepeat(Animation animation) {
                     }
                 });
-                mBowlButton.post(this::closeMenu);
                 break;
             case R.id.btn_shareanchor:
                 mShareAnchorButton.startAnimation(mBounce);
@@ -335,36 +329,6 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
                 break;
             case R.id.btn_connected:
                 mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onConnectedClicked());
-                break;
-            case R.id.btn_actions:
-                mActionsButton.startAnimation(mBounce);
-                mBounce.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        setStateInActionButtons();
-                        mIsActionsButtonActived = !mIsActionsButtonActived;
-                        mActionsButton.setImageResource(mIsActionsButtonActived
-                                ? R.drawable.ic_actions_activated : R.drawable.ic_actions);
-                        mIsActivedSubmenu = !mIsActivedSubmenu;
-                        mSubmenuOptions.startAnimation(mIsActivedSubmenu
-                                ? mOpenSubmenu : mCloseSubmenu);
-                        mSubmenuOptions.setVisibility(mIsActivedSubmenu
-                                ? View.VISIBLE
-                                : View.INVISIBLE);
-                        mSubmenuObject.setEnable(true);
-                        mBounce.setAnimationListener(null);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
                 break;
             case R.id.btn_about:
                 mAboutButton.startAnimation(mBounce);
@@ -407,12 +371,26 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
 
     public void setStateInActionButtons() {
         final int shareMode = mEvaContext.getMode();
-        mHydrantButton.setEnabled(shareMode == EvaConstants.SHARE_MODE_NONE);
-        mHydrantButton.setClickable(shareMode == EvaConstants.SHARE_MODE_NONE);
-        mBedButton.setEnabled(shareMode == EvaConstants.SHARE_MODE_NONE);
-        mBedButton.setClickable(shareMode == EvaConstants.SHARE_MODE_NONE);
-        mBowlButton.setEnabled(shareMode == EvaConstants.SHARE_MODE_NONE);
-        mBowlButton.setClickable(shareMode == EvaConstants.SHARE_MODE_NONE);
+
+        if (shareMode == EvaConstants.SHARE_MODE_NONE && mSubmenuObject != null) {
+            getSXRContext().runOnGlThread(() -> mSubmenuObject = new SXRViewNode(mEvaContext.getSXRContext(),
+                    R.layout.actions_submenus_layout, startSubmenuInitEvents));
+        }
+    }
+
+    private void setDisableButtonActions() {
+        final int shareMode = mEvaContext.getMode();
+        if (shareMode != EvaConstants.SHARE_MODE_NONE) {
+            mHydrantButton.setImageResource(R.drawable.ic_hydrant_disabled);
+            mHydrantButton.setClickable(false);
+            mHydrantButton.setEnabled(false);
+            mBedButton.setImageResource(R.drawable.ic_bed_disabled);
+            mBedButton.setClickable(false);
+            mBedButton.setEnabled(false);
+            mBowlButton.setImageResource(R.drawable.ic_bowl_disabled);
+            mBowlButton.setClickable(false);
+            mBowlButton.setEnabled(false);
+        }
     }
 
     public void closeMenu() {
@@ -420,14 +398,8 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
         mCloseButton.setVisibility(View.GONE);
         bounceView.startAnimation(mStartMenuObject);
         mMenuOptionsHud.startAnimation(mCloseMenuHud);
-        mMenuOptionsHud.setVisibility(View.INVISIBLE);
-        if (mIsActivedSubmenu) {
-            mSubmenuOptions.startAnimation(mCloseSubmenu);
-            mSubmenuOptions.setVisibility(View.INVISIBLE);
-        }
-        mIsActivedSubmenu = false;
+        mMenuOptionsHud.setVisibility(View.GONE);
         mHudMenuObject.setEnable(false);
-        mSubmenuObject.setEnable(false);
     }
 
     IViewEvents hudMenuInitEvents = new IViewEvents() {
@@ -437,7 +409,6 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             mCleanButton = view.findViewById(R.id.btn_clean);
             mShareAnchorButton = view.findViewById(R.id.btn_shareanchor);
             mCameraButton = view.findViewById(R.id.btn_camera);
-            mActionsButton = view.findViewById(R.id.btn_actions);
             mAboutButton = view.findViewById(R.id.btn_about);
             mHealthPreferences = view.findViewById(R.id.btn_health_preferences);
             mHealthPreferences.setVisibility(BuildConfig.ENABLE_HEALTH_PREFERENCES
@@ -446,7 +417,6 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             mCleanButton.setOnClickListener(HudView.this);
             mShareAnchorButton.setOnClickListener(HudView.this);
             mCameraButton.setOnClickListener(HudView.this);
-            mActionsButton.setOnClickListener(HudView.this);
             mAboutButton.setOnClickListener(HudView.this);
             mHealthPreferences.setOnClickListener(HudView.this);
 
@@ -461,7 +431,7 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             sxrViewNode.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
             sxrViewNode.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
             LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
-                    sxrViewNode, 593f, 20f, 44f, 270f);
+                    sxrViewNode, 595f, 20f, 38f, 268f);
             sxrViewNode.setEnable(false);
             addChildObject(sxrViewNode);
         }
@@ -481,7 +451,7 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             sxrViewNode.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
             sxrViewNode.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
             LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
-                    sxrViewNode, 590f, 304f, 48f, 48f);
+                    sxrViewNode, 590f, 295f, 48.5f, 48.5f);
             addChildObject(sxrViewNode);
         }
     };
@@ -527,36 +497,41 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
 
         @Override
         public void onInitView(SXRViewNode sxrViewNode, View view) {
-            mSubmenuOptions = view.findViewById(R.id.submenu);
-
             mPlayBoneButton = view.findViewById(R.id.btn_fetchbone);
             mHydrantButton = view.findViewById(R.id.btn_hydrant);
             mBedButton = view.findViewById(R.id.btn_bed);
             mBowlButton = view.findViewById(R.id.btn_bowl);
 
-            mViewHolderMap.put(HEALTH_ID_DRINK, new ButtonViewHolder(mBowlButton, view.findViewById(R.id.image_notification_point_drink)));
-            mViewHolderMap.put(HEALTH_ID_SLEEP, new ButtonViewHolder(mBedButton, view.findViewById(R.id.image_notification_point_sleep)));
-            mViewHolderMap.put(HEALTH_ID_PEE, new ButtonViewHolder(mHydrantButton, view.findViewById(R.id.image_notification_point_pee)));
-            mViewHolderMap.put(HEALTH_ID_PLAY, new ButtonViewHolder(mPlayBoneButton, view.findViewById(R.id.image_notification_point_play)));
+            setDisableButtonActions();
+
+            mNormalWaveAnimation = new WaveAnimation(mEvaContext.getActivity(), R.drawable.bg_button_normal);
+
+            mBowlButton.setBackground(mNormalWaveAnimation);
+            mNormalWaveAnimation.animateTo(1f);
+
+            mWarningWaveAnimation = new WaveAnimation(mEvaContext.getActivity(), R.drawable.bg_button_warning);
+            mHydrantButton.setBackground(mWarningWaveAnimation);
+            mWarningWaveAnimation.setProgress(1f);
+            // new android.os.Handler().postDelayed(() -> mWarningWaveAnimation.animateTo(0.0f), 3000);
+
+            mCriticalWaveAnimation = new WaveAnimation(mEvaContext.getActivity(), R.drawable.bg_button_critical);
+            mBedButton.setBackground(mCriticalWaveAnimation);
+            mCriticalWaveAnimation.setProgress(1f);
+
 
             mPlayBoneButton.setOnClickListener(HudView.this);
             mHydrantButton.setOnClickListener(HudView.this);
             mBedButton.setOnClickListener(HudView.this);
             mBowlButton.setOnClickListener(HudView.this);
-            mOpenSubmenu = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.open);
-            mCloseSubmenu = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.close);
 
-            if (onSubmenuInitializationListener != null) {
-                onSubmenuInitializationListener.onInitialized();
-            }
         }
 
         @Override
         public void onStartRendering(SXRViewNode sxrViewNode, View view) {
             sxrViewNode.setTextureBufferSize(EvaConstants.TEXTURE_BUFFER_SIZE);
-            sxrViewNode.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.OVERLAY);
+            sxrViewNode.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.TRANSPARENT);
             LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
-                    sxrViewNode, 522f, 69f, 90f, 90f);
+                    sxrViewNode, 100f, 187f, 40f, 270f);
             addChildObject(sxrViewNode);
         }
     };
@@ -597,42 +572,5 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
         }
     }
 
-    void updateNotification(@HealthId int id, @HealthStatus int status) {
-        if (EvaConstants.ENABLE_NOTIFICATION_POINTS) {
-            mEvaContext.getActivity().runOnUiThread(() -> {
-                ImageView view = mViewHolderMap.get(id).mNotificationPoint;
-                if (status != HealthManager.HEALTH_STATUS_NORMAL) {
-                    view.setVisibility(View.VISIBLE);
-                    if (status == HealthManager.HEALTH_STATUS_WARNING) {
-                        view.setBackgroundResource(R.drawable.bg_notification_point_warning);
-                    } else {
-                        view.setBackgroundResource(R.drawable.bg_notification_point_critical);
-                    }
-                } else {
-                    view.setVisibility(View.GONE);
-                }
-            });
-        }
-    }
 
-    private static class ButtonViewHolder {
-
-        View mButton;
-        ImageView mNotificationPoint;
-
-        ButtonViewHolder(View mButton, ImageView mNotificationPoint) {
-            this.mButton = mButton;
-            this.mNotificationPoint = mNotificationPoint;
-        }
-    }
-
-    private OnSubmenuInitializationListener onSubmenuInitializationListener;
-
-    void setOnSubmenuInitializationListener(OnSubmenuInitializationListener listener) {
-        this.onSubmenuInitializationListener = listener;
-    }
-
-    public interface OnSubmenuInitializationListener {
-        void onInitialized();
-    }
 }
