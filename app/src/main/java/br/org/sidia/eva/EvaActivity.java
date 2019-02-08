@@ -25,7 +25,7 @@ import com.samsungxr.utility.Log;
 
 import br.org.sidia.eva.context.ActivityResultEvent;
 import br.org.sidia.eva.context.RequestPermissionResultEvent;
-import br.org.sidia.eva.healthmonitor.HealthStateNotificationManager;
+import br.org.sidia.eva.healthmonitor.HealthManager;
 import br.org.sidia.eva.healthmonitor.NotificationService;
 import br.org.sidia.eva.manager.permission.OnPermissionResultListener;
 import br.org.sidia.eva.manager.permission.PermissionManager;
@@ -39,14 +39,14 @@ public class EvaActivity extends SXRActivity {
     private EvaContext mEvaContext;
     private PermissionManager mPermissionManager;
     private Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler;
-    private HealthStateNotificationManager mHealthStateNotificationManager;
+    private HealthManager healthManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        mHealthStateNotificationManager =
-                HealthStateNotificationManager.getInstance(getApplicationContext());
+        healthManager =
+                HealthManager.getInstance(getApplicationContext());
         setDefaultUncaughtExceptionHandler();
         mPermissionManager = new PermissionManager(this);
         mPermissionManager.setPermissionResultListener(new PermissionListener());
@@ -56,7 +56,7 @@ public class EvaActivity extends SXRActivity {
         defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             Log.e(TAG, "Crash error", e);
-            mHealthStateNotificationManager.scheduleNotifications();
+            healthManager.startNotifications();
             defaultUncaughtExceptionHandler.uncaughtException(t, e);
         });
     }
@@ -92,7 +92,6 @@ public class EvaActivity extends SXRActivity {
         super.onStart();
         Intent startServiceIntent = new Intent(this, NotificationService.class);
         startService(startServiceIntent);
-        mHealthStateNotificationManager.scheduleNotifications();
     }
 
     @Override
@@ -110,12 +109,6 @@ public class EvaActivity extends SXRActivity {
     protected void onStop() {
         super.onStop();
         stopService(new Intent(this, NotificationService.class));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mHealthStateNotificationManager.scheduleNotifications();
     }
 
     private class PermissionListener implements OnPermissionResultListener {

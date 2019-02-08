@@ -23,8 +23,8 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
     android:visibility="invisible">
 
     <ImageView
@@ -61,4 +61,12 @@
         android:layout_height="45dp"
         android:layout_margin="5dp"
         android:src="@drawable/ic_about" />
+
+    <ImageView
+        android:id="@+id/btn_health_preferences"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_margin="5dp"
+        android:src="@drawable/ic_health_preferences" />
+
 </LinearLayout>

@@ -51,6 +51,7 @@ android {
         buildConfigField "String", "GOOGLE_CLOUD_ANCHOR_KEY_NAME", "\"$GOOGLE_CLOUD_ANCHOR_KEY_NAME\""
         manifestPlaceholders = [cloudAnchorApiKeyName : GOOGLE_CLOUD_ANCHOR_KEY_NAME,
                                 cloudAnchorApiKeyValue: getPropertyOrDefault("cloudAnchorApiKey", "")]
+        buildConfigField "boolean", "ENABLE_HEALTH_PREFERENCES", "true"
     }
     buildTypes {
         release {
@@ -82,11 +83,12 @@ project.ext.jomlVersion = "1.9.3-SNAPSHOT"
 
 dependencies {
     // ARCore library
-    implementation "com.google.ar:core:1.5.0"
+    implementation "com.google.ar:core:1.6.0"
     implementation "org.joml:joml-android:${jomlVersion}"
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
 
     if (useLocalDependencies()) {
         if (findProject(':sxrsdk')) {

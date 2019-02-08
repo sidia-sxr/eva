@@ -19,6 +19,8 @@ package br.org.sidia.eva.mainview;
 
 import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
+import br.org.sidia.eva.healthmonitor.HealthPreferencesView;
+import br.org.sidia.eva.healthmonitor.IHealthPreferencesView;
 import br.org.sidia.eva.view.BaseViewController;
 import br.org.sidia.eva.view.shared.ConnectionFinishedView;
 import br.org.sidia.eva.view.shared.IConnectionFinishedView;
@@ -31,5 +33,6 @@ public class MainViewController extends BaseViewController {
         registerView(ICleanView.class, R.layout.view_clean, CleanView.class);
         registerView(IAboutView.class, R.layout.view_about, AboutView.class);
         registerView(IConnectionFinishedView.class, R.layout.view_connection_finished, ConnectionFinishedView.class);
+        registerView(IHealthPreferencesView.class, R.layout.layout_health_preferences, HealthPreferencesView.class);
     }
 }

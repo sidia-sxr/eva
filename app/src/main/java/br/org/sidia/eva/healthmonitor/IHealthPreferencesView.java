@@ -1,4 +1,5 @@
-/* Copyright 2015 Samsung Electronics Co., LTD
+/*
+ * Copyright 2015 Samsung Electronics Co., LTD
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +14,25 @@
  * limitations under the License.
  */
 
-package br.org.sidia.eva.mode;
+package br.org.sidia.eva.healthmonitor;
 
-public interface OnHudItemClicked {
+import android.widget.Button;
 
-    // Actions submenu
-    void onBoneClicked();
+import java.util.List;
 
-    void onBedClicked();
+import br.org.sidia.eva.view.IView;
 
-    void onHydrantClicked();
+public interface IHealthPreferencesView extends IView {
 
-    void onBowlClicked();
+    Button getResetButton();
 
-    // Main menu
-    void onShareAnchorClicked();
+    Button getCloseButton();
 
-    void onCleanClicked();
+    Button getApplyButton();
 
-    void onCameraClicked();
+    Button getApplyAndCloseButton();
 
-    void onConnectedClicked();
+    List<HealthPreferenceViewModel> getPreferences();
 
-    void onAbout();
-
-    void onHealthPreferencesClicked();
+    void setPreferences(List<HealthPreferenceViewModel> preferences);
 }

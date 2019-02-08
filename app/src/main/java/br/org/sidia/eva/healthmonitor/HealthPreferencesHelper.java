@@ -26,15 +26,36 @@ import com.google.gson.Gson;
 import br.org.sidia.eva.BuildConfig;
 
 @SuppressLint("ApplySharedPref")
-public class SharedPreferenceHelper {
+class HealthPreferencesHelper {
 
     private static final String PREF_NAME = BuildConfig.APPLICATION_ID + ".HEALTH_STATE";
-    private static final String PREF_HEALTH_STATE = "PREF_HEALTH_STATE";
+    private static final String PREF_HEALTH_SETTINGS = "PREF_HEALTH_SETTINGS";
+    private static final String PREF_HEALTH_PREFERENCES = "PREF_HEALTH_PREFERENCES";
 
     private SharedPreferences mSharedPref;
 
-    public SharedPreferenceHelper(Context context) {
+    HealthPreferencesHelper(Context context) {
         mSharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+    }
+
+    HealthLiveSettings getHealthSettings(@HealthId int id) {
+        return readObject(PREF_HEALTH_SETTINGS + "." + id, HealthLiveSettings.class);
+    }
+
+    void setHealthSettings(@NonNull HealthLiveSettings notification) {
+        writeObject(PREF_HEALTH_SETTINGS + "." + notification.getId(), notification);
+    }
+
+    HealthConfiguration[] getHealthPreferences() {
+        return readObject(PREF_HEALTH_PREFERENCES, HealthConfiguration[].class);
+    }
+
+    void setHealthPreferences(HealthConfiguration... preferences) {
+        writeObject(PREF_HEALTH_PREFERENCES, preferences);
+    }
+
+    void removeHealthPreferences() {
+        mSharedPref.edit().remove(PREF_HEALTH_PREFERENCES).commit();
     }
 
     private void writeObject(String name, Object obj) {
@@ -47,14 +68,5 @@ public class SharedPreferenceHelper {
     private <T> T readObject(String name, Class<T> type) {
         String gsonString = mSharedPref.getString(name, null);
         return gsonString != null ? new Gson().fromJson(gsonString, type) : null;
-    }
-
-    public HealthState getHealthState(@Notifications.HealthId int id) {
-        return readObject(PREF_HEALTH_STATE + "." + id, HealthState.class);
-    }
-
-    public void setHealthState(@NonNull HealthState notification) {
-        notification.setUpdatedAt(System.currentTimeMillis());
-        writeObject(PREF_HEALTH_STATE + "." + notification.getId(), notification);
     }
 }

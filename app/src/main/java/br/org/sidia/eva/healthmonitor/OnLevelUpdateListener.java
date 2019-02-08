@@ -1,4 +1,5 @@
-/* Copyright 2015 Samsung Electronics Co., LTD
+/*
+ * Copyright 2015 Samsung Electronics Co., LTD
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +14,14 @@
  * limitations under the License.
  */
 
-package br.org.sidia.eva.mode;
+package br.org.sidia.eva.healthmonitor;
 
-public interface OnHudItemClicked {
+import android.support.annotation.FloatRange;
 
-    // Actions submenu
-    void onBoneClicked();
-
-    void onBedClicked();
-
-    void onHydrantClicked();
-
-    void onBowlClicked();
-
-    // Main menu
-    void onShareAnchorClicked();
-
-    void onCleanClicked();
-
-    void onCameraClicked();
-
-    void onConnectedClicked();
-
-    void onAbout();
-
-    void onHealthPreferencesClicked();
+public interface OnLevelUpdateListener {
+    void onUpdate(
+            HealthManager healthManager,
+            @HealthId int id,
+            @FloatRange(from = 0, to = 1) float oldLevel,
+            @FloatRange(from = 0, to = 1) float newLevel);
 }

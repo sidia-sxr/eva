@@ -17,12 +17,20 @@ package br.org.sidia.eva.mode;
 
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
+import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.Toast;
 
 import com.samsungxr.SXRCameraRig;
 import com.samsungxr.utility.Log;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.actions.EvaActions;
@@ -33,10 +41,15 @@ import br.org.sidia.eva.actions.TimerActionsController;
 import br.org.sidia.eva.character.CharacterController;
 import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.healthmonitor.HealthStateNotificationEvent;
-import br.org.sidia.eva.healthmonitor.HealthStateNotificationManager;
-import br.org.sidia.eva.healthmonitor.Notifications;
-import br.org.sidia.eva.healthmonitor.ScheduledHealthNotificationInfo;
+import br.org.sidia.eva.healthmonitor.HealthConfiguration;
+import br.org.sidia.eva.healthmonitor.HealthManager;
+import br.org.sidia.eva.healthmonitor.HealthNotificationConfig;
+import br.org.sidia.eva.healthmonitor.HealthNotificationEvent;
+import br.org.sidia.eva.healthmonitor.HealthPreferenceViewModel;
+import br.org.sidia.eva.healthmonitor.HealthRecoveryNotificationConfig;
+import br.org.sidia.eva.healthmonitor.HealthStateSummary;
+import br.org.sidia.eva.healthmonitor.HealthStatus;
+import br.org.sidia.eva.healthmonitor.IHealthPreferencesView;
 import br.org.sidia.eva.mainview.IAboutView;
 import br.org.sidia.eva.mainview.ICleanView;
 import br.org.sidia.eva.mainview.MainViewController;
@@ -56,7 +69,7 @@ public class HudMode extends BaseEvaMode {
     private SharedMixedReality mSharedMixedReality;
     private CharacterController mEvaController;
     private VirtualObjectController mVirtualObjectController;
-    private HealthStateNotificationManager mHealthManager;
+    private HealthManager mHealthManager;
 
     public HudMode(EvaContext evaContext, CharacterController evaController, OnModeChange listener) {
         super(evaContext, new HudView(evaContext));
@@ -73,7 +86,7 @@ public class HudMode extends BaseEvaMode {
 
         mVirtualObjectController = new VirtualObjectController(evaContext, evaController);
 
-        mHealthManager = HealthStateNotificationManager.getInstance(mEvaContext.getActivity().getApplicationContext());
+        mHealthManager = HealthManager.getInstance(mEvaContext.getActivity().getApplicationContext());
 
     }
 
@@ -81,10 +94,10 @@ public class HudMode extends BaseEvaMode {
 
         if (EvaConstants.ENABLE_NOTIFICATION_POINTS) {
 
-            ScheduledHealthNotificationInfo drinkInfo = mHealthManager.getHealthNotificationInfo(Notifications.HEALTH_ID_DRINK);
-            ScheduledHealthNotificationInfo sleepInfo = mHealthManager.getHealthNotificationInfo(Notifications.HEALTH_ID_SLEEP);
-            ScheduledHealthNotificationInfo peeInfo = mHealthManager.getHealthNotificationInfo(Notifications.HEALTH_ID_PEE);
-            ScheduledHealthNotificationInfo playInfo = mHealthManager.getHealthNotificationInfo(Notifications.HEALTH_ID_PLAY);
+            HealthStateSummary drinkInfo = mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_DRINK);
+            HealthStateSummary sleepInfo = mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_SLEEP);
+            HealthStateSummary peeInfo = mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_PEE);
+            HealthStateSummary playInfo = mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_PLAY);
 
             mHudView.updateNotification(drinkInfo.getId(), drinkInfo.getStatus());
             mHudView.updateNotification(sleepInfo.getId(), sleepInfo.getStatus());
@@ -94,7 +107,7 @@ public class HudMode extends BaseEvaMode {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleHealthNotificationEvent(HealthStateNotificationEvent event) {
+    public void handleHealthNotificationEvent(HealthNotificationEvent event) {
         Log.d(TAG, "Health notification event received: " + event.toString());
         mHudView.updateNotification(event.getId(), event.getStatus());
     }
@@ -134,7 +147,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.playBone();
                 Log.d(TAG, "Play Bone");
             }
-            mHealthManager.rescheduleNotification(Notifications.HEALTH_ID_PLAY);
+            mHealthManager.resetHealth(HealthManager.HEALTH_ID_PLAY);
             mEvaController.setCurrentAction(EvaActions.IDLE.ID);
         }
 
@@ -145,7 +158,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            mHealthManager.rescheduleNotification(Notifications.HEALTH_ID_SLEEP);
+            mHealthManager.resetHealth(HealthManager.HEALTH_ID_SLEEP);
             mVirtualObjectController.showObject(EvaObjectType.BED);
         }
 
@@ -156,7 +169,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            mHealthManager.rescheduleNotification(Notifications.HEALTH_ID_PEE);
+            mHealthManager.resetHealth(HealthManager.HEALTH_ID_PEE);
             mVirtualObjectController.showObject(EvaObjectType.HYDRANT);
         }
 
@@ -167,7 +180,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            mHealthManager.rescheduleNotification(Notifications.HEALTH_ID_DRINK);
+            mHealthManager.resetHealth(HealthManager.HEALTH_ID_DRINK);
             mVirtualObjectController.showObject(EvaObjectType.BOWL);
         }
 
@@ -203,6 +216,144 @@ public class HudMode extends BaseEvaMode {
             Log.d(TAG, "About clicked");
             showAboutView();
         }
+
+        @Override
+        public void onHealthPreferencesClicked() {
+            showHealthPreferencesView();
+        }
+    }
+
+    private void showHealthPreferencesView() {
+        if (mMainViewController == null) {
+
+            mMainViewController = new MainViewController(mEvaContext);
+            mMainViewController.onShow(mEvaContext.getMainScene());
+            IHealthPreferencesView view = mMainViewController.makeView(IHealthPreferencesView.class);
+
+            view.getResetButton().setOnClickListener(v ->
+                    view.setPreferences(getViewModels(mHealthManager.getDefaultConfiguration())));
+
+            view.getCloseButton().setOnClickListener(v -> closeView());
+
+            view.getApplyButton().setOnClickListener(v -> apply(view));
+
+            view.getApplyAndCloseButton().setOnClickListener(v -> {
+                apply(view);
+                closeView();
+            });
+
+            view.setPreferences(getViewModels(mHealthManager.getCurrentConfiguration()));
+            view.show();
+        }
+    }
+
+    private void apply(IHealthPreferencesView view) {
+
+        AtomicBoolean changed = new AtomicBoolean(false);
+
+        view.getPreferences().forEach((HealthPreferenceViewModel p) -> {
+
+            HealthConfiguration conf = mHealthManager.getConfigurationById(p.getId());
+
+            if (conf.getLevelAutoUpdatePeriod() != p.getDuration()) {
+                changed.set(true);
+                mHealthManager.cancelNotification(conf.getId());
+                conf.setLevelAutoUpdatePeriod(p.getDuration());
+                mHealthManager.resetHealth(conf.getId());
+            }
+
+            HealthNotificationConfig configWarning = findConfigurationByStatus(
+                    HealthManager.HEALTH_STATUS_WARNING, conf.getHealthNotificationConfig());
+            HealthNotificationConfig configCritical = findConfigurationByStatus(
+                    HealthManager.HEALTH_STATUS_CRITICAL, conf.getHealthNotificationConfig());
+
+            if (configWarning != null && configWarning.getRecoveryNotificationConfig() != null) {
+                long oldValue = configWarning.getRecoveryNotificationConfig().getDuration();
+                long newValue = p.getRecoveryDurationWhenWarning();
+                if (oldValue != newValue) {
+                    changed.set(true);
+                    configWarning.getRecoveryNotificationConfig().setDuration(newValue);
+                }
+            }
+
+            if (configCritical != null && configCritical.getRecoveryNotificationConfig() != null) {
+                long oldValue = configCritical.getRecoveryNotificationConfig().getDuration();
+                long newValue = p.getRecoveryDurationWhenCritical();
+                if (oldValue != newValue) {
+                    changed.set(true);
+                    configCritical.getRecoveryNotificationConfig().setDuration(newValue);
+                }
+            }
+
+            if (conf.getLastLevelNotificationRepeatDelay() != p.getCriticalRepeatDelay()) {
+                changed.set(true);
+                conf.setLastLevelNotificationRepeatDelay(p.getCriticalRepeatDelay());
+            }
+
+        });
+
+        if (changed.get()) {
+            mHealthManager.savePreferences();
+            Toast.makeText(mEvaContext.getActivity(), "Changes applied", Toast.LENGTH_SHORT).show();
+            view.setPreferences(getViewModels(mHealthManager.getCurrentConfiguration()));
+        } else {
+            Toast.makeText(mEvaContext.getActivity(), "No change to apply", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    private List<HealthPreferenceViewModel> getViewModels(List<HealthConfiguration> configurations) {
+
+        List<HealthPreferenceViewModel> viewModels = new ArrayList<>();
+
+        configurations.forEach(conf -> {
+
+            HealthStateSummary summary = mHealthManager.getHealthStateSummary(conf.getId());
+            HealthNotificationConfig configWarning = findConfigurationByStatus(
+                    HealthManager.HEALTH_STATUS_WARNING, conf.getHealthNotificationConfig());
+            HealthNotificationConfig configCritical = findConfigurationByStatus(
+                    HealthManager.HEALTH_STATUS_CRITICAL, conf.getHealthNotificationConfig());
+
+            HealthRecoveryNotificationConfig warningRecoveryConfig = configWarning != null ?
+                    configWarning.getRecoveryNotificationConfig() : null;
+
+            HealthRecoveryNotificationConfig criticalRecoveryConfig = configCritical != null ?
+                    configCritical.getRecoveryNotificationConfig() : null;
+
+            HealthPreferenceViewModel viewModel = new HealthPreferenceViewModel(
+                    summary.getId(),
+                    summary.getLevel(),
+                    summary.getRemainingTime(),
+                    summary.getStatus(),
+                    conf.getResourceId(),
+                    conf.getLevelAutoUpdatePeriod(),
+                    configWarning != null ? configWarning.getLevelNotificationConfig().getTargetLevel() : -1,
+                    configCritical != null ? configCritical.getLevelNotificationConfig().getTargetLevel() : -1,
+                    conf.getLastLevelNotificationRepeatDelay(),
+                    warningRecoveryConfig != null ? warningRecoveryConfig.getDuration() : -1,
+                    criticalRecoveryConfig != null ? criticalRecoveryConfig.getDuration() : -1
+            );
+
+            viewModels.add(viewModel);
+        });
+
+        return viewModels;
+    }
+
+    private void closeView() {
+        if (mMainViewController != null) {
+            mMainViewController.onHide(mEvaContext.getMainScene());
+            mMainViewController = null;
+        }
+    }
+
+    @Nullable
+    private static HealthNotificationConfig findConfigurationByStatus(
+            @HealthStatus int status, HealthNotificationConfig[] configs) {
+        return Arrays.stream(configs)
+                .filter(c -> c.getStatus() == status)
+                .findFirst()
+                .orElse(null);
     }
 
     private void showCleanView() {

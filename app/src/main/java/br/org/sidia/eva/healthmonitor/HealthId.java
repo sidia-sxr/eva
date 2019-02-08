@@ -18,27 +18,18 @@ package br.org.sidia.eva.healthmonitor;
 
 import android.support.annotation.IntDef;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface Notifications {
+import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_DRINK;
+import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_PEE;
+import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_PLAY;
+import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_SLEEP;
 
-    int HEALTH_ID_DRINK = 1000;
-    int HEALTH_ID_SLEEP = 1001;
-    int HEALTH_ID_PEE = 1002;
-    int HEALTH_ID_PLAY = 1003;
-
-    int HEALTH_STATUS_NORMAL = 2000;
-    int HEALTH_STATUS_WARNING = 2001;
-    int HEALTH_STATUS_CRITICAL = 2002;
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({HEALTH_STATUS_NORMAL, HEALTH_STATUS_WARNING, HEALTH_STATUS_CRITICAL})
-    @interface HealthStatus {
-    }
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({HEALTH_ID_DRINK, HEALTH_ID_SLEEP, HEALTH_ID_PEE, HEALTH_ID_PLAY})
-    @interface HealthId {
-    }
+@IntDef({HEALTH_ID_DRINK, HEALTH_ID_SLEEP, HEALTH_ID_PEE, HEALTH_ID_PLAY})
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@Retention(RetentionPolicy.SOURCE)
+public @interface HealthId {
 }

@@ -25,13 +25,13 @@ public class NotificationService extends JobService {
 
     private static final String TAG = "NotificationService";
 
-    private HealthStateNotificationManager mHealthStateNotificationManager;
+    private HealthManager mHealthManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mHealthStateNotificationManager =
-                HealthStateNotificationManager.getInstance(getApplicationContext());
+        mHealthManager =
+                HealthManager.getInstance(getApplicationContext());
         Log.i(TAG, "Service created");
     }
 
@@ -44,15 +44,16 @@ public class NotificationService extends JobService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Does not show notifications if activity is active
-        //mHealthStateNotificationManager.setShowNotifications(false);
-        mHealthStateNotificationManager.clearNotifications();
+        //mHealthManager.setShowNotifications(false);
+        //mHealthManager.clearNotifications();
+        mHealthManager.startNotifications();
         Log.d(TAG, "Service started");
         return START_NOT_STICKY;
     }
 
     @Override
     public boolean onStartJob(final JobParameters params) {
-        mHealthStateNotificationManager.onHealthStateNotified(params.getJobId());
+        mHealthManager.handleNotification(params.getJobId());
         Log.d(TAG, "Job finished: " + params.getJobId());
         return false;
     }

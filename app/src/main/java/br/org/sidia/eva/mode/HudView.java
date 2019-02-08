@@ -35,18 +35,26 @@ import com.samsungxr.SXRScene;
 import com.samsungxr.nodes.SXRViewNode;
 import com.samsungxr.utility.Log;
 
+import br.org.sidia.eva.BuildConfig;
 import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.connection.socket.ConnectionMode;
 import br.org.sidia.eva.constant.EvaConstants;
-import br.org.sidia.eva.healthmonitor.Notifications;
+import br.org.sidia.eva.healthmonitor.HealthId;
+import br.org.sidia.eva.healthmonitor.HealthManager;
+import br.org.sidia.eva.healthmonitor.HealthStatus;
 import br.org.sidia.eva.util.LayoutViewUtils;
+
+import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_DRINK;
+import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_PEE;
+import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_PLAY;
+import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_SLEEP;
 
 public class HudView extends BaseEvaView implements View.OnClickListener {
     private static final String TAG = "HudView";
 
     private View mMenuOptionsHud, mShareAnchorButton, mCameraButton, mCleanButton, mCloseButton, mMenuButton;
-    private View mHydrantButton, mBedButton, mBowlButton, mSubmenuOptions, mAboutButton;
+    private View mHydrantButton, mBedButton, mBowlButton, mSubmenuOptions, mAboutButton, mHealthPreferences;
     private ImageView mActionsButton, mPlayBoneButton;
     private LinearLayout mRootLayout;
     private final SXRViewNode mHudMenuObject;
@@ -377,6 +385,10 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
                 });
                 mAboutButton.post(this::closeMenu);
                 break;
+            case R.id.btn_health_preferences:
+                mEvaContext.getSXRContext().runOnGlThread(() -> mListener.onHealthPreferencesClicked());
+                mAboutButton.post(this::closeMenu);
+                break;
             default:
                 Log.d(TAG, "Invalid Option");
         }
@@ -427,12 +439,17 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             mCameraButton = view.findViewById(R.id.btn_camera);
             mActionsButton = view.findViewById(R.id.btn_actions);
             mAboutButton = view.findViewById(R.id.btn_about);
+            mHealthPreferences = view.findViewById(R.id.btn_health_preferences);
+            mHealthPreferences.setVisibility(BuildConfig.ENABLE_HEALTH_PREFERENCES
+                    ? View.VISIBLE : View.GONE);
+
             mCleanButton.setOnClickListener(HudView.this);
             mShareAnchorButton.setOnClickListener(HudView.this);
             mCameraButton.setOnClickListener(HudView.this);
             mActionsButton.setOnClickListener(HudView.this);
             mAboutButton.setOnClickListener(HudView.this);
-            mAboutButton.setOnClickListener(HudView.this);
+            mHealthPreferences.setOnClickListener(HudView.this);
+
             mOpenMenuHud = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.open);
             mCloseMenuHud = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.close);
             mBounce = AnimationUtils.loadAnimation(mEvaContext.getActivity(), R.anim.bounce);
@@ -517,10 +534,10 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             mBedButton = view.findViewById(R.id.btn_bed);
             mBowlButton = view.findViewById(R.id.btn_bowl);
 
-            mViewHolderMap.put(Notifications.HEALTH_ID_DRINK, new ButtonViewHolder(mBowlButton, view.findViewById(R.id.image_notification_point_drink)));
-            mViewHolderMap.put(Notifications.HEALTH_ID_SLEEP, new ButtonViewHolder(mBedButton, view.findViewById(R.id.image_notification_point_sleep)));
-            mViewHolderMap.put(Notifications.HEALTH_ID_PEE, new ButtonViewHolder(mHydrantButton, view.findViewById(R.id.image_notification_point_pee)));
-            mViewHolderMap.put(Notifications.HEALTH_ID_PLAY, new ButtonViewHolder(mPlayBoneButton, view.findViewById(R.id.image_notification_point_play)));
+            mViewHolderMap.put(HEALTH_ID_DRINK, new ButtonViewHolder(mBowlButton, view.findViewById(R.id.image_notification_point_drink)));
+            mViewHolderMap.put(HEALTH_ID_SLEEP, new ButtonViewHolder(mBedButton, view.findViewById(R.id.image_notification_point_sleep)));
+            mViewHolderMap.put(HEALTH_ID_PEE, new ButtonViewHolder(mHydrantButton, view.findViewById(R.id.image_notification_point_pee)));
+            mViewHolderMap.put(HEALTH_ID_PLAY, new ButtonViewHolder(mPlayBoneButton, view.findViewById(R.id.image_notification_point_play)));
 
             mPlayBoneButton.setOnClickListener(HudView.this);
             mHydrantButton.setOnClickListener(HudView.this);
@@ -580,13 +597,13 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
         }
     }
 
-    void updateNotification(@Notifications.HealthId int id, @Notifications.HealthStatus int status) {
+    void updateNotification(@HealthId int id, @HealthStatus int status) {
         if (EvaConstants.ENABLE_NOTIFICATION_POINTS) {
             mEvaContext.getActivity().runOnUiThread(() -> {
                 ImageView view = mViewHolderMap.get(id).mNotificationPoint;
-                if (status != Notifications.HEALTH_STATUS_NORMAL) {
+                if (status != HealthManager.HEALTH_STATUS_NORMAL) {
                     view.setVisibility(View.VISIBLE);
-                    if (status == Notifications.HEALTH_STATUS_WARNING) {
+                    if (status == HealthManager.HEALTH_STATUS_WARNING) {
                         view.setBackgroundResource(R.drawable.bg_notification_point_warning);
                     } else {
                         view.setBackgroundResource(R.drawable.bg_notification_point_critical);

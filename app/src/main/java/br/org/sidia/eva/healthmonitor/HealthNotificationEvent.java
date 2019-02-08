@@ -16,35 +16,32 @@
 
 package br.org.sidia.eva.healthmonitor;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.FloatRange;
 
-public class HealthStateNotificationEvent {
+public final class HealthNotificationEvent {
 
-    private int id;
+    private int mId;
+    private float level;
     private int status;
 
-    public HealthStateNotificationEvent(@Notifications.HealthId int id,
-                                        @Notifications.HealthStatus int status) {
-        this.id = id;
+    HealthNotificationEvent(int id, float level, int status) {
+        this.mId = id;
+        this.level = level;
         this.status = status;
     }
 
-    @Notifications.HealthId
+    @HealthId
     public int getId() {
-        return id;
+        return mId;
     }
 
-    @Notifications.HealthStatus
+    @FloatRange(from = 0, to = 1)
+    public float getLevel() {
+        return level;
+    }
+
+    @HealthStatus
     public int getStatus() {
         return status;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "HealthStateNotificationEvent{" +
-                "id=" + id +
-                ", status=" + status +
-                '}';
     }
 }
