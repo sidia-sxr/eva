@@ -47,7 +47,7 @@ public class HealthConfiguration {
 
         HealthConfiguration configuration;
 
-        configuration = new HealthConfiguration.Builder(HEALTH_ID_PEE, R.drawable.ic_hydrant)
+        configuration = new HealthConfiguration.Builder(HEALTH_ID_PEE, R.drawable.btn_critical_peer)
                 .setPriority(0)
                 .setLevelAutoUpdateEnabled(false)
                 .setLastLevelNotificationRepeatDelay(hours(6))
@@ -67,7 +67,7 @@ public class HealthConfiguration {
         DEFAULT_CONFIGURATIONS.add(configuration);
         DEFAULT_CONFIGURATIONS_MAP.put(HEALTH_ID_PEE, configuration);
 
-        configuration = new HealthConfiguration.Builder(HEALTH_ID_DRINK, R.drawable.ic_bowl, hours(4))
+        configuration = new HealthConfiguration.Builder(HEALTH_ID_DRINK, R.drawable.btn_critical_water, hours(4))
                 .setPriority(1)
                 .setLastLevelNotificationRepeatDelay(hours(6))
                 .setHealthNotificationConfigs(
@@ -86,7 +86,7 @@ public class HealthConfiguration {
         DEFAULT_CONFIGURATIONS.add(configuration);
         DEFAULT_CONFIGURATIONS_MAP.put(HEALTH_ID_DRINK, configuration);
 
-        configuration = new HealthConfiguration.Builder(HEALTH_ID_SLEEP, R.drawable.ic_bed, hours(12))
+        configuration = new HealthConfiguration.Builder(HEALTH_ID_SLEEP, R.drawable.btn_critical_sleep, hours(12))
                 .setPriority(2)
                 .setRecoveryNotificationTitle(R.string.healthnotification_wakeup_title_when_critical)
                 .setRecoveryNotificationText(R.string.healthnotification_wakeup_text_when_critical)
@@ -112,7 +112,7 @@ public class HealthConfiguration {
         DEFAULT_CONFIGURATIONS.add(configuration);
         DEFAULT_CONFIGURATIONS_MAP.put(HEALTH_ID_SLEEP, configuration);
 
-        configuration = new HealthConfiguration.Builder(HEALTH_ID_PLAY, R.drawable.ic_play_bone, hours(6))
+        configuration = new HealthConfiguration.Builder(HEALTH_ID_PLAY, R.drawable.btn_bone, hours(6))
                 .setPriority(3)
                 .setLastLevelNotificationRepeatDelay(hours(6))
                 .setHealthNotificationConfigs(
