@@ -28,13 +28,6 @@
     android:visibility="invisible">
 
     <ImageView
-        android:id="@+id/btn_actions"
-        android:layout_width="49dp"
-        android:layout_height="45dp"
-        android:layout_margin="5dp"
-        android:src="@drawable/ic_actions" />
-
-    <ImageView
         android:id="@+id/btn_shareanchor"
         android:layout_width="45dp"
         android:layout_height="45dp"
