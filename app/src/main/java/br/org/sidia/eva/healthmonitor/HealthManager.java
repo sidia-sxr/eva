@@ -194,7 +194,7 @@ public final class HealthManager extends ContextWrapper {
 
             if (newStatus.getLevelNotificationConfig().isShowNotification()) {
                 if (isHighestPriority(configuration.getPriority())) {
-                    showNotification(id, newStatus.getStatus(),
+                    showNotification(id, configuration.getResourceId(),
                             newStatus.getLevelNotificationConfig().getTitle(),
                             newStatus.getLevelNotificationConfig().getText());
                 }
@@ -340,7 +340,7 @@ public final class HealthManager extends ContextWrapper {
             resetHealth(_id);
             HealthConfiguration configuration = HealthConfiguration.getById(_id);
             if (configuration.isShowRecoveryNotification()) {
-                showNotification(_id, HEALTH_STATUS_NORMAL,
+                showNotification(_id, configuration.getResourceId(),
                         configuration.getRecoveryNotificationTitle(),
                         configuration.getRecoveryNotificationText());
             }
@@ -354,7 +354,7 @@ public final class HealthManager extends ContextWrapper {
         if (config != null) {
             if (config.getLevelNotificationConfig().isShowNotification()) {
                 if (isHighestPriority(configuration.getPriority())) {
-                    showNotification(id, config.getStatus(),
+                    showNotification(id, configuration.getResourceId(),
                             config.getLevelNotificationConfig().getTitle(),
                             config.getLevelNotificationConfig().getText());
                 }
