@@ -39,6 +39,7 @@ public class WaveAnimation extends Drawable implements Animatable, ValueAnimator
     private boolean mRunning = false;
     private ColorFilter mColorFilter = null;
     private float mtimeAnimation = 0;
+    private Context mContext;
 
     private Choreographer.FrameCallback mFrameCallback = new Choreographer.FrameCallback() {
         @Override
@@ -51,12 +52,22 @@ public class WaveAnimation extends Drawable implements Animatable, ValueAnimator
     };
 
     public WaveAnimation(Context context, int imgRes) {
-        Drawable drawable;
-        drawable = context.getDrawable(imgRes);
-        init(drawable);
+        mContext = context;
+        init(imgRes);
+        start();
+        setAmplitude(3);
+        setProgress(0);
     }
 
-    private void init(Drawable drawable) {
+    private void init(int imRes) {
+        setBackground(imRes);
+    }
+
+    public void setBackground(int Res) {
+        Drawable drawable;
+        drawable = mContext.getDrawable(Res);
+
+
         final PorterDuffXfermode mPorterDuffmode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
         mDrawable = drawable;
         mMatrix.reset();
@@ -73,11 +84,10 @@ public class WaveAnimation extends Drawable implements Animatable, ValueAnimator
             mWaveHeight = Math.max(8, (int) (mHeight * WAVE_HEIGHT_FACTOR));
             mWaveStep = Math.max(1, (int) (mWidth * WAVE_SPEED_FACTOR));
             updateBackground(mWidth, mWaveLength, mWaveHeight);
-        }
 
-        setAmplitude(3);
-        setProgress(0);
-        start();
+        }
+        invalidateSelf();
+
     }
 
     public void customWaveAnimation() {

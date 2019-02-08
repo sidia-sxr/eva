@@ -18,7 +18,6 @@ package br.org.sidia.eva.mode;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.Toast;
 
 import com.samsungxr.SXRCameraRig;
@@ -75,41 +74,25 @@ public class HudMode extends BaseEvaMode {
         super(evaContext, new HudView(evaContext));
         mModeChangeListener = listener;
         mEvaController = evaController;
+        mHealthManager = HealthManager.getInstance(mEvaContext.getActivity().getApplicationContext());
 
         mHudView = (HudView) mModeScene;
         mHudView.setListener(new OnHudItemClickedHandler());
         mHudView.setDisconnectListener(new OnDisconnectClickedHandler());
-        mHudView.setOnSubmenuInitializationListener(this::updateNotificationPoints);
+        mHudView.setOnInitViewListener(this::updateStates);
 
         mConnectionManager = (EvaConnectionManager) EvaConnectionManager.getInstance();
         mSharedMixedReality = evaContext.getMixedReality();
 
         mVirtualObjectController = new VirtualObjectController(evaContext, evaController);
 
-        mHealthManager = HealthManager.getInstance(mEvaContext.getActivity().getApplicationContext());
-
     }
 
-    private void updateNotificationPoints() {
-
-        if (EvaConstants.ENABLE_NOTIFICATION_POINTS) {
-
-            HealthStateSummary drinkInfo = mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_DRINK);
-            HealthStateSummary sleepInfo = mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_SLEEP);
-            HealthStateSummary peeInfo = mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_PEE);
-            HealthStateSummary playInfo = mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_PLAY);
-
-            mHudView.updateNotification(drinkInfo.getId(), drinkInfo.getStatus());
-            mHudView.updateNotification(sleepInfo.getId(), sleepInfo.getStatus());
-            mHudView.updateNotification(peeInfo.getId(), peeInfo.getStatus());
-            mHudView.updateNotification(playInfo.getId(), playInfo.getStatus());
-        }
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleHealthNotificationEvent(HealthNotificationEvent event) {
         Log.d(TAG, "Health notification event received: " + event.toString());
-        mHudView.updateNotification(event.getId(), event.getStatus());
+        updateStates();
     }
 
     @Override
@@ -133,6 +116,12 @@ public class HudMode extends BaseEvaMode {
                 mEvaContext.getBallThrowHandlerHandler().rotateBone(Configuration.ORIENTATION_LANDSCAPE);
             }
         }
+    }
+
+    private void updateStates() {
+        mHudView.setLevel(HealthManager.HEALTH_ID_DRINK, mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_DRINK).getLevel());
+        mHudView.setLevel(HealthManager.HEALTH_ID_PEE, mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_PEE).getLevel());
+        mHudView.setLevel(HealthManager.HEALTH_ID_SLEEP, mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_SLEEP).getLevel());
     }
 
     private class OnHudItemClickedHandler implements OnHudItemClicked {

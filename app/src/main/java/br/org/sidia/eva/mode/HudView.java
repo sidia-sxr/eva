@@ -17,6 +17,8 @@
 
 package br.org.sidia.eva.mode;
 
+import android.os.Handler;
+import android.support.annotation.FloatRange;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.view.View;
@@ -40,16 +42,10 @@ import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.R;
 import br.org.sidia.eva.connection.socket.ConnectionMode;
 import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.custom.WaveAnimation;
 import br.org.sidia.eva.healthmonitor.HealthId;
 import br.org.sidia.eva.healthmonitor.HealthManager;
-import br.org.sidia.eva.healthmonitor.HealthStatus;
-import br.org.sidia.eva.custom.WaveAnimation;
 import br.org.sidia.eva.util.LayoutViewUtils;
-
-import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_DRINK;
-import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_PEE;
-import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_PLAY;
-import static br.org.sidia.eva.healthmonitor.HealthManager.HEALTH_ID_SLEEP;
 
 public class HudView extends BaseEvaView implements View.OnClickListener {
     private static final String TAG = "HudView";
@@ -72,7 +68,8 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
     private Animation mCloseMenuHud;
     private Animation mBounce;
     private BounceInterpolator interpolator = new BounceInterpolator(0.1, 20);
-    private WaveAnimation mNormalWaveAnimation, mWarningWaveAnimation, mCriticalWaveAnimation;
+    private SparseArray<WaveAnimation> mSparseArrayAnimation = new SparseArray<>();
+    private OnInitViewListener mOnInitViewListener;
 
     private final EvaContext mEvaContext;
     private BounceView bounceView = new BounceView();
@@ -105,6 +102,7 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             disconnectViewInitEvents.onStartRendering(mDisconnectViewObject, mRootLayout);
         });
 
+
     }
 
     @Override
@@ -125,6 +123,10 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             mDisconnectViewMessage.setText(R.string.disconnect_guest);
         }
         mDisconnectViewObject.setEnable(true);
+    }
+
+    public void setOnInitViewListener(OnInitViewListener mOnInitViewListener) {
+        this.mOnInitViewListener = mOnInitViewListener;
     }
 
     public void hideConnectedLabel() {
@@ -504,20 +506,18 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
 
             setDisableButtonActions();
 
-            mNormalWaveAnimation = new WaveAnimation(mEvaContext.getActivity(), R.drawable.bg_button_normal);
+            WaveAnimation animation3 = new WaveAnimation(mEvaContext.getActivity(), R.drawable.bg_button_critical);
+            mSparseArrayAnimation.put(HealthManager.HEALTH_ID_SLEEP, animation3);
 
-            mBowlButton.setBackground(mNormalWaveAnimation);
-            mNormalWaveAnimation.animateTo(1f);
+            WaveAnimation animation2 = new WaveAnimation(mEvaContext.getActivity(), R.drawable.bg_button_warning);
+            mSparseArrayAnimation.put(HealthManager.HEALTH_ID_PEE, animation2);
 
-            mWarningWaveAnimation = new WaveAnimation(mEvaContext.getActivity(), R.drawable.bg_button_warning);
-            mHydrantButton.setBackground(mWarningWaveAnimation);
-            mWarningWaveAnimation.setProgress(1f);
-            // new android.os.Handler().postDelayed(() -> mWarningWaveAnimation.animateTo(0.0f), 3000);
+            WaveAnimation animation1 = new WaveAnimation(mEvaContext.getActivity(), R.drawable.bg_button_normal);
+            mSparseArrayAnimation.put(HealthManager.HEALTH_ID_DRINK, animation1);
 
-            mCriticalWaveAnimation = new WaveAnimation(mEvaContext.getActivity(), R.drawable.bg_button_critical);
-            mBedButton.setBackground(mCriticalWaveAnimation);
-            mCriticalWaveAnimation.setProgress(1f);
-
+            mBowlButton.setBackground(mSparseArrayAnimation.get(HealthManager.HEALTH_ID_DRINK));
+            mHydrantButton.setBackground(mSparseArrayAnimation.get(HealthManager.HEALTH_ID_PEE));
+            mBedButton.setBackground(mSparseArrayAnimation.get(HealthManager.HEALTH_ID_SLEEP));
 
             mPlayBoneButton.setOnClickListener(HudView.this);
             mHydrantButton.setOnClickListener(HudView.this);
@@ -533,8 +533,29 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
             LayoutViewUtils.setWorldPosition(mEvaContext.getMainScene(),
                     sxrViewNode, 100f, 187f, 40f, 270f);
             addChildObject(sxrViewNode);
+
+
+            if (mOnInitViewListener != null) {
+                mOnInitViewListener.onInitialized();
+            }
         }
     };
+
+    public void setLevel(@HealthId int id, @FloatRange(from = 0, to = 1) float level) {
+        Log.d("XX", "Set Level " + level);
+     //   mEvaContext.getActivity().runOnUiThread(() -> {
+            mSparseArrayAnimation.get(id).setProgress(level);
+       // });
+    }
+
+    public void animateLevelTo(@HealthId int id, @FloatRange(from = 0, to = 1) float level) {
+        mSparseArrayAnimation.get(id).animateTo(level);
+    }
+
+    public void setHealthBackground(@HealthId int id, int Res) {
+        mSparseArrayAnimation.get(id).setBackground(Res);
+    }
+
 
     private class OnClickDisconnectViewHandler implements View.OnClickListener {
         @Override
@@ -572,5 +593,10 @@ public class HudView extends BaseEvaView implements View.OnClickListener {
         }
     }
 
+    public interface OnInitViewListener {
+
+        void onInitialized();
+
+    }
 
 }
