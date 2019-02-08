@@ -202,10 +202,15 @@ public final class PlaneHandler implements IPlaneEvents, SXRDrawFrameListener {
 
     @Override
     public void onPlaneStateChange(SXRPlane plane, SXRTrackingState trackingState) {
-        if (trackingState != SXRTrackingState.TRACKING) {
-            plane.setEnable(false);
-        } else {
-            plane.setEnable(true);
+        if (plane.hasOwnerObject() && selectedPlaneObject == plane.getOwnerObject()) {
+            SXRNode ownerObject = plane.getOwnerObject();
+            if (trackingState != SXRTrackingState.TRACKING) {
+                plane.setEnable(false);
+                ownerObject.setEnable(false);
+            } else {
+                plane.setEnable(true);
+                ownerObject.setEnable(true);
+            }
         }
     }
 
@@ -219,14 +224,16 @@ public final class PlaneHandler implements IPlaneEvents, SXRDrawFrameListener {
 
     @Override
     public void onPlaneGeometryChange(SXRPlane sxrPlane) {
-        SXRNode ownerObject = sxrPlane.getOwnerObject();
-        if (ownerObject != null && ownerObject.getChildrenCount() > 0) {
-            SXRNode quad = ownerObject.getChildByIndex(0);
-            if (quad != null) {
-                quad.getTransform().setScale(
-                        sxrPlane.getWidth() * 0.9f,
-                        sxrPlane.getHeight() * 0.9f,
-                        1f);
+        if (sxrPlane.getTrackingState() == SXRTrackingState.TRACKING) {
+            SXRNode ownerObject = sxrPlane.getOwnerObject();
+            if (ownerObject != null && ownerObject.getChildrenCount() > 0) {
+                SXRNode quad = ownerObject.getChildByIndex(0);
+                if (quad != null) {
+                    quad.getTransform().setScale(
+                            sxrPlane.getWidth() * 0.9f,
+                            sxrPlane.getHeight() * 0.9f,
+                            1f);
+                }
             }
         }
     }
