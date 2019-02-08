@@ -285,7 +285,7 @@ public final class PlaneHandler implements IPlaneEvents, SXRDrawFrameListener {
 
     @Override
     public void onDrawFrame(float t) {
-        if (selectedPlaneObject != null) {
+        if (selectedPlaneObject != null && selectedPlaneObject.getComponent(PLANEBOARD_COMP_TYPE) != null) {
             ((PlaneBoard) selectedPlaneObject.getComponent(PLANEBOARD_COMP_TYPE)).update();
         }
     }
