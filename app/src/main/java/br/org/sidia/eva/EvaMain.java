@@ -184,13 +184,13 @@ public class EvaMain extends DisableNativeSplashScreen {
                 if (mMainViewController != null) {
                     mMainViewController.onHide(mEvaContext.getMainScene());
                     mMainViewController = null;
-                    if (mViewInitialMessage == null) {
+                    if (mViewInitialMessage == null && !mEva.isRunning()) {
                         getSXRContext().runOnGlThread(() -> {
                             mViewInitialMessage = new ViewInitialMessage(mEvaContext);
                             mViewInitialMessage.onShow(mEvaContext.getMainScene());
                         });
                     }
-                    if (mEvaContext.getPlaneHandler().hasPlaneDetected()) {
+                    if (mEvaContext.getPlaneHandler().hasPlaneDetected() && !mEva.isRunning()) {
                         getSXRContext().runOnGlThread(() -> mViewInitialMessage.onHide(mEvaContext.getMainScene()));
                         onShowHandAnimate();
                     }
@@ -246,18 +246,19 @@ public class EvaMain extends DisableNativeSplashScreen {
         if (mCurrentMode instanceof HudMode || mCurrentMode == null) {
             if (mCurrentMode != null && !((HudMode) mCurrentMode).isPromptEnabled()) {
                 getSXRContext().runOnGlThread(this::showViewExit);
+            } else {
+                if (mViewInitialMessage != null) {
+                    mViewInitialMessage.onHide(mEvaContext.getMainScene());
+                    mViewInitialMessage = null;
+                }
+                if (mCurrentMode instanceof HudMode && mHandAnimation != null) {
+                    mHandAnimation.remove();
+                }
+                onHideHandAnimate();
+                new Handler().postDelayed(() -> {
+                    getSXRContext().runOnGlThread(this::showViewExit);
+                }, 900);
             }
-            if (mViewInitialMessage != null) {
-                mViewInitialMessage.onHide(mEvaContext.getMainScene());
-                mViewInitialMessage = null;
-            }
-            if (mCurrentMode instanceof HudMode && mHandAnimation != null) {
-                mHandAnimation.remove();
-            }
-            onHideHandAnimate();
-            new Handler().postDelayed(() -> {
-                getSXRContext().runOnGlThread(this::showViewExit);
-            }, 900);
         }
         return true;
     }
