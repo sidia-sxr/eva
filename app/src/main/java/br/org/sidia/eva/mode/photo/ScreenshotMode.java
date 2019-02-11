@@ -266,6 +266,11 @@ public class ScreenshotMode extends BaseEvaMode {
                 "Storage access not allowed", Toast.LENGTH_LONG).show();
     }
 
+    private void showToastAppIsDisabled(String appName) {
+        Toast.makeText(mEvaContext.getActivity(),
+                appName + " is disabled and cannot be launched", Toast.LENGTH_LONG).show();
+    }
+
     private void openAppPermissionsSettings() {
         Activity context = mEvaContext.getActivity();
         Intent intent = new Intent(
@@ -276,7 +281,9 @@ public class ScreenshotMode extends BaseEvaMode {
 
     private void openSocialApp(@SocialAppId int socialAppId) {
         SocialAppInfo info = mSocialApps.get(socialAppId);
-        if (mSavedFile != null && checkAppInstalled(info.mPackageName)) {
+        if (mSavedFile != null
+                && checkAppInstalled(info.mPackageName)
+                && checkAppEnabled(info.mPackageName, info.mAppName)) {
             Intent intent = createIntent();
             if (info.mActivity != null) {
                 intent.setClassName(info.mPackageName, info.mActivity);
@@ -302,6 +309,19 @@ public class ScreenshotMode extends BaseEvaMode {
             return true;
         } else {
             installApp(packageName);
+            return false;
+        }
+    }
+
+    private boolean checkAppEnabled(String packageName, String appName) {
+        Activity context = mEvaContext.getActivity();
+        try {
+            boolean enabled = context.getPackageManager().getApplicationInfo(packageName, 0).enabled;
+            if (!enabled) {
+                showToastAppIsDisabled(appName);
+            }
+            return enabled;
+        } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
     }
@@ -363,25 +383,31 @@ public class ScreenshotMode extends BaseEvaMode {
 
     private void loadSocialAppsInfo() {
         mSocialApps.put(R.id.button_facebook, new SocialAppInfo(
+                "Facebook",
                 "com.facebook.katana",
                 "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias"));
         mSocialApps.put(R.id.button_twitter, new SocialAppInfo(
+                "Twitter",
                 "com.twitter.android",
                 "com.twitter.composer.ComposerActivity"));
         mSocialApps.put(R.id.button_instagram, new SocialAppInfo(
+                "Instagram",
                 "com.instagram.android",
                 null));
         mSocialApps.put(R.id.button_whatsapp, new SocialAppInfo(
+                "WhatsApp",
                 "com.whatsapp",
                 null));
     }
 
     private class SocialAppInfo {
 
+        String mAppName;
         String mPackageName;
         String mActivity;
 
-        SocialAppInfo(String mPackageName, String mActivity) {
+        SocialAppInfo(String mAppName, String mPackageName, String mActivity) {
+            this.mAppName = mAppName;
             this.mPackageName = mPackageName;
             this.mActivity = mActivity;
         }
