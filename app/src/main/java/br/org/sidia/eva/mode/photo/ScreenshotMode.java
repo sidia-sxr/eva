@@ -81,7 +81,8 @@ public class ScreenshotMode extends BaseEvaMode {
     private OnStoragePermissionGranted mPermissionCallback;
     private File mSavedFile;
     private SoundPool mSoundPool;
-    private int mClickSoundId;
+    private float mVolume;
+    private float mMaxVolume;
     private IPhotoView mView;
 
     @IntDef({R.id.button_facebook, R.id.button_twitter, R.id.button_instagram, R.id.button_whatsapp})
@@ -93,12 +94,15 @@ public class ScreenshotMode extends BaseEvaMode {
         super(evaContext, new PhotoViewController(evaContext));
         mBackToHudModeListener = listener;
         mPhotoViewController = (PhotoViewController) mModeScene;
+
+        AudioManager audioManager = (AudioManager) evaContext.getActivity().getSystemService(Context.AUDIO_SERVICE);
+        mVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mMaxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
     }
 
     @Override
     protected void onEnter() {
         EventBusUtils.register(this);
-        loadSounds();
         loadSocialAppsInfo();
         if (!hasStoragePermission()) {
             requestStoragePermission(this::takePhoto);
@@ -167,7 +171,7 @@ public class ScreenshotMode extends BaseEvaMode {
     private void onPhotoCaptured(Bitmap capturedPhotoBitmap) {
         Log.d(TAG, "Photo captured " + capturedPhotoBitmap);
         if (capturedPhotoBitmap != null) {
-            playClickSound();
+            loadSounds();
             showPhotoView(capturedPhotoBitmap, () -> {
                 // FIXME: Put a delay to ensure that the photo view is ready before
                 // we can get its bitmap
@@ -362,22 +366,26 @@ public class ScreenshotMode extends BaseEvaMode {
                     .setAudioAttributes(audioAttributes)
                     .build();
 
-            mClickSoundId = mSoundPool.load("/system/media/audio/ui/camera_click.ogg", 1);
+            mSoundPool.load("/system/media/audio/ui/camera_click.ogg", 1);
+            mSoundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> {
+                // sound was loaded successfully
+                if (status == 0) {
+                    playClickSound(sampleId);
+                } else {
+                    Log.e(TAG, "Sound was not loaded successfully");
+                }
+            });
         });
     }
 
-    private void playClickSound() {
-
-        AudioManager audioManager = (AudioManager) mEvaContext.getActivity().getSystemService(Context.AUDIO_SERVICE);
-        float vol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        float maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        float leftVolume = vol / maxVol;
-        float rightVolume = vol / maxVol;
+    private void playClickSound(int soundId) {
+        float leftVolume = mVolume / mMaxVolume;
+        float rightVolume = mVolume / mMaxVolume;
         int priority = 1;
         int no_loop = 0;
         float normal_playback_rate = 1f;
 
-        mSoundPool.play(mClickSoundId, leftVolume, rightVolume,
+        mSoundPool.play(soundId, leftVolume, rightVolume,
                 priority, no_loop, normal_playback_rate);
     }
 
