@@ -14,26 +14,26 @@
  */-->
 
 <resources>
-    <string name="app_name">Eva</string>
+    <string name="app_name" translatable="false">Eva</string>
     <string name="editing_mode">Editing Mode</string>
     <string name="save">SAVE</string>
-    <string name="guest_looking_at_target">Make sure you and your friends are side-by-side\n looking at the same thing.</string>
     <string name="common_text_host">Host</string>
     <string name="common_text_guest">Guest</string>
+    <string name="guest_looking_at_target">Make sure you and your friends are side-by-side\n looking at the same thing.</string>
     <string name="view_waiting_for_guests_status_text">Waiting for the guests to\nenter on the Sharing Anchor.</string>
     <string name="view_waiting_for_host_status_text">Waiting for the host to\nenter on the Sharing Anchor.</string>
     <string name="view_sharing_error_status_text">Pairing error!\nWould you like to try again?</string>
     <string name="common_text_shared">Shared</string>
     <string name="stay_in_position">Stay in this position while we connect the phones.</string>
-    <string name="view_no_connection_found_status_text">No %1$s found!\nWould you like to try again?</string>
+    <string name="view_no_connection_found_status_text">No %1$s found! Would you like to try again?</string>
     <string name="common_text_retry">Retry</string>
-    <string name="common_text_cancel" translatable="false">Cancel</string>
+    <string name="common_text_cancel">Cancel</string>
     <string name="common_text_continue">Continue</string>
     <string name="connected">CONNECTED</string>
     <string name="application_permissions">The application needs camera and location permissions</string>
-    <string name="disconnect_host">Do you want to disconnect from Sharing Anchor?\n Your friends will also be disconnected.</string>
+    <string name="disconnect_host">Do you want to disconnect from Sharing Anchor?\nYour friends will also be disconnected.</string>
     <string name="disconnect">DISCONNECT</string>
-    <string name="disconnect_guest">Do you want to disconnect from\n Sharing Anchor?</string>
+    <string name="disconnect_guest">Do you want to disconnect from\nSharing Anchor?</string>
     <string name="host_found">1 connection found on sharing anchor</string>
     <string name="center_eva">Center the Eva in your scene</string>
     <string name="move_around">Move around the device for at least a few seconds</string>
@@ -46,15 +46,15 @@
     <string name="view_guests_disconnected">Your friends disconnected</string>
     <string name="exit_message">Do you want really exit the application?</string>
     <string name="confirm">CONFIRM</string>
-    <string name="ok">OK</string>
+    <string name="ok" translatable="false">OK</string>
     <string name="want_to_share">Do you want to share?</string>
     <string name="photo_saved">Photo was saved in gallery</string>
-    <string name="message_initial" translatable="false">MOVE AROUND TO FIND A HORIZONTAL SURFACE</string>
-    <string name="choose_a_plan" translatable="false">CHOOSE A PLAN TO APPEAR EVA</string>
+    <string name="message_initial">MOVE AROUND TO FIND A HORIZONTAL SURFACE</string>
+    <string name="choose_a_plan">CHOOSE A PLAN TO APPEAR EVA</string>
     <string name="clear">Do you want to clear the screen and start\n a new experience with the Eva?</string>
-    <string name="sxr">SXR\nEVA</string>
-    <string name="lorem_ipsum">“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.”</string>
-    <string name="site">www.sidia.org.br</string>
+    <string name="sxr" translatable="false">SXR\nEVA</string>
+    <string name="lorem_ipsum" translatable="false">“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.”</string>
+    <string name="site" translatable="false">www.sidia.org.br</string>
     <string name="healthnotification_sleep_title_when_critical">Eva is very tired</string>
     <string name="healthnotification_sleep_text_when_critical">Would you like to put it to sleep?</string>
     <string name="healthnotification_pee_title_when_critical">Eva really needs to take a pee</string>
@@ -65,32 +65,33 @@
     <string name="healthnotification_play_text_when_critical">Would you like to play with her?</string>
     <string name="healthnotification_wakeup_title_when_critical">I woke up!</string>
     <string name="healthnotification_wakeup_text_when_critical">Let\'s play?</string>
-    <string name="dev_team">Afonso Costa\n André Naveca\n Cristiano Bozzetto\n Diego Azulay\n Ragner Nascimento\n Rachel Lima</string>
-    <string name="developer">Developer</string>
-    <string name="designer">DESIGNER</string>
-    <string name="designer_team">Ana Franco\n Flávio Ribeiro</string>
-    <string name="qa_engineer">QA ENGINEER</string>
-    <string name="susana_silva">Susana silva</string>
-    <string name="product_owner">PRODUCT oWNER</string>
-    <string name="po_team">Marcos Souza</string>
-    <string name="project_leader">Project Leader</string>
-    <string name="pl_team">Heimar Oliveira</string>
-    <string name="instagram">Instagram</string>
-    <string name="whatsapp">Whatsapp</string>
-    <string name="facebook">Facebook</string>
-    <string name="twitter">Twitter</string>
-    <string name="decrement_by">-5 min</string>
-    <string name="increment_by">+5 min</string>
+    <string name="dev_team" translatable="false">Afonso Costa\n André Naveca\n Cristiano Bozzetto\n Diego Azulay\n Ragner Nascimento\n Rachel Lima</string>
+    <string name="developer" translatable="false">Developer</string>
+    <string name="designer" translatable="false">DESIGNER</string>
+    <string name="designer_team" translatable="false">Ana Franco\n Flávio Ribeiro</string>
+    <string name="qa_engineer" translatable="false">QA ENGINEER</string>
+    <string name="susana_silva" translatable="false">Susana silva</string>
+    <string name="product_owner" translatable="false">PRODUCT OWNER</string>
+    <string name="po_team" translatable="false">Marcos Souza</string>
+    <string name="project_leader" translatable="false">Project Leader</string>
+    <string name="pl_team" translatable="false">Heimar Oliveira</string>
+    <string name="instagram" translatable="false">Instagram</string>
+    <string name="whatsapp" translatable="false">Whatsapp</string>
+    <string name="facebook" translatable="false">Facebook</string>
+    <string name="twitter" translatable="false">Twitter</string>
+    <string name="decrement_by" translatable="false">-5 min</string>
+    <string name="increment_by" translatable="false">+5 min</string>
+    <string name="no_guests">0 Guests</string>
     <plurals name="guests_found">
-        <item quantity="one">1 guest found\non sharing anchor</item>
+        <item quantity="one">%d guest found\non sharing anchor</item>
         <item quantity="other">%d guests found\non sharing anchor</item>
     </plurals>
     <plurals name="hosts_found">
-        <item quantity="one">1 host found\non sharing anchor</item>
+        <item quantity="one">%d host found\non sharing anchor</item>
         <item quantity="other">%d hosts found\non sharing anchor</item>
     </plurals>
     <plurals name="common_text_guest">
-        <item quantity="one">Guest</item>
-        <item quantity="other">Guests</item>
+        <item quantity="one">%d Guest</item>
+        <item quantity="other">%d Guests</item>
     </plurals>
 </resources>

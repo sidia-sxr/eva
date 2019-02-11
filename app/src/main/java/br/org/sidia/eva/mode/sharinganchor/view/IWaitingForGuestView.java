@@ -31,5 +31,5 @@ public interface IWaitingForGuestView extends IView {
 
     void setContinueButtonEnabled(boolean enabled);
 
-    void setIconGuestFinded();
+    void setIconGuestFound();
 }

@@ -29,7 +29,6 @@ import br.org.sidia.eva.view.IViewController;
 
 public class WaitingForGuestView extends BaseView implements IWaitingForGuestView {
 
-    private TextView mTotalConnected;
     private TextView mGuestText;
     private View mCancelButton;
     private View mContinueButton;
@@ -37,7 +36,6 @@ public class WaitingForGuestView extends BaseView implements IWaitingForGuestVie
 
     public WaitingForGuestView(View view, IViewController controller) {
         super(view, controller);
-        this.mTotalConnected = view.findViewById(R.id.text_total);
         this.mGuestText = view.findViewById(R.id.text_guests);
         this.mCancelButton = view.findViewById(R.id.button_cancel);
         this.mContinueButton = view.findViewById(R.id.button_continue);
@@ -49,7 +47,6 @@ public class WaitingForGuestView extends BaseView implements IWaitingForGuestVie
     @Override
     public void setTotalConnected(int total) {
         int t = Math.max(0, total);
-        runOnUiThread(() -> mTotalConnected.setText(String.format("%02d", t)));
         setContinueButtonEnabled(t > 0);
         updatePluralGuestText(t);
     }
@@ -70,14 +67,14 @@ public class WaitingForGuestView extends BaseView implements IWaitingForGuestVie
     }
 
     @Override
-    public void setIconGuestFinded() {
+    public void setIconGuestFound() {
         runOnUiThread(() -> mIconGuest.setImageResource(R.drawable.icon_guest));
     }
 
     private void updatePluralGuestText(int total) {
         runOnUiThread(() -> {
             String guestText = mGuestText.getContext().getResources()
-                    .getQuantityString(R.plurals.common_text_guest, total);
+                    .getQuantityString(R.plurals.common_text_guest, total, total);
             mGuestText.setText(guestText.toLowerCase());
         });
     }
