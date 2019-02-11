@@ -17,19 +17,12 @@ package br.org.sidia.eva.mode;
 
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
-import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.samsungxr.SXRCameraRig;
 import com.samsungxr.utility.Log;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.actions.EvaActions;
@@ -40,14 +33,9 @@ import br.org.sidia.eva.actions.TimerActionsController;
 import br.org.sidia.eva.character.CharacterController;
 import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.healthmonitor.HealthConfiguration;
 import br.org.sidia.eva.healthmonitor.HealthManager;
-import br.org.sidia.eva.healthmonitor.HealthNotificationConfig;
 import br.org.sidia.eva.healthmonitor.HealthNotificationEvent;
-import br.org.sidia.eva.healthmonitor.HealthPreferenceViewModel;
-import br.org.sidia.eva.healthmonitor.HealthRecoveryNotificationConfig;
-import br.org.sidia.eva.healthmonitor.HealthStateSummary;
-import br.org.sidia.eva.healthmonitor.HealthStatus;
+import br.org.sidia.eva.healthmonitor.HealthPreferencesViewHelper;
 import br.org.sidia.eva.healthmonitor.IHealthPreferencesView;
 import br.org.sidia.eva.mainview.IAboutView;
 import br.org.sidia.eva.mainview.ICleanView;
@@ -69,12 +57,16 @@ public class HudMode extends BaseEvaMode {
     private CharacterController mEvaController;
     private VirtualObjectController mVirtualObjectController;
     private HealthManager mHealthManager;
+    private HealthPreferencesViewHelper mHealthPreferencesViewHelper;
 
     public HudMode(EvaContext evaContext, CharacterController evaController, OnModeChange listener) {
         super(evaContext, new HudView(evaContext));
+
         mModeChangeListener = listener;
         mEvaController = evaController;
+
         mHealthManager = HealthManager.getInstance(mEvaContext.getActivity().getApplicationContext());
+        mHealthPreferencesViewHelper = new HealthPreferencesViewHelper(evaContext, mHealthManager);
 
         mHudView = (HudView) mModeScene;
         mHudView.setListener(new OnHudItemClickedHandler());
@@ -83,11 +75,8 @@ public class HudMode extends BaseEvaMode {
 
         mConnectionManager = (EvaConnectionManager) EvaConnectionManager.getInstance();
         mSharedMixedReality = evaContext.getMixedReality();
-
         mVirtualObjectController = new VirtualObjectController(evaContext, evaController);
-
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleHealthNotificationEvent(HealthNotificationEvent event) {
@@ -221,113 +210,22 @@ public class HudMode extends BaseEvaMode {
             IHealthPreferencesView view = mMainViewController.makeView(IHealthPreferencesView.class);
 
             view.getResetButton().setOnClickListener(v ->
-                    view.setPreferences(getViewModels(mHealthManager.getDefaultConfiguration())));
+                    view.setPreferences(mHealthPreferencesViewHelper
+                            .getViewModels(mHealthManager.getDefaultConfiguration())));
 
             view.getCloseButton().setOnClickListener(v -> closeView());
 
-            view.getApplyButton().setOnClickListener(v -> apply(view));
+            view.getApplyButton().setOnClickListener(v -> mHealthPreferencesViewHelper.apply(view));
 
             view.getApplyAndCloseButton().setOnClickListener(v -> {
-                apply(view);
+                mHealthPreferencesViewHelper.apply(view);
                 closeView();
             });
 
-            view.setPreferences(getViewModels(mHealthManager.getCurrentConfiguration()));
+            view.setPreferences(mHealthPreferencesViewHelper
+                    .getViewModels(mHealthManager.getCurrentConfiguration()));
             view.show();
         }
-    }
-
-    private void apply(IHealthPreferencesView view) {
-
-        AtomicBoolean changed = new AtomicBoolean(false);
-
-        view.getPreferences().forEach((HealthPreferenceViewModel p) -> {
-
-            HealthConfiguration conf = mHealthManager.getConfigurationById(p.getId());
-
-            if (conf.getLevelAutoUpdatePeriod() != p.getDuration()) {
-                changed.set(true);
-                mHealthManager.cancelNotification(conf.getId());
-                conf.setLevelAutoUpdatePeriod(p.getDuration());
-                mHealthManager.resetHealth(conf.getId());
-            }
-
-            HealthNotificationConfig configWarning = findConfigurationByStatus(
-                    HealthManager.HEALTH_STATUS_WARNING, conf.getHealthNotificationConfig());
-            HealthNotificationConfig configCritical = findConfigurationByStatus(
-                    HealthManager.HEALTH_STATUS_CRITICAL, conf.getHealthNotificationConfig());
-
-            if (configWarning != null && configWarning.getRecoveryNotificationConfig() != null) {
-                long oldValue = configWarning.getRecoveryNotificationConfig().getDuration();
-                long newValue = p.getRecoveryDurationWhenWarning();
-                if (oldValue != newValue) {
-                    changed.set(true);
-                    configWarning.getRecoveryNotificationConfig().setDuration(newValue);
-                }
-            }
-
-            if (configCritical != null && configCritical.getRecoveryNotificationConfig() != null) {
-                long oldValue = configCritical.getRecoveryNotificationConfig().getDuration();
-                long newValue = p.getRecoveryDurationWhenCritical();
-                if (oldValue != newValue) {
-                    changed.set(true);
-                    configCritical.getRecoveryNotificationConfig().setDuration(newValue);
-                }
-            }
-
-            if (conf.getLastLevelNotificationRepeatDelay() != p.getCriticalRepeatDelay()) {
-                changed.set(true);
-                conf.setLastLevelNotificationRepeatDelay(p.getCriticalRepeatDelay());
-            }
-
-        });
-
-        if (changed.get()) {
-            mHealthManager.savePreferences();
-            Toast.makeText(mEvaContext.getActivity(), "Changes applied", Toast.LENGTH_SHORT).show();
-            view.setPreferences(getViewModels(mHealthManager.getCurrentConfiguration()));
-        } else {
-            Toast.makeText(mEvaContext.getActivity(), "No change to apply", Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-    private List<HealthPreferenceViewModel> getViewModels(List<HealthConfiguration> configurations) {
-
-        List<HealthPreferenceViewModel> viewModels = new ArrayList<>();
-
-        configurations.forEach(conf -> {
-
-            HealthStateSummary summary = mHealthManager.getHealthStateSummary(conf.getId());
-            HealthNotificationConfig configWarning = findConfigurationByStatus(
-                    HealthManager.HEALTH_STATUS_WARNING, conf.getHealthNotificationConfig());
-            HealthNotificationConfig configCritical = findConfigurationByStatus(
-                    HealthManager.HEALTH_STATUS_CRITICAL, conf.getHealthNotificationConfig());
-
-            HealthRecoveryNotificationConfig warningRecoveryConfig = configWarning != null ?
-                    configWarning.getRecoveryNotificationConfig() : null;
-
-            HealthRecoveryNotificationConfig criticalRecoveryConfig = configCritical != null ?
-                    configCritical.getRecoveryNotificationConfig() : null;
-
-            HealthPreferenceViewModel viewModel = new HealthPreferenceViewModel(
-                    summary.getId(),
-                    summary.getLevel(),
-                    summary.getRemainingTime(),
-                    summary.getStatus(),
-                    conf.getResourceId(),
-                    conf.getLevelAutoUpdatePeriod(),
-                    configWarning != null ? configWarning.getLevelNotificationConfig().getTargetLevel() : -1,
-                    configCritical != null ? configCritical.getLevelNotificationConfig().getTargetLevel() : -1,
-                    conf.getLastLevelNotificationRepeatDelay(),
-                    warningRecoveryConfig != null ? warningRecoveryConfig.getDuration() : -1,
-                    criticalRecoveryConfig != null ? criticalRecoveryConfig.getDuration() : -1
-            );
-
-            viewModels.add(viewModel);
-        });
-
-        return viewModels;
     }
 
     private void closeView() {
@@ -335,15 +233,6 @@ public class HudMode extends BaseEvaMode {
             mMainViewController.onHide(mEvaContext.getMainScene());
             mMainViewController = null;
         }
-    }
-
-    @Nullable
-    private static HealthNotificationConfig findConfigurationByStatus(
-            @HealthStatus int status, HealthNotificationConfig[] configs) {
-        return Arrays.stream(configs)
-                .filter(c -> c.getStatus() == status)
-                .findFirst()
-                .orElse(null);
     }
 
     private void showCleanView() {
