@@ -17,17 +17,18 @@ package br.org.sidia.eva.mode;
 
 import com.samsungxr.SXRDrawFrameListener;
 import com.samsungxr.SXRNode;
-import br.org.sidia.eva.EvaContext;
-import br.org.sidia.eva.animations.DustyAnimation;
-import br.org.sidia.eva.character.CharacterController;
-import br.org.sidia.eva.constant.EvaObjectType;
-import br.org.sidia.eva.constant.EvaConstants;
-import br.org.sidia.eva.util.LoadModelHelper;
 import com.samsungxr.mixedreality.SXRPlane;
 import com.samsungxr.utility.Log;
 
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
+
+import br.org.sidia.eva.EvaContext;
+import br.org.sidia.eva.animations.DustyAnimation;
+import br.org.sidia.eva.character.CharacterController;
+import br.org.sidia.eva.constant.EvaConstants;
+import br.org.sidia.eva.constant.EvaObjectType;
+import br.org.sidia.eva.util.LoadModelHelper;
 
 public class VirtualObjectController {
     private static final String TAG = VirtualObjectController.class.getSimpleName();
@@ -75,9 +76,11 @@ public class VirtualObjectController {
         if (objectType.equals(mObjectType)) {
             Log.d(TAG, "%s is already on the scene", objectType);
             return;
-        } else {
-            // Hide if there is a previous visible
-            hideObject();
+        }
+
+        if (mVirtualObject != null) {
+            Log.d(TAG, "There is already a virtual object (%s) on the scene.", mObjectType);
+            return;
         }
 
         mVirtualObject = load3DModel(objectType);
