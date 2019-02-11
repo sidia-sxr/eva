@@ -131,6 +131,7 @@ public class HudMode extends BaseEvaMode {
             mVirtualObjectController.hideObject();
             if (mEvaController.isPlaying()) {
                 mEvaController.stopBone();
+                mHudView.deactivateBoneButton();
                 Log.d(TAG, "Stop Bone");
             } else {
                 mEvaController.playBone();
@@ -360,6 +361,7 @@ public class HudMode extends BaseEvaMode {
             iCleanView.setOnConfirmClickListener(view -> {
                 Log.d(TAG, "Cleaning scene");
                 mEvaController.exit();
+                mHudView.deactivateBoneButton();
                 mEvaContext.getPlaneHandler().resetPlanes();
                 if (mMainViewController != null) {
                     mMainViewController.onHide(mEvaContext.getMainScene());
@@ -413,6 +415,7 @@ public class HudMode extends BaseEvaMode {
                 mHudView.setStateInMenuButtons();
             });
             mEvaController.stopBone();
+            mHudView.deactivateBoneButton();
         }
     }
 
