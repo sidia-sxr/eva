@@ -48,7 +48,7 @@ public class HealthLevelIndicator extends ImageView {
     private void init() {
         mDrawable = new WaveDrawable(getContext(), R.drawable.bg_health_level_indicatorl);
         setBackground(mDrawable);
-        mDrawable.setOnProgressListener(this::updateColor);
+        mDrawable.setOnProgressAnimationListener(this::updateColor);
     }
 
     public void setOnAnimationEndCallback(WaveDrawable.OnAnimationEndCallback callback) {
@@ -68,7 +68,7 @@ public class HealthLevelIndicator extends ImageView {
 
     private void updateColor(float level) {
         if (level <= 0) {
-            mDrawable.setFullColor(R.color.health_level_critical);
+            // set background color of button to critical
         } else {
             mDrawable.setProgressColor(getStatusColor(level));
         }

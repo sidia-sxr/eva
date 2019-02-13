@@ -49,7 +49,7 @@ public class WaveDrawable extends Drawable implements Animatable, ValueAnimator.
     private ColorFilter mColorFilter;
     private float mAnimateToValue;
     private Context mContext;
-    private OnProgressListener mOnProgressListener;
+    private OnProgressAnimationListener mOnProgressAnimationListener;
     private OnAnimationEndCallback mOnAnimationEndCallback;
 
     private Choreographer.FrameCallback mFrameCallback = new Choreographer.FrameCallback() {
@@ -73,26 +73,14 @@ public class WaveDrawable extends Drawable implements Animatable, ValueAnimator.
         this.mOnAnimationEndCallback = mOnAnimationEndCallback;
     }
 
-    public void setOnProgressListener(OnProgressListener mOnProgressListener) {
-        this.mOnProgressListener = mOnProgressListener;
-    }
-
-    public void setProgressColor(@ColorRes int color) {
-        mDrawable.setTintList(ColorStateList.valueOf(mContext.getColor(color)));
-    }
-
-    public void setFullColor(@ColorRes int color) {
-        mDrawable.setTintList(ColorStateList.valueOf(mContext.getColor(color)));
-        mProgress = 1;
-        updateProgress();
+    public void setOnProgressAnimationListener(OnProgressAnimationListener listener) {
+        this.mOnProgressAnimationListener = listener;
     }
 
     private void init(@DrawableRes int drawableRes) {
 
-        Drawable drawable;
-        drawable = mContext.getDrawable(drawableRes);
+        mDrawable = mContext.getDrawable(drawableRes);
 
-        mDrawable = drawable;
         mMatrix.reset();
         mPaint = new Paint();
         mPaint.setFilterBitmap(true);
@@ -258,14 +246,21 @@ public class WaveDrawable extends Drawable implements Animatable, ValueAnimator.
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        setProgress((float) (animation.getAnimatedValue()) + mAnimateToValue);
-        Log.d("naveca", "onAnimationUpdate: " + animation.getAnimatedValue());
+        float progress = (float) (animation.getAnimatedValue()) + mAnimateToValue;
+        setProgress(progress);
+        if (mOnProgressAnimationListener != null) {
+            mOnProgressAnimationListener.onProgress(progress);
+        }
         if (!mRunning) {
             invalidateSelf();
         }
     }
 
-    private ValueAnimator getDefaultAnimator(float value) {
+    public void setProgressColor(@ColorRes int color) {
+        mDrawable.setTintList(ColorStateList.valueOf(mContext.getColor(color)));
+    }
+
+    private ValueAnimator getAnimator(float value) {
         float diff = value - mProgress;
         ValueAnimator animator = ValueAnimator.ofFloat(0, diff);
         animator.setInterpolator(new DecelerateInterpolator());
@@ -276,9 +271,6 @@ public class WaveDrawable extends Drawable implements Animatable, ValueAnimator.
     public void setProgress(float progress) {
         mProgress = progress;
         updateProgress();
-        if (mOnProgressListener != null) {
-            mOnProgressListener.onProgress(progress);
-        }
     }
 
     private void updateProgress() {
@@ -287,9 +279,9 @@ public class WaveDrawable extends Drawable implements Animatable, ValueAnimator.
     }
 
     public void setProgressAnimated(float progress) {
-        mAnimateToValue = progress;
+        mAnimateToValue = mProgress;
         new Handler(Looper.getMainLooper()).post(() -> {
-            ValueAnimator animator = getDefaultAnimator(progress);
+            ValueAnimator animator = getAnimator(progress);
             animator.addUpdateListener(this);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -339,7 +331,7 @@ public class WaveDrawable extends Drawable implements Animatable, ValueAnimator.
     }
 
     @FunctionalInterface
-    public interface OnProgressListener {
+    public interface OnProgressAnimationListener {
         void onProgress(float progress);
     }
 }
