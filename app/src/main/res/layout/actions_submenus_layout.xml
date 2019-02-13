@@ -25,20 +25,20 @@
     android:focusable="true"
     android:orientation="horizontal">
 
-    <ImageView
+    <br.org.sidia.eva.healthmonitor.HealthLevelIndicator
         android:id="@+id/btn_bowl"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:src="@drawable/ic_bowl_mask" />
 
-    <ImageView
+    <br.org.sidia.eva.healthmonitor.HealthLevelIndicator
         android:id="@+id/btn_hydrant"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginStart="20dp"
         android:src="@drawable/ic_hydrant_mask" />
 
-    <ImageView
+    <br.org.sidia.eva.healthmonitor.HealthLevelIndicator
         android:id="@+id/btn_bed"
         android:layout_width="45dp"
         android:layout_height="45dp"

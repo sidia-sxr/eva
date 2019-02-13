@@ -1,7 +1,10 @@
 package br.org.sidia.eva.custom;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,31 +18,39 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Choreographer;
 import android.view.animation.DecelerateInterpolator;
 
-public class WaveAnimation extends Drawable implements Animatable, ValueAnimator.AnimatorUpdateListener {
+public class WaveDrawable extends Drawable implements Animatable, ValueAnimator.AnimatorUpdateListener {
 
     private static final float WAVE_HEIGHT_FACTOR = 0.2f;
     private static final float WAVE_SPEED_FACTOR = 0.02f;
     private static final int UNDEFINED_VALUE = Integer.MIN_VALUE;
+    private static final int ANIMATION_DURATION = 7000;
+
     private int mWidth, mHeight;
     private int mWaveHeight = UNDEFINED_VALUE;
     private int mWaveLength = UNDEFINED_VALUE;
     private int mWaveStep = UNDEFINED_VALUE;
-    private int mWaveOffset = 0;
-    private int mWaveLevel = 0;
-    private float mProgress = 0;
-    private ValueAnimator mValueAnimator = null;
+    private int mWaveOffset;
+    private int mWaveLevel;
+    private float mProgress;
     private Drawable mDrawable;
     private Paint mPaint;
     private Bitmap mMask;
     private Matrix mMatrix = new Matrix();
     private boolean mRunning = false;
-    private ColorFilter mColorFilter = null;
-    private float mtimeAnimation = 0;
+    private ColorFilter mColorFilter;
+    private float mAnimateToValue;
     private Context mContext;
+    private OnProgressListener mOnProgressListener;
+    private OnAnimationEndCallback mOnAnimationEndCallback;
 
     private Choreographer.FrameCallback mFrameCallback = new Choreographer.FrameCallback() {
         @Override
@@ -51,30 +62,42 @@ public class WaveAnimation extends Drawable implements Animatable, ValueAnimator
         }
     };
 
-    public WaveAnimation(Context context, int imgRes) {
+    public WaveDrawable(Context context, @DrawableRes int drawableRes) {
         mContext = context;
-        init(imgRes);
-        start();
-        setAmplitude(3);
+        init(drawableRes);
         setProgress(0);
+        start();
     }
 
-    private void init(int imRes) {
-        setBackground(imRes);
+    public void setOnAnimationEndCallback(OnAnimationEndCallback mOnAnimationEndCallback) {
+        this.mOnAnimationEndCallback = mOnAnimationEndCallback;
     }
 
-    public void setBackground(int Res) {
+    public void setOnProgressListener(OnProgressListener mOnProgressListener) {
+        this.mOnProgressListener = mOnProgressListener;
+    }
+
+    public void setProgressColor(@ColorRes int color) {
+        mDrawable.setTintList(ColorStateList.valueOf(mContext.getColor(color)));
+    }
+
+    public void setFullColor(@ColorRes int color) {
+        mDrawable.setTintList(ColorStateList.valueOf(mContext.getColor(color)));
+        mProgress = 1;
+        updateProgress();
+    }
+
+    private void init(@DrawableRes int drawableRes) {
+
         Drawable drawable;
-        drawable = mContext.getDrawable(Res);
+        drawable = mContext.getDrawable(drawableRes);
 
-
-        final PorterDuffXfermode mPorterDuffmode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
         mDrawable = drawable;
         mMatrix.reset();
         mPaint = new Paint();
-        mPaint.setFilterBitmap(false);
+        mPaint.setFilterBitmap(true);
         mPaint.setColor(Color.BLACK);
-        mPaint.setXfermode(mPorterDuffmode);
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
 
         mWidth = mDrawable.getIntrinsicWidth();
         mHeight = mDrawable.getIntrinsicHeight();
@@ -84,16 +107,9 @@ public class WaveAnimation extends Drawable implements Animatable, ValueAnimator
             mWaveHeight = Math.max(8, (int) (mHeight * WAVE_HEIGHT_FACTOR));
             mWaveStep = Math.max(1, (int) (mWidth * WAVE_SPEED_FACTOR));
             updateBackground(mWidth, mWaveLength, mWaveHeight);
-
         }
-        invalidateSelf();
 
-    }
-
-    public void customWaveAnimation() {
-        // setAmplitude(2);
-        // setLength(3);
-        // setSpeed(2);
+        setAmplitude(2);
     }
 
     public void setSpeed(int step) {
@@ -167,6 +183,7 @@ public class WaveAnimation extends Drawable implements Animatable, ValueAnimator
 
     @Override
     public void draw(@NonNull Canvas canvas) {
+
         mDrawable.setColorFilter(Color.BLACK, PorterDuff.Mode.CLEAR);
         mDrawable.draw(canvas);
         mDrawable.setColorFilter(mColorFilter);
@@ -228,14 +245,6 @@ public class WaveAnimation extends Drawable implements Animatable, ValueAnimator
         Choreographer.getInstance().postFrameCallback(mFrameCallback);
     }
 
-    public void animateTo(float value) {
-        mtimeAnimation = mProgress;
-        mValueAnimator = getDefaultAnimator(value);
-        mValueAnimator.addUpdateListener(this);
-        mValueAnimator.start();
-
-    }
-
     @Override
     public void stop() {
         mRunning = false;
@@ -249,38 +258,61 @@ public class WaveAnimation extends Drawable implements Animatable, ValueAnimator
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        setProgress((float) (animation.getAnimatedValue()) + mtimeAnimation);
-
+        setProgress((float) (animation.getAnimatedValue()) + mAnimateToValue);
+        Log.d("naveca", "onAnimationUpdate: " + animation.getAnimatedValue());
         if (!mRunning) {
             invalidateSelf();
         }
     }
 
     private ValueAnimator getDefaultAnimator(float value) {
-        final float diff;
-        diff = value - mProgress;
-
+        float diff = value - mProgress;
         ValueAnimator animator = ValueAnimator.ofFloat(0, diff);
         animator.setInterpolator(new DecelerateInterpolator());
-        animator.setDuration((long) (8000 * Math.abs(diff)));
+        animator.setDuration(Math.round(ANIMATION_DURATION * Math.abs(diff)));
         return animator;
     }
 
     public void setProgress(float progress) {
         mProgress = progress;
+        updateProgress();
+        if (mOnProgressListener != null) {
+            mOnProgressListener.onProgress(progress);
+        }
+    }
+
+    private void updateProgress() {
         mWaveLevel = mHeight - (int) ((mHeight + mWaveHeight) * mProgress);
         invalidateSelf();
     }
 
+    public void setProgressAnimated(float progress) {
+        mAnimateToValue = progress;
+        new Handler(Looper.getMainLooper()).post(() -> {
+            ValueAnimator animator = getDefaultAnimator(progress);
+            animator.addUpdateListener(this);
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (mOnAnimationEndCallback != null) {
+                        mOnAnimationEndCallback.onEnd();
+                    }
+                }
+            });
+            animator.start();
+        });
+    }
+
     private void updateBackground(int width, int length, int height) {
+
         if (width <= 0 || length <= 0 || height <= 0) {
             mMask = null;
             return;
         }
 
         final int count = (int) Math.ceil((width + length) / (float) length);
-        Bitmap mbitmap = Bitmap.createBitmap(length * count, height, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(mbitmap);
+        Bitmap bitmap = Bitmap.createBitmap(length * count, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bitmap);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
         int amplitude = height / 2;
         Path path = new Path();
@@ -292,12 +324,22 @@ public class WaveAnimation extends Drawable implements Animatable, ValueAnimator
             x += stepX;
             path.quadTo(x, y, x + stepX, amplitude);
             x += stepX;
-            y = mbitmap.getHeight() - y;
+            y = bitmap.getHeight() - y;
         }
-        path.lineTo(mbitmap.getWidth(), height);
+        path.lineTo(bitmap.getWidth(), height);
         path.lineTo(0, height);
         path.close();
         c.drawPath(path, p);
-        mMask = mbitmap;
+        mMask = bitmap;
+    }
+
+    @FunctionalInterface
+    public interface OnAnimationEndCallback {
+        void onEnd();
+    }
+
+    @FunctionalInterface
+    public interface OnProgressListener {
+        void onProgress(float progress);
     }
 }

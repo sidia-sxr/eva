@@ -79,8 +79,8 @@
     <string name="whatsapp">Whatsapp</string>
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
-    <string name="decrement_by">-5 min</string>
-    <string name="increment_by">+5 min</string>
+    <string name="decrement_by">-1 min</string>
+    <string name="increment_by">+1 min</string>
     <plurals name="guests_found">
         <item quantity="one">1 guest found\non sharing anchor</item>
         <item quantity="other">%d guests found\non sharing anchor</item>

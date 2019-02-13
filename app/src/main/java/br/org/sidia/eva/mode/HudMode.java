@@ -24,6 +24,9 @@ import com.samsungxr.utility.Log;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import br.org.sidia.eva.EvaContext;
 import br.org.sidia.eva.actions.EvaActions;
 import br.org.sidia.eva.actions.IEvaAction;
@@ -48,6 +51,7 @@ import br.org.sidia.eva.util.EventBusUtils;
 import static br.org.sidia.eva.manager.connection.IEvaConnectionManager.EVENT_ALL_CONNECTIONS_LOST;
 
 public class HudMode extends BaseEvaMode {
+
     private OnModeChange mModeChangeListener;
     private HudView mHudView;
     private MainViewController mMainViewController = null;
@@ -58,6 +62,8 @@ public class HudMode extends BaseEvaMode {
     private VirtualObjectController mVirtualObjectController;
     private HealthManager mHealthManager;
     private HealthPreferencesViewHelper mHealthPreferencesViewHelper;
+    private Timer mTimer = new Timer();
+    private TimerTask mLevelUiUpdater;
 
     public HudMode(EvaContext evaContext, CharacterController evaController, OnModeChange listener) {
         super(evaContext, new HudView(evaContext));
@@ -71,7 +77,7 @@ public class HudMode extends BaseEvaMode {
         mHudView = (HudView) mModeScene;
         mHudView.setListener(new OnHudItemClickedHandler());
         mHudView.setDisconnectListener(new OnDisconnectClickedHandler());
-        mHudView.setOnInitViewListener(this::updateStates);
+        mHudView.setOnInitViewListener(this::updateHealthLevelsUI);
 
         mConnectionManager = (EvaConnectionManager) EvaConnectionManager.getInstance();
         mSharedMixedReality = evaContext.getMixedReality();
@@ -81,18 +87,40 @@ public class HudMode extends BaseEvaMode {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleHealthNotificationEvent(HealthNotificationEvent event) {
         Log.d(TAG, "Health notification event received: " + event.toString());
-        updateStates();
+        mHudView.setLevel(event.getId(), mHealthManager.getHealthStateSummary(event.getId()).getLevel());
     }
 
     @Override
     protected void onEnter() {
         EventBusUtils.register(this);
+        startHealthLevelUiUpdater();
     }
 
     @Override
     protected void onExit() {
         EventBusUtils.unregister(this);
+        stopHealthLevelUiUpdater();
         mVirtualObjectController.hideObject();
+    }
+
+    private void startHealthLevelUiUpdater() {
+        if (mLevelUiUpdater == null) {
+            mLevelUiUpdater = new TimerTask() {
+                @Override
+                public void run() {
+                    updateHealthLevelsUI();
+                }
+            };
+            mTimer.schedule(mLevelUiUpdater, 5000, 5000);
+        }
+    }
+
+    private void stopHealthLevelUiUpdater() {
+        if (mLevelUiUpdater != null) {
+            mLevelUiUpdater.cancel();
+            mLevelUiUpdater = null;
+            mTimer.purge();
+        }
     }
 
     @Override
@@ -107,10 +135,13 @@ public class HudMode extends BaseEvaMode {
         }
     }
 
-    private void updateStates() {
-        mHudView.setLevel(HealthManager.HEALTH_ID_DRINK, mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_DRINK).getLevel());
-        mHudView.setLevel(HealthManager.HEALTH_ID_PEE, mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_PEE).getLevel());
-        mHudView.setLevel(HealthManager.HEALTH_ID_SLEEP, mHealthManager.getHealthStateSummary(HealthManager.HEALTH_ID_SLEEP).getLevel());
+    private void updateHealthLevelsUI() {
+        mHudView.setLevel(HealthManager.HEALTH_ID_DRINK, mHealthManager.getHealthStateSummary(
+                HealthManager.HEALTH_ID_DRINK).getLevel());
+        mHudView.setLevel(HealthManager.HEALTH_ID_PEE, mHealthManager.getHealthStateSummary(
+                HealthManager.HEALTH_ID_PEE).getLevel());
+        mHudView.setLevel(HealthManager.HEALTH_ID_SLEEP, mHealthManager.getHealthStateSummary(
+                HealthManager.HEALTH_ID_SLEEP).getLevel());
     }
 
     private class OnHudItemClickedHandler implements OnHudItemClicked {
@@ -159,7 +190,12 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            mHealthManager.resetHealth(HealthManager.HEALTH_ID_DRINK);
+            stopHealthLevelUiUpdater();
+            mHudView.setLevelAnimated(HealthManager.HEALTH_ID_DRINK, 1, () -> {
+                mHealthManager.resetHealth(HealthManager.HEALTH_ID_DRINK);
+                startHealthLevelUiUpdater();
+            });
+
             mVirtualObjectController.showObject(EvaObjectType.BOWL);
         }
 
