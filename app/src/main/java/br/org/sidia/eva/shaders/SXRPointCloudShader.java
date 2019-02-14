@@ -1,7 +1,6 @@
 package br.org.sidia.eva.shaders;
 
 import com.samsungxr.SXRContext;
-import com.samsungxr.SXRShaderData;
 import com.samsungxr.SXRShaderTemplate;
 import com.samsungxr.utility.TextFile;
 
@@ -20,11 +19,4 @@ public class SXRPointCloudShader extends SXRShaderTemplate {
         setSegment("VertexTemplate", vtxTemplate);
         setSegment("FragmentTemplate", fragTemplate);
     }
-
-    protected void setMaterialDefaults(SXRShaderData material)
-    {
-        material.setVec3("u_color", 1, 1, 1);
-        material.setFloat("u_point_size", 5f);
-    }
-
 }

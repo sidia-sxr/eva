@@ -14,7 +14,6 @@ import com.samsungxr.mixedreality.SXRPointCloud;
 import br.org.sidia.eva.shaders.SXRPointCloudShader;
 
 public class PointCloudHandler implements IMixedRealityEvents {
-    private IMixedReality mMixedReality;
     private SXRPointCloud mOldPointCloud;
     private final SXRNode mPointCloudNode;
     private final EvaContext mEvaContext;
@@ -25,6 +24,7 @@ public class PointCloudHandler implements IMixedRealityEvents {
         SXRMaterial mat = new SXRMaterial(evaContext.getSXRContext(),
                 new SXRShaderId(SXRPointCloudShader.class));
         mat.setVec3("u_color", 0.94f,0.61f,1f);
+        mat.setFloat("u_point_size", 5f);
 
         SXRRenderData renderData = new SXRRenderData(evaContext.getSXRContext());
         renderData.setDrawMode(GLES30.GL_POINTS);
@@ -44,7 +44,6 @@ public class PointCloudHandler implements IMixedRealityEvents {
 
     @Override
     public void onMixedRealityStart(IMixedReality mixedReality) {
-        mMixedReality = mixedReality;
         addOnScene();
     }
 
@@ -55,7 +54,7 @@ public class PointCloudHandler implements IMixedRealityEvents {
 
     @Override
     public void onMixedRealityUpdate(IMixedReality iMixedReality) {
-        SXRPointCloud newPointCloud = mMixedReality.acquirePointCloud();
+        SXRPointCloud newPointCloud = iMixedReality.acquirePointCloud();
         if (mOldPointCloud != newPointCloud) {
             float[] cloudPoints = newPointCloud.getPoints();
             if (cloudPoints.length == 0) {
