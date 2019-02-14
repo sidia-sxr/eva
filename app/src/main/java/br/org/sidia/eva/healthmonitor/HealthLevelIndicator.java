@@ -17,10 +17,13 @@
 package br.org.sidia.eva.healthmonitor;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import br.org.sidia.eva.R;
@@ -29,6 +32,7 @@ import br.org.sidia.eva.custom.WaveDrawable;
 public class HealthLevelIndicator extends ImageView {
 
     private WaveDrawable mDrawable;
+    private View mParent;
 
     public HealthLevelIndicator(Context context) {
         super(context);
@@ -46,9 +50,15 @@ public class HealthLevelIndicator extends ImageView {
     }
 
     private void init() {
-        mDrawable = new WaveDrawable(getContext(), R.drawable.bg_health_level_indicatorl);
-        setBackground(mDrawable);
+        mDrawable = new WaveDrawable(getContext(), R.drawable.bg_health_level_indicator);
         mDrawable.setOnProgressAnimationListener(this::updateColor);
+        super.setBackground(mDrawable);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mParent = (View) getParent();
     }
 
     public void setOnAnimationEndCallback(WaveDrawable.OnAnimationEndCallback callback) {
@@ -67,10 +77,12 @@ public class HealthLevelIndicator extends ImageView {
     }
 
     private void updateColor(float level) {
-        if (level <= 0) {
-            // set background color of button to critical
-        } else {
-            mDrawable.setProgressColor(getStatusColor(level));
+        mDrawable.setProgressColor(getStatusColor(level));
+        Log.d("naveca", "updateColor: parent "+mParent.getClass().getSimpleName());
+        if (mParent != null) {
+            Log.d("naveca", "updateColor: level = "+ level);
+            int bgColor = level > 0 ? android.R.color.transparent : R.color.health_level_critical;
+            mParent.getBackground().setTintList(ColorStateList.valueOf(getContext().getColor(bgColor)));
         }
     }
 

@@ -25,25 +25,43 @@
     android:focusable="true"
     android:orientation="horizontal">
 
-    <br.org.sidia.eva.healthmonitor.HealthLevelIndicator
-        android:id="@+id/btn_bowl"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:src="@drawable/ic_bowl_mask" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_health_level_indicator">
 
-    <br.org.sidia.eva.healthmonitor.HealthLevelIndicator
-        android:id="@+id/btn_hydrant"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="20dp"
-        android:src="@drawable/ic_hydrant_mask" />
+        <br.org.sidia.eva.healthmonitor.HealthLevelIndicator
+            android:id="@+id/btn_bowl"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_bowl_mask" />
+    </LinearLayout>
 
-    <br.org.sidia.eva.healthmonitor.HealthLevelIndicator
-        android:id="@+id/btn_bed"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:src="@drawable/ic_bed_mask" />
+        android:background="@drawable/bg_health_level_indicator">
+
+        <br.org.sidia.eva.healthmonitor.HealthLevelIndicator
+            android:id="@+id/btn_hydrant"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_hydrant_mask" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/bg_health_level_indicator">
+
+        <br.org.sidia.eva.healthmonitor.HealthLevelIndicator
+            android:id="@+id/btn_bed"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_bed_mask" />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/btn_fetchbone"

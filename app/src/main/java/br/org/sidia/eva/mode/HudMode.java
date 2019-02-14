@@ -36,6 +36,7 @@ import br.org.sidia.eva.actions.TimerActionsController;
 import br.org.sidia.eva.character.CharacterController;
 import br.org.sidia.eva.constant.EvaConstants;
 import br.org.sidia.eva.constant.EvaObjectType;
+import br.org.sidia.eva.healthmonitor.HealthId;
 import br.org.sidia.eva.healthmonitor.HealthManager;
 import br.org.sidia.eva.healthmonitor.HealthNotificationEvent;
 import br.org.sidia.eva.healthmonitor.HealthPreferencesViewHelper;
@@ -168,7 +169,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            mHealthManager.resetHealth(HealthManager.HEALTH_ID_SLEEP);
+            fillLevelAnimated(HealthManager.HEALTH_ID_SLEEP);
             mVirtualObjectController.showObject(EvaObjectType.BED);
         }
 
@@ -179,7 +180,6 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            mHealthManager.resetHealth(HealthManager.HEALTH_ID_PEE);
             mVirtualObjectController.showObject(EvaObjectType.HYDRANT);
         }
 
@@ -190,12 +190,7 @@ public class HudMode extends BaseEvaMode {
                 mEvaController.stopBone();
                 mHudView.deactivateBoneButton();
             }
-            stopHealthLevelUiUpdater();
-            mHudView.setLevelAnimated(HealthManager.HEALTH_ID_DRINK, 1, () -> {
-                mHealthManager.resetHealth(HealthManager.HEALTH_ID_DRINK);
-                startHealthLevelUiUpdater();
-            });
-
+            fillLevelAnimated(HealthManager.HEALTH_ID_DRINK);
             mVirtualObjectController.showObject(EvaObjectType.BOWL);
         }
 
@@ -236,6 +231,14 @@ public class HudMode extends BaseEvaMode {
         public void onHealthPreferencesClicked() {
             showHealthPreferencesView();
         }
+    }
+
+    private void fillLevelAnimated(@HealthId int id) {
+        stopHealthLevelUiUpdater();
+        mHudView.setLevelAnimated(id, 1, () -> {
+            mHealthManager.setLevel(id, 1);
+            startHealthLevelUiUpdater();
+        });
     }
 
     private void showHealthPreferencesView() {
