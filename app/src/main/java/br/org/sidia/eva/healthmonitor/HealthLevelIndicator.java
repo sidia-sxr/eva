@@ -78,9 +78,7 @@ public class HealthLevelIndicator extends ImageView {
 
     private void updateColor(float level) {
         mDrawable.setProgressColor(getStatusColor(level));
-        Log.d("naveca", "updateColor: parent "+mParent.getClass().getSimpleName());
         if (mParent != null) {
-            Log.d("naveca", "updateColor: level = "+ level);
             int bgColor = level > 0 ? android.R.color.transparent : R.color.health_level_critical;
             mParent.getBackground().setTintList(ColorStateList.valueOf(getContext().getColor(bgColor)));
         }
