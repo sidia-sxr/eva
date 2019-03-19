@@ -90,7 +90,7 @@ public class HandAnimation extends SXRAnimation {
     }
 
     @Override
-    protected void animate(SXRHybridObject sxrHybridObject, float ratio) {
+    public void animate(float timeInSec) {
         mLightMaterial.setFloat("u_time", mElapsedTime / 0.3f);
     }
 
